@@ -1,0 +1,23 @@
+#TG rule: prevent latex products from being added into the repository
+algorithm2e.sty
+breakcites.sty
+dsfont.sty
+import.sty
+vmargin.sty
+*.aux
+*.bbl
+*.out
+*.idx
+*.toc
+*.log
+*.blg
+*.gz
+*.zip
+main.pdf
+*eps-converted-to.pdf
+*~
+
+
+## some rules related to the jupyter notebooks
+*-checkpoint.ipynb
+.ipynb_checkpoints
