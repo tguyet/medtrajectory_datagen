@@ -6,7 +6,7 @@ Created on Sun May  3 10:44:59 2020
 @author: tguyet
 """
 
-from database_model import Patient, GP, Specialist, Provider
+from database_model import Patient, GP, Specialist, Provider, DrugDelivery
 import sqlalchemy as sa
 import pandas as pd
 import numpy as np
@@ -171,7 +171,52 @@ class PatientFactory:
 				elif isinstance(mtt, str):
 					p.MTT=mtt
 				
-			
 			patients.append( p )
 		
 		return patients
+	
+
+class DrugsDeliveryFactory:
+	def __init__(self,con,Pharmacies):
+		"""
+		- con is a Factory context, which include a connexion to the nomenclature database
+		- Pharmacies is a list of Pharmacies that can deliver drugs
+		"""
+		self.context=con
+		self.Pharmacies=Pharmacies
+		
+		#First get the list of drugs (CIP13 codes)
+		cur = self.context.conn.cursor()
+		cur.execute("select PHA_CIP_C13 from IR_PHA_R;")
+		self.cips = cur.fetchall()
+		cur.close()
+		self.cips = [c[0] for c in self.cips]
+	
+		
+	def generate_one(self, p):
+		"""
+		Generate a single drug delivery for a patient p
+		The delivery is added to the patient it self
+		
+		- p: a patient to which generate a drug delivery
+		"""
+		
+		#generate a drug delivery
+		dd=DrugDelivery(p, rd.choice(self.Pharmacies))
+		dd.cip13 = rd.choice(self.cips)
+		
+		dd.date_debut=self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+		dd.date_fin=dd.date_debut
+		
+		p.drugdeliveries.append(dd)
+	
+	def generate(self, p, maxdd=50):
+		"""
+		Generate a drug delivery for a patient p
+		The delivery is added to the patient itself
+		
+		- p: a patient to which generate a drug delivery
+		- maxdd: maximal number of deliveries
+		"""
+		for i in range(rd.randint(maxdd)):
+			self.generate_one(p)

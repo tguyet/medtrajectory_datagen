@@ -7,6 +7,7 @@ Created on Sun May  3 10:42:49 2020
 """
 
 from datetime import date
+import warnings
 
 
 #########################################
@@ -73,7 +74,72 @@ class Patient:
 		self.ALD=[] #list of ALD (see class ALD)
 		self.MTT=None #médecin traitant
 		
+		self.drugdeliveries=[]
+		self.medicalacts=[]
+		
 		
 	def __str__(self):
 		s="patient ("+self.NIR+") [sex: "+str(self.Sex)+", birth:"+self.BD.isoformat()+", loc:("+self.Dpt+","+self.City+")]"
 		return s
+
+	
+
+class CareDelivery:
+	"""
+	- This class correspond to the concepts of the PRS table
+	
+	The table key are not really related to the care ... and does not seems really interesting to represent here!
+	"""
+	
+	current_ord_num=1 ##to use as a static member
+	
+	def __init__(self, patient, provider, prescriber=None):
+		"""
+		- patient object that represents a patient
+		- provider object that represents a care provider (eg pharmacy)
+		"""
+		self.ord_num = CareDelivery.current_ord_num #	nombre entier // numéro d'ordre du décompte dans l'organisme
+		CareDelivery.current_ord_num+=1
+		self.patient=patient
+		self.provider=provider
+		if prescriber:
+			self.prescriber=prescriber
+		else:
+			self.prescriber=patient.MTT
+		self.date_debut=date(1900,1,1)
+		self.date_fin=date(2020,1,1)
+		
+		self.code_nature=None #6012: drug delivery IR_NAT_V[PRS_NAT]
+
+
+class DrugDelivery(CareDelivery):
+	"""
+	class associated to the ER_PHA table
+	"""
+	def __init__(self,patient, provider, prescriber=None):
+		if provider.catpro!=50:
+			warnings.warn("DrugDelivery but not a pharmacy")
+		super().__init__(patient, provider)
+		self.code_nature=6012
+		self.quantity=1
+		self.sid=1 #delivery sequence order
+		self.cip13=None #CIP code of the drug
+		
+	def __str__(self):
+		return "patient ("+self.patient.NIR+") gets drug " + str(self.cip13)+" at date "+self.date_debut.isoformat()+"."
+		
+class DrugDeliverySequence(CareDelivery):
+	"""
+	A drug sequence represents a collection of deliveries of the same drug (for example, for chronic diseases)
+	"""
+	def __init__(self,patient, provider, prescriber=None):
+		if provider.catpro!=50:
+			warnings.warn("DrugDelivery but not a pharmacy")
+		super().__init__(patient, provider)
+		self.quantity=1
+		self.cip13=None #CIP code of the drug
+		self.number=1
+		self.frequency=30 #
+	
+
+		
