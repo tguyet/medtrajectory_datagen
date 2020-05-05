@@ -6,7 +6,7 @@ Created on Sun May  3 11:07:38 2020
 @author: tguyet
 """
 
-from data_factory import FactoryContext, PatientFactory
+from data_factory import FactoryContext, PatientFactory, PhysicianFactory, PharmacyFactory
 import os
 
 os.chdir("/home/tguyet/Progs/SNDS/medtrajectory_datagen/Generator")
@@ -14,9 +14,21 @@ os.chdir("/home/tguyet/Progs/SNDS/medtrajectory_datagen/Generator")
 
 context=FactoryContext()
 
-pfactory=PatientFactory(context)
+pfactory=PharmacyFactory(context)
+pharms = pfactory.generate(10)
+for p in pharms:
+	print(p)
 
+pfactory=PhysicianFactory(context)
+GPs = pfactory.generateGP(5)
+specialists = pfactory.generateSpecialists(10)
+for p in GPs+specialists:
+	print(p)
+
+#pfactory=PatientFactory(context, [p.id for p in GPs])
+pfactory=PatientFactory(context, GPs)
 patients = pfactory.generate(10)
-
 for p in patients:
 	print(p)
+
+
