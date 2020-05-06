@@ -24,8 +24,8 @@ class FactoryContext:
 	The class contains usefull tools to be used by different factories.
 	-> a connexion to the database which enables to access the values that are used for some attributes of the database
 	"""	
-	def __init__(self):
-		self.conn = sqlite3.connect("snds_nomenclature.db") #connexion to the nomenclature database
+	def __init__(self, nomenclatures="snds_nomenclature.db"):
+		self.conn = sqlite3.connect( nomenclatures ) #connexion to the nomenclature database
 		self.codes_geo=None
 
 		
