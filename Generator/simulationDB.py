@@ -5,6 +5,7 @@ from database_model import Patient, GP, Specialist, Provider, DrugDelivery
 
 import sqlalchemy as sa
 from tableschema import Table
+import numpy as np
 import pandas as pd
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
@@ -12,6 +13,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import inspect
 from datetime import date, datetime
 from shutil import copyfile
+import sqlite3
 
 class simDB(simulation):
     def __init__(self):
@@ -33,13 +35,19 @@ class simDB(simulation):
         tables=inspector.get_table_names()
         
         # Create the table if necessary
+        modified=False
         if "DA_PRA_R" not in tables:
-            fjson=rootschemas+"/DCIR_DCIRS/DA_PRA_R.json"
-            table=Table([], schema=fjson)
+            table=Table([], schema=rootschemas+"/DCIR_DCIRS/DA_PRA_R.json")
             table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            modified=True
+        if "BE_IDE_R" not in tables:
+            table=Table([], schema=rootschemas+"/DCIR_DCIRS/BE_IDE_R.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            modified=True
         
-        Base = automap_base()
-        Base.prepare(db, reflect=True)
+        if modified:
+            Base = automap_base()
+            Base.prepare(db, reflect=True)
         
         session = sessionmaker()
         session.configure(bind=db)
@@ -52,6 +60,8 @@ class simDB(simulation):
             
         for p in self.pharms:
             s.add( self.createInsert_PS(Base, p)[0] )
+            
+        s.add( self.createInsert_Etablissement(Base, self.etablissement))
         s.commit()
         
         # Create the table if necessary
@@ -72,6 +82,14 @@ class simDB(simulation):
             table.save(table.schema.descriptor['name'], storage='sql', engine=db)
             modified=True
 
+        if "ER_PRS_F" not in tables:
+            table=Table([], schema=rootschemas+"/DCIR/ER_PRS_F.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            
+        if "ER_PHA_F" not in tables:
+            table=Table([], schema=rootschemas+"/DCIR/ER_PHA_F.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+
         if modified:
             Base = automap_base()
             Base.prepare(db, reflect=True)
@@ -79,12 +97,15 @@ class simDB(simulation):
             Base.classes.CT_IDE_AAAA_GN.ir_ben_r = relationship("IR_BEN_R", primaryjoin="and_(IR_BEN_R.BEN_NIR_PSA == foreign(CT_IDE_AAAA_GN.ben_nir_psa), IR_BEN_R.BEN_RNG_GEM == CT_IDE_AAAA_GN.ben_rng_gem)")
 
         
-        s = session()
-        for p in self.patients:
-            for pi in self.createInsert_ben(Base, p):
-                s.add( pi )
-        s.commit()
-        
+        try:
+            s = session()
+            for p in self.patients:
+                for pi in self.createInsert_ben(Base, p):
+                    s.add( pi )
+            s.commit()
+        except sqlite3.IntegrityError as err:
+            print(err)
+            raise
         
     def createInsert_PS(self, Base, p):
         professional = Base.classes.DA_PRA_R(
@@ -194,9 +215,280 @@ class simDB(simulation):
                 ben_rng_gem = beneficiaire.BEN_RNG_GEM,
                 version ="1"
             )
-        return [beneficiaire, beneficiaire_dcir, beneficiaire_carto]
+        
+        ret = [beneficiaire, beneficiaire_dcir, beneficiaire_carto]
+        for d in p.drugdeliveries:
+            ret += self.createInsert_DrugDelivery(Base, p, d)
+        
+        return ret
+
+
+    def createInsert_Etablissement(self, Base, eta):
+        ## Création d'un établissement
+        etablissement = Base.classes.BE_IDE_R(
+            IDE_ETA_NUM	=	"",
+            IDE_ETA_NU8	=	eta.id,
+            IDE_ETA_NOM	=	"EhvAeahPbftsZtVqF",
+            IDE_IDE_CPL	=	"LzLc",
+            IDE_VOI_NUM	=	"eB",
+            IDE_VOI_CNU	=	"",
+            IDE_VOI_TYP_LRG	=	"",
+            IDE_VOI_LIB	=	"oXIvSJrfpuRxEOf",
+            IDE_ADR_CPL	=	"pJHkSzJGJoqOUDJ",
+            IDE_RSD_LIB	=	"AcZaAckxCilGUEdOw",
+            IDE_BDI_COD	=	"nDGT",
+            IDE_TEL_NU1	=	"CJ",
+            IDE_TEL_NU2	=	"m",
+            IDE_INT_ADR	=	"biEHAWnTdbovlgayPKpjJXyqILPKtgnxReN",
+            IDE_FAX_NUM	=	"",
+            IDE_CPT_RSC	=	"EWqlstqmwLqQGJEQWmiicgnmQsUUrNFsYelCpQCtPLLZgVRmizCMvRQNagUxciLnZoyebCdXAk",
+            IDE_INS_COM	=	"f",
+            IDE_CPA_NUM	=	"Ks",
+            IDE_CRA_NUM	=	"l",
+            IDE_NUM_NOU	=	"QtDweklGp",
+            IDE_NUM_DTE	=	datetime(1972,6,1,0,0,0),
+            IDE_PSH_CAT	=	"NhO",
+            IDE_CCL_DTE	=	datetime(1928,6,4,0,0,0),
+            IDE_PSH_STJ	=	"",
+            IDE_STJ_DTE	=	datetime(1970,12,18,0,0,0),#
+            IDE_PSH_MFT	=	"SD",
+            IDE_MFT_DTE	=	datetime(1938,7,7,0,0,0),#"1938-07-07",
+            IDE_HON_TYP	=	"",
+            IDE_HON_DTE	=	datetime(1924,2,16,0,0,0),#"1924-02-16",
+            IDE_GES_NUM	=	"Y",
+            IDE_GES_DTE	=	datetime(1983,7,21,0,0,0),#"1983-07-21",
+            IDE_SRT_NUM	=	"GutNwhCZhZhnl",
+            IDE_ETA_DTE	=	datetime(1973,12,18,0,0,0),#"1973-12-18",
+            IDE_ATI_COD	=	"D",
+            IDE_PSP_NAT	=	"u",
+            IDE_PSP_DTE	=	datetime(1906,4,7,0,0,0),#"1906-04-07",
+            IDE_BGL_PEX	=	"C",
+            IDE_ETA_TYP	=	"z",
+            IDE_COD_A24	=	"vIJ",
+            IDE_SAN_PUB	=	"",
+            IDE_IDE_EAM	=	"3583766311",
+            IDE_IDE_DAM	=	datetime(1905,12,27,0,0,0),#"1905-12-27",
+            IDE_IDE_FAM	=	datetime(1980,8,26,0,0,0),#"1980-08-26",
+            IDE_IDE_EAS	=	"4265207648",
+            IDE_IDE_DAS	=	datetime(1985,4,26,0,0,0),#"1985-04-26",
+            IDE_IDE_FAS	=	datetime(1984,3,8,0,0,0),#"1984-03-08",
+            IDE_IDE_CON	=	"2912602989",
+            IDE_IDE_DON	=	datetime(1919,11,25,0,0,0),#"1919-11-25",
+            IDE_IDE_FON	=	datetime(1926,2,18,0,0,0),#"1926-02-18",
+            IDE_NUM_ANC	=	"KLYJHJ",
+            IDE_ANC_DTE	=	datetime(1978,10,30,0,0,0),#"1978-10-30",
+            IDE_IDE_CTR	=	"2",
+            IDE_IDE_DTR	=	datetime(1929,9,30,0,0,0),#"1929-09-30",
+            IDE_IDE_FTR	=	datetime(1927,11,29,0,0,0),#"1927-11-29",
+            IDE_A24_24	=	"B",
+            IDE_A24_24B	=	"Kc",
+            IDE_A24_24C	=	"mMy",
+            IDE_A24_24Q	=	"D",
+            IDE_A24_24S	=	"I",
+            IDE_A24_24T	=	"R",
+            IDE_NUM_PCP	=	"VMSSnUe",
+            IDE_CBU_CTR	=	"5",
+            IDE_CBU_EFF	=	datetime(1910,11,21,0,0,0),#"1910-11-21",
+            IDE_CBU_TAU	=	"HbJ",
+            IDE_CBU_DTF	=	datetime(1921,2,25,0,0,0),#"1921-02-25",
+            IDE_FIN_IND	=	"",
+            IDE_CAI_PIV	=	"oD",
+            IDE_NAT_ORI	=	"YpM",
+            IDE_MCO_COE	=	"77652",
+            IDE_COE_HAD	=	"65768",
+            IDE_MCO_DTE	=	datetime(2010,10,5,0,0,0),#"2010-10-05",
+            IDE_HAD_DTE	=	datetime(1919,9,18,0,0,0),#"1919-09-18",
+            IDE_IMP_DPT	=	"Xm"
+        )
+        return etablissement
+
+
+    def createInsert_DrugDelivery(self, Base, p, d):
+        """
+        Insertion in Base of the drug delivery for patient p
+        - Base ORM database model
+        - d DrugDelivery
+        - p Patient
+        """
+                
+        #Création d'une entrée dans la table prestation
+        prestation = Base.classes.ER_PRS_F(
+            ###### clés de la table #####
+            DCT_ORD_NUM	=	d.ord_num,	         #	nombre entier // numéro d'ordre du décompte dans l'organisme
+            FLX_DIS_DTD	=	datetime(1900,1,1,0,0,0),	    #	date //Date de mise à disposition des données IR_DTE_V[DTE_DTE]
+            FLX_EMT_NUM	=	1,	                            #	nombre entier // numéro d'émetteur du flux IR_NEM_T[EMT_NUM_RES], 1:Rouen 1
+            FLX_EMT_ORD	=	7724,	                        #	nombre entier // numéro de séquence du flux
+            FLX_EMT_TYP	=	3,	                            #	nombre entier // Type d'émetteur IR_TYT_V[TYT_COD]
+            FLX_TRT_DTD	=	datetime(1900,1,1,0,0,0),	    #	date // Date d'entrée des données dans le système d'information IR_DTE_V[DTE_DTE]
+            ORG_CLE_NUM	=	"01C731220",	                #	chaîne de caractères // organisme de liquidation des prestations (avant fusion des caisses) IR_ORG_V[ORG_NUM]
+            PRS_ORD_NUM	=	0,	                        #	nombre entier // Numéro d'ordre de la prestation dans le décompte
+            REM_TYP_AFF	=	0,	                    #	nombre entier // type de remboursement affiné (pas de ref)
+        
+            ##### Identification du bénéficiaire ######
+            BEN_NIR_PSA	=	d.patient.NIR,	            #	chaîne de caractères    # FOREIGN KEY: IR_BEN_R [ BEN_NIR_PSA, BEN_RNG_GEM ]
+            BEN_RNG_GEM	=	d.patient.RNG_GEM,	            #	nombre entier           # FOREIGN KEY: IR_BEN_R [ BEN_NIR_PSA, BEN_RNG_GEM ]
+        
+            ###### identification des acteurs de santé (EXE: executant, PRE: prescripteur, MTT: medecin traitant) ######
+            ETB_PRE_FIN	=	self.etablissement.id,	         #	chaîne de caractères    # FOREIGN KEY:      BE_IDE_R [ IDE_ETA_NU8 ]
+            PFS_EXE_NUM	=	d.provider.id,	     #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
+            PFS_EXE_NUMC	=	"",	            #	
+            PFS_PRE_NUM	=	d.prescriber.id,	                    #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
+            PFS_PRE_NUMC	=	"",	                    #	
+            PRS_MTT_NUM	=	d.patient.MTT.id,	                    #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
+            PRS_MTT_NUMC	=	"",	            #	
+        
+            PSE_ACT_NAT	=	d.code_nature,	       #	nombre entier // Nature d'activité du professionnel de santé exécutant  IR_ACT_V[PFS_ACT_NAT], 50: Pharmacie d'officine
+        
+            BEN_RES_COM	=	d.patient.City,	#	chaîne de caractères        #Code Commune (Bénéficiaire)
+            BEN_RES_DPT	=	d.patient.Dpt,	#	chaîne de caractères        #Code Département (Bénéficiaire)
+            BEN_SEX_COD	=	int(d.patient.Sex),	    #	nombre entier      #Code Sexe (Bénéficiaire)
+            BEN_NAI_ANN	=	d.patient.BD.year,	#	année                       #Annee de naissance du bénéficiaire
+            BEN_AMA_COD	=	1000,	#	nombre entier
+            BEN_CDI_NIR	=	"99",	#	chaîne de caractères
+            BEN_CMU_CAT	=	7,	#	nombre entier
+            BEN_CMU_ORG	=	"01C731032",	#	chaîne de caractères
+            BEN_CMU_TOP	=	"VotlKZM",	#	nombre entier
+            BEN_DCD_AME	=	"KPMkOEFVRfdlEiDRpo",	#	année et mois
+            BEN_DCD_DTE	=	datetime(1874,5,24,0,0,0),	#	date
+            BEN_EHP_TOP	=	1,	#	nombre entier
+            BEN_IAT_CAT	=	"06",	#	chaîne de caractères
+            BEN_PAI_CMU	=	1,	#	nombre entier           
+            BEN_QAF_COD	=	25,	#	nombre entier
+        
+            ORG_AFF_BEN	=	"01C731221",	#	chaîne de caractères
+            PRS_REJ_TOP	=	"zGijEbx",	#	nombre entier
+            
+            EXE_SOI_DTD	=	d.date_debut,	#	date            // Date de début d'exécution des soins
+            EXE_SOI_DTF	=	d.date_fin,	#	date            // Date de fin d'exécution des soins
+            EXE_SOI_AMD	=	datetime(1874,5,21,0,0,0),	#	année et mois
+            EXE_SOI_AMF	=	datetime(1874,5,23,0,0,0),	#	année et mois
+            PRE_PRE_AMD	=	datetime(1874,5,23,0,0,0),	#	année et mois
+            PRE_PRE_DTD	=	datetime(1874,5,22,0,0,0),	#	date
+            PRS_GRS_DTD	=	datetime(1874,5,21,0,0,0),	#	date
+            PRS_HOS_AMD	=	datetime(1874,5,25,0,0,0),	#	année et mois
+            PRS_HOS_DTD	=	datetime(1874,5,25,0,0,0),	#	date
+            BSE_REM_BSE	=	57053162514.54,	#	nombre réel
+            BSE_REM_MNT	=	14163026907.67,	#	nombre réel
+            BSE_REM_PRU	=	65015360547174.9,	#	nombre réel
+            BSE_REM_SGN	=	9,	#	nombre entier
+            CPL_REM_BSE	=	78090389879.25,	#	nombre réel
+            CPL_REM_MNT	=	41950861634.87,	#	nombre réel
+            CPL_REM_PRU	=	81140362630858.48,	#	nombre réel
+            CPL_REM_SGN	=	0,	#	nombre entier
+            PRS_ACT_CFT	=	661328942.45,	#	nombre réel
+            PRS_ACT_COG	=	153215936.9,	#	nombre réel
+            PRS_ACT_NBR	=	10974,	#	nombre réel
+            PRS_ACT_QTE	=	58618,	#	nombre réel
+            PRS_DEP_MNT	=	49096238752.38,	#	nombre réel
+            PRS_ETA_RAC	=	74790551649.64,	#	nombre réel
+            PRS_PAI_MNT	=	91738548395.16,	#	nombre réel
+            RGO_MOD_MNT	=	90206152481.25,	#	nombre réel
+            ORB_BSE_NUM	=	"03C021",	#	chaîne de caractères
+            ORL_BSE_NUM	=	"03C024",	#	chaîne de caractères
+            RGM_COD	=	6,	#	nombre entier
+            RGM_GRG_COD	=	677,	#	nombre entier // Regime du bénéficiare IR_RGM_V[RGM_COD]
+            ACC_TIE_IND	=	0,	#	nombre entier
+            BSE_FJH_TYP	=	9,	#	nombre entier
+            BSE_PRS_NAT	=	6013,	#	nombre entier
+            CPL_AFF_COD	=	15,	#	nombre entier
+            CPL_ANO_COD	=	3,	#	nombre entier
+            CPL_FJH_TYP	=	2,	#	nombre entier
+            CPL_MAJ_TOP	=	78,	#	nombre entier
+            CPL_PRS_NAT	=	5206,	#	nombre entier
+            DPN_QLF	=	50,	#	nombre entier
+            DRG_MOD	=	99,	#	nombre entier
+            DRG_NAT	=	33,	#	nombre entier
+            EXE_LIE_COD	=	8,	#	nombre entier
+            EXO_MTF	=	44,	#	nombre entier
+            IJR_EMP_NUM	=5866418702621912,	#	nombre entier
+            IJR_RVL_NAT	=	"MP",	#	chaîne de caractères
+            MTM_NAT	=	3,	#	nombre entier
+            ORG_CLE_NEW	=	"01C731220",	#	chaîne de caractères
+            PRE_REN_COD	=	3,	#	nombre entier
+        
+            PRS_CRD_OPT	=	4,	#	nombre entier
+            PRS_DPN_QLP	=	12,	#	nombre entier
+            PRS_NAT_REF	=	d.code_pres,	#	nombre entier // Code de la Prestations de référence IR_NAT_V[PRS_NAT]
+            PRS_OPS_TRF	=	0,	#	nombre entier
+            PRS_PDS_QCP	=	2,	#	nombre entier
+            PRS_PDS_QTP	=	99,	#	nombre entier
+            PRS_PPF_COD	=	"C",	#	chaîne de caractères
+            PRS_PRE_MTT	=	1,	#	nombre entier
+            PRS_REF_KIN	=	"II",	#	chaîne de caractères
+            PRS_TOP_ENP	=	1,	#	nombre entier
+            PRS_TYP_KIN	=	"U",	#	chaîne de caractères
+        
+            RGO_ASU_NAT	=	10,	#	nombre entier   // Nature d'assurance (régime obligatoire) IR_ASU_V[ASU_NAT]: 10=Assurrance Maladie
+            RGO_ENV_TYP	=	0,	#	nombre entier
+            RGO_FTA_COD	=	0,	#	nombre entier
+            RGO_MIN_TAU	=	0.0,	#	nombre réel
+            RGO_REM_TAU	=	0.0,	#	nombre réel
+            RGO_THE_TAU	=	0.0,	#	nombre réel
+            PSE_CNV_COD	=	9,	#	nombre entier // Code convention du professionnel de santé exécutant
+            PSE_REF_ADH	=	"",	#	chaîne de caractères Top prestation exécuté par un professionnel de santé adhérent à l'option référent
+            PSE_SPE_COD	=	0,	#	nombre entier Spécialite médicale du professionnel de santé exécutant
+            PSE_STJ_COD	=	0,	#	nombre entier Mode d'exercice du professionnel de santé exécutant
+        
+            PSP_ACT_NAT	=	26,	#	nombre entier
+            PSP_CNV_COD	=	9,	#	nombre entier
+            PSP_PPS_NUM	=	"bZmhONjhyObf",	#	chaîne de caractères
+            PSP_PPS_NUMC	=	"GcqeAZYKBpTJuLM",	#	
+            PSP_REF_ADH	=	"GCyFnY",	#	chaîne de caractères
+            PSP_SPE_COD	=	10,	#	nombre entier
+            PSP_STJ_COD	=	61,	#	nombre entier
+            PSP_SVI_PPS	=	15,	#	nombre entier
+        
+            BEN_DRT_SPF	=	"ACS",	#	chaîne de caractères
+            BEN_ACS_TOP	=	"TRmWCbmpFHkN",	#	booléen
+            EXE_CTX_PFS	=	"zvG",	#	chaîne de caractères
+            PRS_TYP_MAJ	=	"ZZ",	#	chaîne de caractères
+            EXE_CTX_BEN	=	"UEoLOkEWndFDSUcJ",	#	chaîne de caractères
+            CPL_FTA_COD	=	59,	#	nombre entier
+            PRS_PPU_SEC	=	9,	#	nombre entier
+            BEN_CTA_TYP	=	865,	#	nombre entier
+            PRS_DRA_AME	=	"Vqt",	#	année et mois Date réelle (année et mois) de l'accouchement
+            DRG_AFF_NAT	=	0,	#	nombre entier
+            PRS_MNT_MAJ	=	2977390.3,	#	nombre réel
+            PRE_IND_PEL	=	"uBvUXVf",	#	chaîne de caractères Indicateur Prescription en Ligne
+            PRS_DIS_PRE	=	"xyH",	#	chaîne de caractères
+            CPL_REM_TAU	=	6695907.79,	#	nombre réel
+            PRS_QTT_MAJ	=	7460	#	nombre entier Quantité de majorations
+        )
+        
+        #Création d'une entrée dans la table ER_PHA pour une entrée en correspondante en pharmacie
+        delivrance_medoc = Base.classes.ER_PHA_F(
+            PHA_PRS_C13	=	str(d.cip13),	#	nombre entier	Code CIP de la pharmacie de ville (13 Caractères)   IR_PHA_R[PHA_CIP_C13]
+            PHA_PRS_IDE	=	str(d.cip13),	#	nombre entier	Code CIP de la pharmacie de ville (ancien code sur 7 Caractères)  IR_PHA_R[PHA_CIP_C13]
+            PHA_SEQ_RNV	=	d.sid,	#	nombre entier	Séquence de renouvellement
+            PHA_SUB_MTF	=	0,	#	nombre entier	Motif de substitution du médicament IR_SUB_V[PHA_SUB_MTF] 0: sans objet, 2: generique, 6: refus de substitution
+            PHA_ACT_QSN	=	d.quantity,	#	nombre entier	Quantité affinée signée (= nombre de boites facturées)
+        
+            ORG_CLE_NEW	=	"01C731222",	#	chaîne de caractères	Code de l'organisme de liquidation
+            PHA_ACT_PRU	=	0.0,	#	nombre réel	Prix unitaire du médicament codé en CIP
+            PHA_CPA_PCP	=	"",	#	chaîne de caractères	Condition particulière de prise en charge
+            PHA_DEC_PRU	=	0.0,	#	nombre réel	Prix unitaire de l'unité déconditionnée délivrée
+            PHA_DEC_QSU	=	0,	#	nombre entier	Quantité complète de déconditionnement signée
+            PHA_DEC_TOP	=	"",	#	chaîne de caractères	Top déconditionnement
+            PHA_IDE_CPL	=	0,	#	nombre entier	Préfixe du code CIP
+            PHA_MOD_PRN	=	"",	#	chaîne de caractères	Mode de prescription
+            PHA_ORD_NUM	=	0,	#	nombre entier	Numéro d'ordre de la prestation affinée pharmacie        
+            ## Référence à l'enregistrement de la prestation
+            DCT_ORD_NUM	=	prestation.DCT_ORD_NUM,
+            FLX_DIS_DTD	=	prestation.FLX_DIS_DTD,
+            FLX_EMT_NUM	=	prestation.FLX_EMT_NUM,
+            FLX_EMT_ORD	=	prestation.FLX_EMT_ORD,
+            FLX_EMT_TYP	=	prestation.FLX_EMT_TYP,
+            FLX_TRT_DTD	=	prestation.FLX_TRT_DTD,
+            ORG_CLE_NUM	=	prestation.ORG_CLE_NUM,
+            PRS_ORD_NUM	=	prestation.PRS_ORD_NUM,
+            REM_TYP_AFF	=	prestation.REM_TYP_AFF
+        )
+        
+        return [prestation, delivrance_medoc]
+
 
 if __name__ == "__main__":
+    np.random.seed(0)
     sim = simDB()
     sim.run()
     sim.generate()

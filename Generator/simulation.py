@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from data_factory import FactoryContext, PatientFactory, PhysicianFactory, PharmacyFactory, DrugsDeliveryFactory
+from data_factory import FactoryContext, PatientFactory, PhysicianFactory, PharmacyFactory, DrugsDeliveryFactory, EtablissementFactory
 import os
 
 
@@ -13,6 +13,7 @@ class simulation:
 		self.GPs = []
 		self.specialists = []
 		self.patients = []
+		self.etablissement = None #un unique etablissement
 
 	def run(self):
 		pfactory=PharmacyFactory(self.context)
@@ -28,8 +29,8 @@ class simulation:
 		drugfact=DrugsDeliveryFactory(self.context, self.pharms)
 		for p in self.patients:
 			drugfact.generate(p,50)
-	
-
+		
+		self.etablissement = EtablissementFactory(self.context).generate()
 
 if __name__ == "__main__":
 	sim = simulation()
