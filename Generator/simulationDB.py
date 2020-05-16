@@ -29,7 +29,7 @@ class simDB(simulation):
         db = sa.create_engine('sqlite:////home/tguyet/Progs/SNDS/snds_testgen.db')
         
         
-        ########  Physicians #############
+        ########  Physicians and Pharmacists #############
         # Get table information
         inspector = inspect(db)
         tables=inspector.get_table_names()
@@ -64,6 +64,7 @@ class simDB(simulation):
         s.add( self.createInsert_Etablissement(Base, self.etablissement))
         s.commit()
         
+        ########  Patients and their care trajectories #############
         # Create the table if necessary
         modified=False
         if "IR_BEN_R" not in tables:
@@ -81,15 +82,19 @@ class simDB(simulation):
             table=Table([], schema=fjson)
             table.save(table.schema.descriptor['name'], storage='sql', engine=db)
             modified=True
-
         if "ER_PRS_F" not in tables:
             table=Table([], schema=rootschemas+"/DCIR/ER_PRS_F.json")
             table.save(table.schema.descriptor['name'], storage='sql', engine=db)
-            
+            modified=True
         if "ER_PHA_F" not in tables:
             table=Table([], schema=rootschemas+"/DCIR/ER_PHA_F.json")
             table.save(table.schema.descriptor['name'], storage='sql', engine=db)
-
+            modified=True
+        if "ER_CAM_F" not in tables:
+            table=Table([], schema=rootschemas+"/DCIR/ER_CAM_F.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            modified=True
+            
         if modified:
             Base = automap_base()
             Base.prepare(db, reflect=True)
@@ -220,6 +225,11 @@ class simDB(simulation):
         for d in p.drugdeliveries:
             ret += self.createInsert_DrugDelivery(Base, p, d)
         
+        for d in p.visits:
+            ret.append( self.createPRS(Base, p, d) )
+        
+        for d in p.medicalacts:
+            ret += self.createInsert_MedicalAct(Base, p, d)
         return ret
 
 
@@ -303,18 +313,12 @@ class simDB(simulation):
         return etablissement
 
 
-    def createInsert_DrugDelivery(self, Base, p, d):
-        """
-        Insertion in Base of the drug delivery for patient p
-        - Base ORM database model
-        - d DrugDelivery
-        - p Patient
-        """
-                
+    def createPRS(self, Base, p, ma):
+        
         #Création d'une entrée dans la table prestation
         prestation = Base.classes.ER_PRS_F(
             ###### clés de la table #####
-            DCT_ORD_NUM	=	d.ord_num,	         #	nombre entier // numéro d'ordre du décompte dans l'organisme
+            DCT_ORD_NUM	=	ma.ord_num,	         #	nombre entier // numéro d'ordre du décompte dans l'organisme
             FLX_DIS_DTD	=	datetime(1900,1,1,0,0,0),	    #	date //Date de mise à disposition des données IR_DTE_V[DTE_DTE]
             FLX_EMT_NUM	=	1,	                            #	nombre entier // numéro d'émetteur du flux IR_NEM_T[EMT_NUM_RES], 1:Rouen 1
             FLX_EMT_ORD	=	7724,	                        #	nombre entier // numéro de séquence du flux
@@ -325,31 +329,31 @@ class simDB(simulation):
             REM_TYP_AFF	=	0,	                    #	nombre entier // type de remboursement affiné (pas de ref)
         
             ##### Identification du bénéficiaire ######
-            BEN_NIR_PSA	=	d.patient.NIR,	            #	chaîne de caractères    # FOREIGN KEY: IR_BEN_R [ BEN_NIR_PSA, BEN_RNG_GEM ]
-            BEN_RNG_GEM	=	d.patient.RNG_GEM,	            #	nombre entier           # FOREIGN KEY: IR_BEN_R [ BEN_NIR_PSA, BEN_RNG_GEM ]
+            BEN_NIR_PSA	=	ma.patient.NIR,	            #	chaîne de caractères    # FOREIGN KEY: IR_BEN_R [ BEN_NIR_PSA, BEN_RNG_GEM ]
+            BEN_RNG_GEM	=	ma.patient.RNG_GEM,	            #	nombre entier           # FOREIGN KEY: IR_BEN_R [ BEN_NIR_PSA, BEN_RNG_GEM ]
         
             ###### identification des acteurs de santé (EXE: executant, PRE: prescripteur, MTT: medecin traitant) ######
             ETB_PRE_FIN	=	self.etablissement.id,	         #	chaîne de caractères    # FOREIGN KEY:      BE_IDE_R [ IDE_ETA_NU8 ]
-            PFS_EXE_NUM	=	d.provider.id,	     #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
+            PFS_EXE_NUM	=	ma.provider.id,	     #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
             PFS_EXE_NUMC	=	"",	            #	
-            PFS_PRE_NUM	=	d.prescriber.id,	                    #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
+            PFS_PRE_NUM	=	ma.prescriber.id,	                    #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
             PFS_PRE_NUMC	=	"",	                    #	
-            PRS_MTT_NUM	=	d.patient.MTT.id,	                    #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
+            PRS_MTT_NUM	=	ma.patient.MTT.id,	                    #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
             PRS_MTT_NUMC	=	"",	            #	
         
-            PSE_ACT_NAT	=	d.code_nature,	       #	nombre entier // Nature d'activité du professionnel de santé exécutant  IR_ACT_V[PFS_ACT_NAT], 50: Pharmacie d'officine
+            PSE_ACT_NAT	=	ma.code_nature,	       #	nombre entier // Nature d'activité du professionnel de santé exécutant  IR_ACT_V[PFS_ACT_NAT], 50: Pharmacie d'officine
         
-            BEN_RES_COM	=	d.patient.City,	#	chaîne de caractères        #Code Commune (Bénéficiaire)
-            BEN_RES_DPT	=	d.patient.Dpt,	#	chaîne de caractères        #Code Département (Bénéficiaire)
-            BEN_SEX_COD	=	int(d.patient.Sex),	    #	nombre entier      #Code Sexe (Bénéficiaire)
-            BEN_NAI_ANN	=	d.patient.BD.year,	#	année                       #Annee de naissance du bénéficiaire
+            BEN_RES_COM	=	ma.patient.City,	#	chaîne de caractères        #Code Commune (Bénéficiaire)
+            BEN_RES_DPT	=	ma.patient.Dpt,	#	chaîne de caractères        #Code Département (Bénéficiaire)
+            BEN_SEX_COD	=	int(ma.patient.Sex),	    #	nombre entier      #Code Sexe (Bénéficiaire)
+            BEN_NAI_ANN	=	ma.patient.BD.year,	#	année                       #Annee de naissance du bénéficiaire
             BEN_AMA_COD	=	1000,	#	nombre entier
             BEN_CDI_NIR	=	"99",	#	chaîne de caractères
             BEN_CMU_CAT	=	7,	#	nombre entier
             BEN_CMU_ORG	=	"01C731032",	#	chaîne de caractères
-            BEN_CMU_TOP	=	"VotlKZM",	#	nombre entier
-            BEN_DCD_AME	=	"KPMkOEFVRfdlEiDRpo",	#	année et mois
-            BEN_DCD_DTE	=	datetime(1874,5,24,0,0,0),	#	date
+            BEN_CMU_TOP	=	"0",	#	nombre entier //beneficiaire CMU=89, 0=Non CMU
+            BEN_DCD_AME	=	"000101",	#	année et mois de décès (en texte YYYYMM)
+            BEN_DCD_DTE	=	datetime(1,1,1,0,0,0),	#	date de décès
             BEN_EHP_TOP	=	1,	#	nombre entier
             BEN_IAT_CAT	=	"06",	#	chaîne de caractères
             BEN_PAI_CMU	=	1,	#	nombre entier           
@@ -358,28 +362,29 @@ class simDB(simulation):
             ORG_AFF_BEN	=	"01C731221",	#	chaîne de caractères
             PRS_REJ_TOP	=	"zGijEbx",	#	nombre entier
             
-            EXE_SOI_DTD	=	d.date_debut,	#	date            // Date de début d'exécution des soins
-            EXE_SOI_DTF	=	d.date_fin,	#	date            // Date de fin d'exécution des soins
-            EXE_SOI_AMD	=	datetime(1874,5,21,0,0,0),	#	année et mois
-            EXE_SOI_AMF	=	datetime(1874,5,23,0,0,0),	#	année et mois
-            PRE_PRE_AMD	=	datetime(1874,5,23,0,0,0),	#	année et mois
-            PRE_PRE_DTD	=	datetime(1874,5,22,0,0,0),	#	date
-            PRS_GRS_DTD	=	datetime(1874,5,21,0,0,0),	#	date
-            PRS_HOS_AMD	=	datetime(1874,5,25,0,0,0),	#	année et mois
-            PRS_HOS_DTD	=	datetime(1874,5,25,0,0,0),	#	date
-            BSE_REM_BSE	=	57053162514.54,	#	nombre réel
-            BSE_REM_MNT	=	14163026907.67,	#	nombre réel
-            BSE_REM_PRU	=	65015360547174.9,	#	nombre réel
-            BSE_REM_SGN	=	9,	#	nombre entier
+            EXE_SOI_DTD	=	ma.date_debut,	#	date            // Date de début d'exécution des soins
+            EXE_SOI_DTF	=	ma.date_fin,	#	date            // Date de fin d'exécution des soins
+            EXE_SOI_AMD	=	datetime(1,1,1,0,0,0),	#	année et mois
+            EXE_SOI_AMF	=	datetime(1,1,1,0,0,0),	#	année et mois
+            PRE_PRE_AMD	=	datetime(1,1,1,0,0,0),	#	année et mois
+            PRE_PRE_DTD	=	datetime(1,1,1,0,0,0),	#	date de prescription
+            PRS_GRS_DTD	=	datetime(1,1,1,0,0,0),	#	date, date présumé de grossesse
+            PRS_HOS_AMD	=	datetime(1,1,1,0,0,0),	#	année et mois, date début hospitalisation
+            PRS_HOS_DTD	=	datetime(1,1,1,0,0,0),	#	date
+            BSE_REM_BSE	=	0.00,	#	nombre réel
+            BSE_REM_MNT	=	0.00,	#	nombre réel
+            BSE_REM_PRU	=	0.00,	#	nombre réel
+            BSE_REM_SGN	=	1,	#	nombre entier Signe du remboursement, IR_SNG_V
             CPL_REM_BSE	=	78090389879.25,	#	nombre réel
             CPL_REM_MNT	=	41950861634.87,	#	nombre réel
             CPL_REM_PRU	=	81140362630858.48,	#	nombre réel
             CPL_REM_SGN	=	0,	#	nombre entier
             PRS_ACT_CFT	=	661328942.45,	#	nombre réel
             PRS_ACT_COG	=	153215936.9,	#	nombre réel
-            PRS_ACT_NBR	=	10974,	#	nombre réel
-            PRS_ACT_QTE	=	58618,	#	nombre réel
-            PRS_DEP_MNT	=	49096238752.38,	#	nombre réel
+            PRS_ACT_NBR	=	0,	#	nombre réel Dénombrement signé d'actes (pour les indemnités journalières)
+            PRS_ACT_QTE	=	0,	#	nombre réel Quantité signé d'actess
+            
+            PRS_DEP_MNT	=	0.0,	#	nombre réel, montant déplacemnt
             PRS_ETA_RAC	=	74790551649.64,	#	nombre réel
             PRS_PAI_MNT	=	91738548395.16,	#	nombre réel
             RGO_MOD_MNT	=	90206152481.25,	#	nombre réel
@@ -395,9 +400,9 @@ class simDB(simulation):
             CPL_FJH_TYP	=	2,	#	nombre entier
             CPL_MAJ_TOP	=	78,	#	nombre entier
             CPL_PRS_NAT	=	5206,	#	nombre entier
-            DPN_QLF	=	50,	#	nombre entier
-            DRG_MOD	=	99,	#	nombre entier
-            DRG_NAT	=	33,	#	nombre entier
+            DPN_QLF	=	50,	#	nombre entier mvt liqudation
+            DRG_MOD	=	1,	#	nombre entier voir IR_MOD_V, mode de règlement, 1=Virement bancaire
+            DRG_NAT	=	10,	#	nombre entier voir IR_DRG_V, 10=Tier Payant
             EXE_LIE_COD	=	8,	#	nombre entier
             EXO_MTF	=	44,	#	nombre entier
             IJR_EMP_NUM	=5866418702621912,	#	nombre entier
@@ -408,7 +413,7 @@ class simDB(simulation):
         
             PRS_CRD_OPT	=	4,	#	nombre entier
             PRS_DPN_QLP	=	12,	#	nombre entier
-            PRS_NAT_REF	=	d.code_pres,	#	nombre entier // Code de la Prestations de référence IR_NAT_V[PRS_NAT]
+            PRS_NAT_REF	=	ma.code_pres,	#	nombre entier // Code de la Prestations de référence IR_NAT_V[PRS_NAT]
             PRS_OPS_TRF	=	0,	#	nombre entier
             PRS_PDS_QCP	=	2,	#	nombre entier
             PRS_PDS_QTP	=	99,	#	nombre entier
@@ -454,6 +459,69 @@ class simDB(simulation):
             CPL_REM_TAU	=	6695907.79,	#	nombre réel
             PRS_QTT_MAJ	=	7460	#	nombre entier Quantité de majorations
         )
+        return prestation
+    
+    def createInsert_MedicalAct(self, Base, p, ma):
+        """
+        Insertion in Base of the drug delivery for patient p
+        - Base ORM database model
+        - d DrugDelivery
+        - p Patient
+        """
+        prestation = self.createPRS(Base,p,ma)
+        #Création d'une entrée d'un acte médical en ville
+        delivrance_acte = Base.classes.ER_CAM_F(
+            CAM_PRS_IDE	=	ma.code_ccam,	#	chaîne de caractères	Code CCAM de l'acte médical
+            CAM_TRT_PHA	=	ma.treatmentphase,	#	nombre entier	Phase de traitement
+            CAM_ACT_COD	=	ma.activitycode,	#	chaîne de caractères	Code activite
+            
+            CAM_ASS_COD	=	"4",	#	chaîne de caractères	Code association
+            CAM_ACT_PRU	=	0,#931082.87,	#	nombre réel	Prix unitaire CCAM de l'acte médical
+            CAM_CAB_IND	=	"",	#	chaîne de caractères	Top supplément de charge en cabinet
+            CAM_DOC_EXT	=	"",	#	chaîne de caractères	Extension documentaire
+            CAM_MOD_COD	=	"",	#	chaîne de caractères	Codes modificateurs
+            CAM_ORD_NUM	=	177,	#	nombre entier	Numéro d'ordre de la prestation affinée CCAM
+            CAM_QUA_DEN	=	"",	#	chaîne de caractères	Localisation dentaire
+            CAM_REM_BSE	=	0.0,	#	nombre réel	Base de remboursement de la CCAM
+            CAM_REM_COD	=	"kkwEGtaeDpklQOqlbh",	#	chaîne de caractères	Code remboursement exceptionnel
+            ORG_CLE_NEW	=	"01C682674",	#	chaîne de caractères	Code de l'organisme de liquidation
+        
+            CAM_MI4_MNT	=	553941022.5,	#	nombre réel	Montant Minoration due à association sur Modificateur4
+            CAM_MM4_MNT	=	379098525.43,	#	nombre réel	Montant Majoration Modificateur4
+            CAM_GRI_TAR	=	"oBHGsDvOoCCJs",	#	chaîne de caractères	Grille tarifaire
+            CAM_SUP_MNT	=	154287578.13,	#	nombre réel	Montant supplément de Charge en Cabinet
+            CAM_MI1_MNT	=	545851429.93,	#	nombre réel	Montant Minoration due à association sur Modificateur1
+            CAM_NRM_MNT	=	259371469.95,	#	nombre réel	Montant Non Rmb du à annulation du tarif pr acte non rmb
+            CAM_MI3_MNT	=	296249161.67,	#	nombre réel	Montant Minoration due à association sur Modificateur3
+            CAM_MM2_MNT	=	927480538.62,	#	nombre réel	Montant Majoration Modificateur2
+            CAM_MM3_MNT	=	185575274.82,	#	nombre réel	Montant Majoration Modificateur3
+            CAM_RED_MNT	=	9,	#	nombre réel	Montant réduction Tarif due à praticien non conventionné
+            CAM_MPU_MNT	=	106738202.26,	#	nombre réel	Montant Minoration due à association sur PU de l' Acte
+            CAM_MM1_MNT	=	642689915.79,	#	nombre réel	Montant Majoration Modificateur1
+            CAM_MI2_MNT	=	202202293.43,	#	nombre réel	Montant Minoration due à association sur Modificateur2
+                
+            ## Référence à l'enregistrement de la prestation
+            DCT_ORD_NUM	=	prestation.DCT_ORD_NUM,
+            FLX_DIS_DTD	=	prestation.FLX_DIS_DTD,
+            FLX_EMT_NUM	=	prestation.FLX_EMT_NUM,
+            FLX_EMT_ORD	=	prestation.FLX_EMT_ORD,
+            FLX_EMT_TYP	=	prestation.FLX_EMT_TYP,
+            FLX_TRT_DTD	=	prestation.FLX_TRT_DTD,
+            ORG_CLE_NUM	=	prestation.ORG_CLE_NUM,
+            PRS_ORD_NUM	=	prestation.PRS_ORD_NUM,
+            REM_TYP_AFF	=	prestation.REM_TYP_AFF
+        )
+        return [prestation, delivrance_acte]
+
+    def createInsert_DrugDelivery(self, Base, p, d):
+        """
+        Insertion in Base of the drug delivery for patient p
+        - Base ORM database model
+        - d DrugDelivery
+        - p Patient
+        """
+        
+        prestation = self.createPRS(Base,p,d)
         
         #Création d'une entrée dans la table ER_PHA pour une entrée en correspondante en pharmacie
         delivrance_medoc = Base.classes.ER_PHA_F(

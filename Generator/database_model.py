@@ -75,6 +75,7 @@ class Patient:
         self.MTT=None #médecin traitant
         
         self.drugdeliveries=[]
+        self.visits=[]
         self.medicalacts=[]
         
         
@@ -91,6 +92,12 @@ class Etablissement:
 class CareDelivery:
     """
     - This class correspond to the concepts of the PRS table
+    
+    A caredelivery is characterized by:
+        - a date (start and finish)
+        - patient
+        - a care provider
+        - a prescriber (by default is it the usual general practitioner patient)
     
     The table key are not really related to the care ... and does not seems really interesting to represent here!
     """
@@ -120,7 +127,7 @@ class DrugDelivery(CareDelivery):
     """
     class associated to the ER_PHA table
     """
-    def __init__(self,patient, provider, prescriber=None):
+    def __init__(self, CIP, patient, provider, prescriber=None):
         if provider.catpro!=50:
             warnings.warn("DrugDelivery but not a pharmacy")
         super().__init__(patient, provider, prescriber)
@@ -128,7 +135,7 @@ class DrugDelivery(CareDelivery):
         self.code_pres=6012
         self.quantity=1
         self.sid=1 #delivery sequence order
-        self.cip13=None #CIP code of the drug
+        self.cip13=CIP #CIP code of the drug
         
     def __str__(self):
         return "patient ("+self.patient.NIR+") gets drug " + str(self.cip13)+" at date "+self.date_debut.isoformat()+"."
@@ -145,6 +152,43 @@ class DrugDeliverySequence(CareDelivery):
         self.cip13=None #CIP code of the drug
         self.number=1
         self.frequency=30 #
-    
 
+class MedicalVisit(CareDelivery):
+    """
+    A medical visit corresponds to a outpatient medical visit
+    -> a medical visit does not have necessarily related medical acts
+    """
+    def __init__(self, patient, provider, prescriber=None):
+        super().__init__(patient, provider, prescriber)
+        self.code_pres=1111     # 1111: consultation côté C
+        self.code_nature=0      # 0: non-renseigné
         
+        #self.actes=[]   #list of MedicalActs qui ont été délivrés pdt la consutation [?]
+
+
+class MedicalAct(CareDelivery):
+    """
+    A medical act correspond to a outpatient medical acts (including dental cares)
+    
+    KWIKLY: le code descriptif détaillé d’un acte CCAM est constitué du triplet CAM_PRS_IDE (identifiant du code acte CCAM) + CAM_ACT_COD (code activité) + CAM_TRT_PHA (code phase de traitement).
+    + https://sofia.medicalistes.fr/spip/IMG/pdf/codage_ccam.pdf
+    """
+    def __init__(self, CCAM, patient, provider, prescriber=None):
+        super().__init__(patient, provider, prescriber)
+        self.code_nature=0 #0: non-renseigner
+        self.code_pres = 0 #0: Sans objet ... à mettre en relation avec le code acte
+        self.code_ccam = CCAM
+        
+        self.activitycode = "1"
+        """
+        1 pour l’acte principal,
+        2 pour le2ème geste éventuel d'un même acte,
+        3 pour le 3ème geste éventuel d'un même acte,
+        4 pour le geste d’anesthésie générale ou locorégionale,
+        5 pourla surveillance d'une circulation extracorporelle
+        
+        Un même acte de chirurgie avec anesthésie à 2 entrées dans la base (même code CCAM)
+        """
+        
+        self.treatmentphase = 0
+        #defaut 0, 

@@ -6,7 +6,7 @@ Created on Sun May  3 10:44:59 2020
 @author: tguyet
 """
 
-from database_model import Patient, GP, Specialist, Provider, DrugDelivery, Etablissement
+from database_model import Patient, GP, Specialist, Provider, DrugDelivery, Etablissement, MedicalVisit, MedicalAct
 import sqlalchemy as sa
 import pandas as pd
 import numpy as np
@@ -204,9 +204,9 @@ class DrugsDeliveryFactory:
         - p: a patient to which generate a drug delivery
         """
         
-        #generate a drug delivery
-        dd=DrugDelivery(p, rd.choice(self.Pharmacies))
-        dd.cip13 = rd.choice(self.cips)
+        #generate a drug delivery with a random CIP
+        cip13 = rd.choice(self.cips)
+        dd=DrugDelivery(cip13, p, rd.choice(self.Pharmacies))
         
         dd.date_debut=self.context.generate_date(begin = p.BD, end=date(2020,1,1))
         dd.date_fin=dd.date_debut
@@ -223,10 +223,62 @@ class DrugsDeliveryFactory:
         """
         for i in range(rd.randint(maxdd)):
             self.generate_one(p)
-            
+
 
 class EtablissementFactory:
     def __init__(self,con):
         self.context=con
     def generate(self):
         return Etablissement()
+
+
+class VisitFactory:
+    def __init__(self, con, Specialists):
+        self.context=con
+        
+    def generate_one(self, p):
+        """
+        - p patient to which 
+        """
+        visit= MedicalVisit(p,p.MTT)
+        
+        visit.date_debut=self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+        visit.date_fin=visit.date_debut
+        
+        p.visits.append(visit)
+        
+    def generate(self, p, nbs=30):
+        for i in range(nbs):
+            self.generate_one(p)
+
+
+class ActFactory:
+    def __init__(self, con, Specialists):
+        self.context=con
+        self.spes = Specialists
+        
+        cur = self.context.conn.cursor()
+        cur.execute("SELECT CAM_PRS_IDE_COD FROM IR_CCAM_V54;")
+        ccams = cur.fetchall()
+        cur.close()
+        self.ccams = [c[0] for c in ccams]
+    
+    def generate_one(self, p):
+        """
+        - p patient
+        """
+        ccam = rd.choice(self.ccams)
+        spe = rd.choice(self.spes)
+        mact= MedicalAct(ccam, p,spe)
+        mact.date_debut=self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+        mact.date_fin=mact.date_debut
+        
+        p.medicalacts.append(mact)
+
+    def generate(self, p, nbs=30):
+        """
+        - p patient
+        - nbs number of act to generate for a patient
+        """
+        for i in range(nbs):
+            self.generate_one(p)
