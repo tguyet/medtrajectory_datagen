@@ -1,0 +1,108 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM_EPMSI",
+            "description": "N° FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_TWO",
+            "description": "Second n° FINESS",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "IPP_IRR_CRY",
+            "description": "Cryptage irreversible de l'IPP",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SEJ_IDT",
+            "description": "Identifiant de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RIP_NUM",
+            "description": "N° séquentiel de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SEQ_SEQ_NUM",
+            "description": "N° séquentiel de séquence au sein du séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ASS_DGN",
+            "description": "Diagnostics et facteurs associés",
+            "type": "string",
+            "nomenclature": "MS_CIM_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_RIPaa_nnRSAD",
+    "title": "Diagnostic associé à la séquence",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI RIM-P",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM_EPMSI",
+                "RIP_NUM"
+            ],
+            "reference": {
+                "resource": "T_RIPaa_nnFB",
+                "fields": [
+                    "ETA_NUM_EPMSI",
+                    "RIP_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2007",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

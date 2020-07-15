@@ -1,0 +1,152 @@
+{
+    "fields": [
+        {
+            "name": "TYP_ART",
+            "description": "Type d'enregistrement",
+            "type": "string",
+            "nomenclature": "MS_ENR_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_EPMSI",
+            "description": "Numéro FINESS de l’entité juridique",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_TWO",
+            "description": "Numéro FINESS de l’établissement (site géographique)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RIP_NUM",
+            "description": "Numéro séquentiel de séjour (idem RPSA)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FAC_NUM",
+            "description": "N° séquentiel de facture",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PSH_MDT",
+            "description": "Mode de traitement",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PSH_DMT",
+            "description": "Discipline de prestation (ex DMT)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ANN_MOI",
+            "description": "Mois et année",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DEL_DAT_ENT",
+            "description": "délai par rapport à la date d'entrée",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ACT_NBR",
+            "description": "Quantité acte",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NABM_COD",
+            "description": "Code acte",
+            "type": "string",
+            "nomenclature": "IR_BIO_R",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_RIPaa_nnFL",
+    "title": "actes de Biologie",
+    "description": "Champ : Privé",
+    "produit": "PMSI RIM-P",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM_EPMSI",
+                "RIP_NUM"
+            ],
+            "reference": {
+                "resource": "T_RIPaa_nnFB",
+                "fields": [
+                    "ETA_NUM_EPMSI",
+                    "RIP_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2012",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

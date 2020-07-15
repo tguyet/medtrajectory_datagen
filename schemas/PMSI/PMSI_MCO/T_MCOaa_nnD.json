@@ -1,0 +1,91 @@
+{
+    "fields": [
+        {
+            "name": "ASS_DGN",
+            "description": "Diagnostic associé",
+            "type": "string",
+            "nomenclature": "MS_CIM_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DGN_ASS_NUM",
+            "description": "Numero de diag par couple eta_num rsa_num",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2014",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM",
+            "description": "Numéro FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSA_NUM",
+            "description": "N° d'index du RSA ",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSS_NUM",
+            "description": "Numéro de version du format du RSA",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_MCOaa_nnD",
+    "title": "Diagnostic associé",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI MCO",
+    "missingValues": [
+        ""
+    ],
+    "primaryKey": [
+        "ETA_NUM",
+        "RSA_NUM",
+        "DGN_ASS_NUM"
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RSA_NUM"
+            ],
+            "reference": {
+                "resource": "T_MCOaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RSA_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2006",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

@@ -1,0 +1,137 @@
+{
+    "fields": [
+        {
+            "name": "ANN",
+            "description": "Année période",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": [
+                "2012",
+                "2013"
+            ]
+        },
+        {
+            "name": "DAT_DEB_CON",
+            "description": "Date de début de la convention",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": [
+                "2012",
+                "2013"
+            ]
+        },
+        {
+            "name": "DAT_FIN_CON",
+            "description": "Date de fin de la convention",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": [
+                "2012",
+                "2013"
+            ]
+        },
+        {
+            "name": "ETA_NUM_ESMS",
+            "description": "N° FINESS ESMS",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_EPMSI",
+            "description": "N° FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": [
+                "2012",
+                "2013"
+            ]
+        },
+        {
+            "name": "FFT_COD",
+            "description": "Code forfait de soins",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": [
+                "2012",
+                "2013"
+            ]
+        },
+        {
+            "name": "FIC_TYP",
+            "description": "Type de fichier",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": [
+                "2012",
+                "2013"
+            ]
+        },
+        {
+            "name": "MOI",
+            "description": "N° période (mois)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2014",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_TYP_ESMS",
+            "description": "Type d'établissement",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2015",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_HADaa_nnEHPA",
+    "title": "Table des conventions HAD-EHPA",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI HAD",
+    "missingValues": [
+        ""
+    ],
+    "primaryKey": "ETA_NUM_EPMSI",
+    "history": {
+        "dateCreated": "2011",
+        "dateDeleted": "2017",
+        "dateMissing": [
+            "2013",
+            "2014"
+        ]
+    }
+}

@@ -1,0 +1,163 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM_EPMSI",
+            "description": "N° FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_GEO",
+            "description": "Numéro FINESS de l’établissement (code géographique)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": [
+                "2007",
+                "2008",
+                "2009",
+                "2010",
+                "2011",
+                "2012",
+                "2013",
+                "2014",
+                "2015",
+                "2016"
+            ]
+        },
+        {
+            "name": "ETE_GHS_NUM",
+            "description": "GHT_NUM en numérique",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "GHT_NBJ",
+            "description": "Groupage PAPRICA : nombre de jours",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "GHT_NUM",
+            "description": "Groupage PAPRICA : n° du GHT",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PAP_GRP_GHPC",
+            "description": "Groupage PAPRICA : n° du GHPC",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PAP_GRP_RET",
+            "description": "Groupage PAPRICA : code retour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PAP_GRP_VER",
+            "description": "Groupage établissement : version de la classification",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHAD_NUM",
+            "description": "N° séquentiel de séjour d'HAD",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SEQ_NUM",
+            "description": "N° de la séquence dans le séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SSEQ_NUM",
+            "description": "N° de la sous-séquence",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_HADaa_nnGRP",
+    "title": "Table des GHT et des GHPC (groupage paprica)",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI HAD",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM_EPMSI",
+                "RHAD_NUM"
+            ],
+            "reference": {
+                "resource": "T_HADaa_nnB",
+                "fields": [
+                    "ETA_NUM_EPMSI",
+                    "RHAD_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2006",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

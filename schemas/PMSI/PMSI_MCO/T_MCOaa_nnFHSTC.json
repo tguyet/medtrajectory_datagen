@@ -1,0 +1,218 @@
+{
+    "fields": [
+        {
+            "name": "ACH_PRU_TTC",
+            "description": "Prix d'achat unitaire TTC",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DEL_DAT_ENT",
+            "description": "Délai par rapport à la date d'entrée",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2013",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ECRT_IND_MNT",
+            "description": "Montant total de l'écart indemnisable",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ECRT_IND_MTU",
+            "description": "Montant unitaire de l'écart indemnisable",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_ANN",
+            "description": "Année début de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_MOI",
+            "description": "Mois de début de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM",
+            "description": "Numéro FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_GEO",
+            "description": "Numéro FINESS géographique",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FAC_MNT",
+            "description": "Montant total facturé TTC",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FRACT_COE",
+            "description": "Coefficient de fractionnement",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NUM_FAC",
+            "description": "N° Facture séquentiel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "QUA",
+            "description": "Quantité",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSF_TYP",
+            "description": "Type de format RSF (1 : ancien, 2 : nouveau)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SEQ_NUM",
+            "description": "N° séquentiel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "TYP_ART",
+            "description": "Type d'enregistrement",
+            "type": "string",
+            "nomenclature": "MS_ENR_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "UCD_COD",
+            "description": "Code UCD",
+            "type": "string",
+            "nomenclature": "NU_UCD_R",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "UCD_UCD_COD",
+            "description": "Code UCD (0 à gauche)",
+            "type": "string",
+            "nomenclature": "NU_UCD_R",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_MCOaa_nnFHSTC",
+    "title": "ACE medicament en sus",
+    "description": "Champ : Public",
+    "produit": "PMSI MCO",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "SEQ_NUM"
+            ],
+            "reference": {
+                "resource": "T_MCOaa_nnFASTC",
+                "fields": [
+                    "ETA_NUM",
+                    "SEQ_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2009",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

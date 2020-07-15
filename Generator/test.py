@@ -9,7 +9,7 @@ Created on Sun May  3 11:07:38 2020
 from data_factory import FactoryContext, PatientFactory, PhysicianFactory, PharmacyFactory, DrugsDeliveryFactory
 import os
 
-os.chdir("/home/tguyet/Progs/SNDS/medtrajectory_datagen/Generator")
+os.chdir("/home/tguyet/Progs/medtrajectory_datagen/Generator")
 
 
 context=FactoryContext()

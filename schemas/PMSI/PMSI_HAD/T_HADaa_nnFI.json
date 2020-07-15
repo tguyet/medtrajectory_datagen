@@ -1,0 +1,163 @@
+{
+    "fields": [
+        {
+            "name": "DEL_DAT_ENT",
+            "description": "delai par rapport a date entree",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_ANN",
+            "description": "Année de la date début de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_MOI",
+            "description": "Mois de la date début de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_EPMSI",
+            "description": "N° FINESS ePMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_GEO",
+            "description": "Numéro FINESS  géographique",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETB_NUM",
+            "description": "Etablissement de transfert ou de retour ou lieu d'exécution de l'acte",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FAC_NUM",
+            "description": "N° séquentiel de facture (idem RAPSS)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHAD_NUM",
+            "description": "Numéro séquentiel d'entrée (idem RAPSS)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SEJ_FIN",
+            "description": "Nature d'interruption ou de fin de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SOR_ANN",
+            "description": "Année de la date fin de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SOR_MOI",
+            "description": "Mois de la date fin de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "TYP_ART",
+            "description": "Type d'enregistrement",
+            "type": "string",
+            "nomenclature": "MS_ENR_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_HADaa_nnFI",
+    "title": "Table FI : Table des RSFA interruption de séjour des établissements ex-OQN",
+    "description": "Champ : Privé",
+    "produit": "PMSI HAD",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM_EPMSI",
+                "RHAD_NUM"
+            ],
+            "reference": {
+                "resource": "T_HADaa_nnB",
+                "fields": [
+                    "ETA_NUM_EPMSI",
+                    "RHAD_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2016",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

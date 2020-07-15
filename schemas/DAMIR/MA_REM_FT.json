@@ -1,0 +1,1991 @@
+{
+    "name": "MA_REM_FT",
+    "title": "",
+    "produit": "DAMIR",
+    "champ": "",
+    "history": {
+        "dateCreated": "",
+        "dateDeleted": "",
+        "dateMissing": []
+    },
+    "observation": "",
+    "missingValues": [
+        ""
+    ],
+    "fields": [
+        {
+            "name": "PRE_INS_DPT",
+            "description": "Département du professionnel de santé prescripteur",
+            "type": "string",
+            "length": "3",
+            "nomenclature": "IR_DPT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 3
+            }
+        },
+        {
+            "name": "FLX_DIS_DTD",
+            "description": "Date de mise à disposition des données",
+            "type": "date",
+            "length": "8",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "date"
+        },
+        {
+            "name": "ORG_CLE_NUM",
+            "description": "organisme de liquidation des prestations (avant fusion des caisses)",
+            "type": "string",
+            "length": "9",
+            "nomenclature": "IR_ORG_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 9
+            }
+        },
+        {
+            "name": "DDP_COD",
+            "description": "Code de la discipline de Prestations (ou discipline médico tarifaire)",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_DDP_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "ETP_CAT_COD",
+            "description": "Catégorie d'établissement prescripteur",
+            "type": "integer",
+            "length": "4",
+            "nomenclature": "IR_CET_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000
+            }
+        },
+        {
+            "name": "FLT_DEP_MNT",
+            "description": "Montant du dépassement de la prestation",
+            "type": "number",
+            "length": "17,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Les indicateurs pré-filtrés sont à alimenter uniquement si le type de remboursement est égal à  zéro, sinon les alimenter par la valeur  zéro.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000000000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "PRS_REM_MNT",
+            "description": "Montant remboursé",
+            "type": "number",
+            "length": "13,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "PSE_STJ_COD",
+            "description": "Mode d'exercice du professionnel de santé exécutant",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_SJP_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "MTM_NAT",
+            "description": "Modulation du ticket modérateur",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_MTM_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        },
+        {
+            "name": "PSE_CNV_COD",
+            "description": "Code convention du professionnel de santé exécutant",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_CNV_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        },
+        {
+            "name": "EXF_ANN_MOI",
+            "description": "Année Mois fin de soin exécution",
+            "type": "string",
+            "length": "6",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 6
+            }
+        },
+        {
+            "name": "AGE_BEN_COD",
+            "description": "Age du bénéficiaire au moment des Soins",
+            "type": "integer",
+            "length": "4",
+            "nomenclature": "IR_AGE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000
+            }
+        },
+        {
+            "name": "EXO_MTF",
+            "description": "Motif d'exonération du ticket modérateur",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_EXO_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "PSP_STJ_COD",
+            "description": "Mode d'exercice du professionnel de santé prescripteur",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_SJP_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "PSP_CAT_COD",
+            "description": "Catégorie du PS prescripteur",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_CAT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "* Si le N° du professionnel de santé est renseigné (différent de Null et zéro), la catégorie du professionnel de santé correspond à la troisième composante du N°  de PS.\n* Si le N° de PS nest pas renseigné, \n         - Si le N° détablissement est renseigné (différent de Null), la catégorie du professionnel de santé correspond à la troisième composante du N°  détablissement \n         - Sinon, alimenter la catégorie par la valeur par défaut correspondante.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "TOP_PS5_TRG",
+            "description": "Top PS5 Tous Régimes",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Ce Top est à positionner à 1 si :\n- Il ne sagit pas de carences : exclure les natures de prestation de référence - PRS_NAT_REF égales à 6011 et 6012.   \n- Les prestations ne sont pas liquidées en AME : le type de remboursement - PRS_REM_TYP doit être différent de 07\n- Il ne sagit pas de la CMU complémentaire : le type de remboursement - PRS_REM_TYP doit être différent de 05 et 06.\n- Il ne sagit pas lACS : le type de remboursement - PRS_REM_TYP doit être différent de  10.\n- Il ne sagit pas des prestations pour info des établissements : le qualificatif de la dépense - DPN_QLF doit être différent de 71. \n\nSinon, il sera alimenté à zéro.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "FLT_REM_MNT",
+            "description": "Montant versé - remboursé (Part de base uniquement)",
+            "type": "number",
+            "length": "15,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Les indicateurs pré-filtrés sont à alimenter uniquement si le type de remboursement est égal à  zéro, sinon les alimenter par la valeur  zéro.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000000000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "ETE_IND_TAA",
+            "description": "Indicateur TAA",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_TAA_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        },
+        {
+            "name": "PRS_REM_TAU",
+            "description": "Taux de remboursement réel (régime obligatoire)",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "PRS_NAT",
+            "description": "Nature de prestation",
+            "type": "integer",
+            "length": "5",
+            "nomenclature": "IR_NAT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000
+            }
+        },
+        {
+            "name": "MFT_COD",
+            "description": "Code du mode de fixation des tarifs",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_MFT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "ETP_STJ_COD",
+            "description": "Statut juridique de l'établissement prescripteur",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_SJE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "PSE_SPE_COD",
+            "description": "Spécialite médicale du professionnel de santé exécutant",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_SPE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "DRG_AFF_NAT",
+            "description": "Code affiné du destinataire du règlement",
+            "type": "string",
+            "length": "2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 2
+            }
+        },
+        {
+            "name": "FLT_ACT_NBR",
+            "description": "Dénombrement de la prestation",
+            "type": "integer",
+            "length": "12",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Les indicateurs pré-filtrés sont à alimenter uniquement si le type de remboursement est égal à  zéro, sinon les alimenter par la valeur  zéro.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000000000000
+            }
+        },
+        {
+            "name": "BEN_SEX_COD",
+            "description": "Code sexe du bénéficiaire",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_SEX_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        },
+        {
+            "name": "DRT_ACS_TOP",
+            "description": "Top bénéficiaire ACS",
+            "type": "string",
+            "length": "1",
+            "nomenclature": "IR_BAC_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 1
+            }
+        },
+        {
+            "name": "MDT_COD",
+            "description": "Code du mode de traitement",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_MDT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "MUT_ORG",
+            "description": "N° SLM d'affiliation",
+            "type": "integer",
+            "length": "4",
+            "nomenclature": "IR_SLM_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "* Si le type démetteur (3ème caractère de lorganisme de liquidation) est égal à M, le N° de mutuelle est extrait de lorganisme de liquidation (position 7 sur une longueur de 3). \n* Sil sagit de mutuelles traitées par une caisse du régime général, le N° de mutuelle est extrait de lorganisme daffiliation (position 7 sur une longueur de 3). \n* Sinon, alimenter le N° de mutuelle par la valeur par défaut correspondante.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000
+            }
+        },
+        {
+            "name": "PRS_ACT_COG",
+            "description": "Coefficient global de l'acte de base",
+            "type": "number",
+            "length": "9,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "FLT_PAI_MNT",
+            "description": "Montant de la dépense de la prestation",
+            "type": "number",
+            "length": "17,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Les indicateurs pré-filtrés sont à alimenter uniquement si le type de remboursement est égal à  zéro, sinon les alimenter par la valeur  zéro.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000000000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "RGM_COD",
+            "description": "Code du petit régime",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_RGM_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "PRS_REM_BSE",
+            "description": "Base de remboursement",
+            "type": "number",
+            "length": "13,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "PRS_NAT_REF",
+            "description": "Code de la Prestations de référence",
+            "type": "integer",
+            "length": "4",
+            "nomenclature": "IR_NAT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000
+            }
+        },
+        {
+            "name": "PSP_SPE_COD",
+            "description": "Spécialité médicale du professionnel de santé prescripteur",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_SPE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "BEN_CMU_TOP",
+            "description": "Top bénéficiaire de la CMU complémentaire",
+            "type": "string",
+            "length": "1",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 1
+            }
+        },
+        {
+            "name": "PSE_ACT_NAT",
+            "description": "Nature d'activité du professionnel de santé exécutant",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_ACT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "EXE_INS_DPT",
+            "description": "Département du professionnel de santé exécutant",
+            "type": "string",
+            "length": "3",
+            "nomenclature": "IR_DPT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 3
+            }
+        },
+        {
+            "name": "ORG_CAI_NUM",
+            "description": "N° Caisse de liquidation pour le RG",
+            "type": "string",
+            "length": "3",
+            "nomenclature": "IR_CAI_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Sil sagit de mutuelles traitées par une caisse du régime général, le N° de caisse est extrait de lorganisme daffiliation (position 4 sur une longueur de 3).\nSinon, sil sagit du régime général (grand régime de lorganisme de liquidation égal à 01), le N° de caisse est extrait de lorganisme de liquidation (position 4 sur une longueur de 3).\nSinon, alimenter le N° de caisse par la valeur par défaut correspondante.",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 3
+            }
+        },
+        {
+            "name": "FLT_ACT_QTE",
+            "description": "Quantité de la prestation",
+            "type": "integer",
+            "length": "12",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Les indicateurs pré-filtrés sont à alimenter uniquement si le type de remboursement est égal à  zéro, sinon les alimenter par la valeur  zéro.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000000000000
+            }
+        },
+        {
+            "name": "BEN_CMU_CAT",
+            "description": "Catégorie d'organisme complémentaire CMU",
+            "type": "string",
+            "length": "1",
+            "nomenclature": "IR_COC_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 1
+            }
+        },
+        {
+            "name": "PRS_PDS_QCP",
+            "description": "Code qualificatif du parcours de soins",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_QPS_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "ETE_CAT_COD",
+            "description": "Catégorie de l'établissement exécutant",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_CET_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "REM_ANN_MOI",
+            "description": "Année Mois de remboursement",
+            "type": "string",
+            "length": "6",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 6
+            }
+        },
+        {
+            "name": "ETP_DPT_COD",
+            "description": "Departement de l'établissement prescripteur",
+            "type": "string",
+            "length": "3",
+            "nomenclature": "IR_DPT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 3
+            }
+        },
+        {
+            "name": "ETE_STJ_COD",
+            "description": "Statut Juridique de l'établissement juridique",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_SJE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "FLT_ACT_COG",
+            "description": "Coefficient Global de la prestation",
+            "type": "number",
+            "length": "13,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Les indicateurs pré-filtrés sont à alimenter uniquement si le type de remboursement est égal à  zéro, sinon les alimenter par la valeur  zéro.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "ASU_NAT",
+            "description": "Nature de l'assurance",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_ASU_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "PRS_ACT_QTE",
+            "description": "Quantité de l'acte de base",
+            "type": "integer",
+            "length": "5",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000
+            }
+        },
+        {
+            "name": "EXD_ANN_MOI",
+            "description": "Année Mois début de soin exécution",
+            "type": "string",
+            "length": "6",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 6
+            }
+        },
+        {
+            "name": "SOI_ANN",
+            "description": "Année de soin PS5",
+            "type": "string",
+            "length": "4",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "* Alimentée avec l'année extraite de la date de début de soins, à lexception de lorthodontie et des cures thermales.\n* Alimentée avec l'année extraite de la date de fin de soins pour lorthodontie et les cures thermales. Si la date de fin de soins n'est pas alimentée (par exemple : '01-01-0001'), alimenter le mois de soin à partir de la date début de soins.\n* Pour les Rentes AT, Pension d'invalidité et Capital décès, l'année de soin est alimentée à zéro.",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 4
+            }
+        },
+        {
+            "name": "ORG_AFF_BEN",
+            "description": "Code de l'organisme d'affiliation",
+            "type": "string",
+            "length": "9",
+            "nomenclature": "IR_ORG_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 9
+            }
+        },
+        {
+            "name": "CPT_ENV_TYP",
+            "description": "Type d'enveloppe",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_ENV_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "RGM_GRG_COD",
+            "description": "Grand régime de liquidation du bénéficiaire",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_RGM_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "PSE_CAT_COD",
+            "description": "Catégorie du PS exécutant",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_CAT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "* Si le N° du professionnel de santé est renseigné (différent de Null et zéro), la catégorie du professionnel de santé correspond à la troisième composante du N°  de PS.\n* Si le N° de PS nest pas renseigné, \n         - Si le N° détablissement est renseigné (différent de Null), la catégorie du professionnel de santé correspond à la troisième composante du N°  détablissement \n         - Sinon, alimenter la catégorie par la valeur par défaut correspondante.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "BEN_QLT_COD",
+            "description": "Qualité du bénéficiaire",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_BEQ_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "PRS_FJH_TYP",
+            "description": "Type de prise en charge Forfait Journalier",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_FJH_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "PRS_DEP_MNT",
+            "description": "Montant global du dépassement",
+            "type": "number",
+            "length": "11,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "ETE_DPT_COD",
+            "description": "Département de l'établissement exécutant",
+            "type": "string",
+            "length": "3",
+            "nomenclature": "IR_DPT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 3
+            }
+        },
+        {
+            "name": "PSP_CNV_COD",
+            "description": "Code convention du professionnel de santé prescripteur",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_CNV_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        },
+        {
+            "name": "BEN_RES_DPT",
+            "description": "Département de résidence du bénéficiaire",
+            "type": "string",
+            "length": "3",
+            "nomenclature": "IR_DPT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 3
+            }
+        },
+        {
+            "name": "BEN_CTA_TYP",
+            "description": "Type de contrat complémentaire",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "PRS_ACT_NBR",
+            "description": "Dénombrement des actes de base",
+            "type": "integer",
+            "length": "5",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000
+            }
+        },
+        {
+            "name": "ETE_TYP_COD",
+            "description": "Code du type de l'établissement exécutant",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_TYE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "TOP_PS5_RG",
+            "description": "Top PS5 Régime Général",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Ce Top est à positionner à 1 si :\n- Les données sont  liquidées par le Régime général : le grand régime de liquidation (deux premiers caractères de lorganisme de liquidation ORG_CLE_NUM)  doit être égal à 01. \n- Les données ne sont pas liquidées pour des affiliés du régime agricole par les CGSS des DOM (sauf Guadeloupe) : Lorganisme daffiliation (deux premiers caractères de lorganisme daffiliation -  ORG_AFF_BEN) doit être différent de 02  MSA lorsque la caisse de liquidation (CAI_NUM) est égale à  972, 973 ou 974.\n- Le grand régime daffiliation est  égal à 01, 91, 92, 93, 94, 95, 96 ou 99 pour les prestations de laide pérenne : PRS_NAT_REF  = 4361, 4362 à 4369. (si le grand régime est différent, le top sera positionné à zéro)\n- Il ne sagit pas de carences : exclure les natures de prestation de référence - PRS_NAT_REF égales à 6011 et 6012.   \n- Les prestations ne sont pas liquidées en AME : le type de remboursement - PRS_REM_TYP doit être différent de 07\n- Il ne sagit pas de la CMU complémentaire : le type de remboursement - PRS_REM_TYP doit être différent de 05 et 06.\n- Il ne sagit pas lACS : le type de remboursement - PRS_REM_TYP doit être différent de 10.\n- Il ne sagit pas des prestations pour info des établissements : le qualificatif de la dépense - DPN_QLF doit être différent de 71.     \nSinon, il sera alimenté à zéro.",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "FLX_EMT_TYP",
+            "description": "Type d'émetteur",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_TYT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "BEN_NAI_ANN",
+            "description": "Année de naissance du bénéficiaire",
+            "type": "string",
+            "length": "4",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 4
+            }
+        },
+        {
+            "name": "SOI_MOI",
+            "description": "Mois de soin PS5",
+            "type": "string",
+            "length": "2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "* Alimenté avec le mois extrait de la date de début de soins, à lexception de lorthodontie et des cures thermales.\n* Alimenté avec le mois extrait de la date de fin de soins pour lorthodontie et les cures thermales. Si la date de fin de soins n'est pas alimentée (par exemple : '01-01-0001'), alimenter le mois de soin à partir de la date début de soins.\n* Pour les Rentes AT, Pension d'invalidité et Capital décès, le mois de soin est alimenté à zéro.",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 2
+            }
+        },
+        {
+            "name": "CPL_COD",
+            "description": "Majorations hors actes CCAM - complément dacte",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_CPA_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        },
+        {
+            "name": "PRS_PAI_MNT",
+            "description": "Montant global de la dépense",
+            "type": "number",
+            "length": "11,2",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000000000,
+                "decimals": 2
+            }
+        },
+        {
+            "name": "DPN_QLF",
+            "description": "Qualificatif de la dépense",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_DEP_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "PRS_REM_TYP",
+            "description": "Type de remboursement",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_TYR_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "FLX_ANN_MOI",
+            "description": "Année et Mois de traitement",
+            "type": "string",
+            "length": "6",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "Extraire lannée et le mois de la date de traitement.",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 6
+            }
+        },
+        {
+            "name": "FLX_EMT_NUM",
+            "description": "numéro d'émetteur du flux",
+            "type": "integer",
+            "length": "4",
+            "nomenclature": "IR_NEM_T",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000
+            }
+        },
+        {
+            "name": "ATT_NAT",
+            "description": "Nature de l'accident du travail",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_ATT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "PSP_ACT_NAT",
+            "description": "Nature d'activite du professionnel de santé prescripteur",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_ACT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "PRS_PPU_SEC",
+            "description": "Code privé - public de la Prestations",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_PPU_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        }
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "PRE_INS_DPT"
+            ],
+            "reference": {
+                "resource": "IR_DPT_V",
+                "fields": [
+                    "GEO_DPT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ORG_CLE_NUM"
+            ],
+            "reference": {
+                "resource": "IR_ORG_V",
+                "fields": [
+                    "ORG_NUM"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "DDP_COD"
+            ],
+            "reference": {
+                "resource": "IR_DDP_V",
+                "fields": [
+                    "DDP_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETP_CAT_COD"
+            ],
+            "reference": {
+                "resource": "IR_CET_V",
+                "fields": [
+                    "ETB_CAT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSE_STJ_COD"
+            ],
+            "reference": {
+                "resource": "IR_SJP_V",
+                "fields": [
+                    "PFS_STJ_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "MTM_NAT"
+            ],
+            "reference": {
+                "resource": "IR_MTM_V",
+                "fields": [
+                    "MTM_NAT"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSE_CNV_COD"
+            ],
+            "reference": {
+                "resource": "IR_CNV_V",
+                "fields": [
+                    "PFS_CNV_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "AGE_BEN_COD"
+            ],
+            "reference": {
+                "resource": "IR_AGE_V",
+                "fields": [
+                    "AGE_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "EXO_MTF"
+            ],
+            "reference": {
+                "resource": "IR_EXO_V",
+                "fields": [
+                    "EXO_MTF"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSP_STJ_COD"
+            ],
+            "reference": {
+                "resource": "IR_SJP_V",
+                "fields": [
+                    "PFS_STJ_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSP_CAT_COD"
+            ],
+            "reference": {
+                "resource": "IR_CAT_V",
+                "fields": [
+                    "PFS_CAT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_IND_TAA"
+            ],
+            "reference": {
+                "resource": "IR_TAA_V",
+                "fields": [
+                    "TAA_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PRS_NAT"
+            ],
+            "reference": {
+                "resource": "IR_NAT_V",
+                "fields": [
+                    "PRS_NAT"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "MFT_COD"
+            ],
+            "reference": {
+                "resource": "IR_MFT_V",
+                "fields": [
+                    "MFT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETP_STJ_COD"
+            ],
+            "reference": {
+                "resource": "IR_SJE_V",
+                "fields": [
+                    "ETB_STJ_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSE_SPE_COD"
+            ],
+            "reference": {
+                "resource": "IR_SPE_V",
+                "fields": [
+                    "PFS_SPE_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "BEN_SEX_COD"
+            ],
+            "reference": {
+                "resource": "IR_SEX_V",
+                "fields": [
+                    "SEX_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "DRT_ACS_TOP"
+            ],
+            "reference": {
+                "resource": "IR_BAC_V",
+                "fields": [
+                    "TOP_DRT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "MDT_COD"
+            ],
+            "reference": {
+                "resource": "IR_MDT_V",
+                "fields": [
+                    "MDT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "MUT_ORG"
+            ],
+            "reference": {
+                "resource": "IR_SLM_V",
+                "fields": [
+                    "SLM_NUM"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "RGM_COD"
+            ],
+            "reference": {
+                "resource": "IR_RGM_V",
+                "fields": [
+                    "RGM_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PRS_NAT_REF"
+            ],
+            "reference": {
+                "resource": "IR_NAT_V",
+                "fields": [
+                    "PRS_NAT"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSP_SPE_COD"
+            ],
+            "reference": {
+                "resource": "IR_SPE_V",
+                "fields": [
+                    "PFS_SPE_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSE_ACT_NAT"
+            ],
+            "reference": {
+                "resource": "IR_ACT_V",
+                "fields": [
+                    "PFS_ACT_NAT"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "EXE_INS_DPT"
+            ],
+            "reference": {
+                "resource": "IR_DPT_V",
+                "fields": [
+                    "GEO_DPT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ORG_CAI_NUM"
+            ],
+            "reference": {
+                "resource": "IR_CAI_V",
+                "fields": [
+                    "ORG_BSE_NUM"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "BEN_CMU_CAT"
+            ],
+            "reference": {
+                "resource": "IR_COC_V",
+                "fields": [
+                    "BEN_CMU_CAT"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PRS_PDS_QCP"
+            ],
+            "reference": {
+                "resource": "IR_QPS_V",
+                "fields": [
+                    "QPS_QPS_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_CAT_COD"
+            ],
+            "reference": {
+                "resource": "IR_CET_V",
+                "fields": [
+                    "ETB_CAT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETP_DPT_COD"
+            ],
+            "reference": {
+                "resource": "IR_DPT_V",
+                "fields": [
+                    "GEO_DPT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_STJ_COD"
+            ],
+            "reference": {
+                "resource": "IR_SJE_V",
+                "fields": [
+                    "ETB_STJ_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ASU_NAT"
+            ],
+            "reference": {
+                "resource": "IR_ASU_V",
+                "fields": [
+                    "ASU_NAT"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ORG_AFF_BEN"
+            ],
+            "reference": {
+                "resource": "IR_ORG_V",
+                "fields": [
+                    "ORG_NUM"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "CPT_ENV_TYP"
+            ],
+            "reference": {
+                "resource": "IR_ENV_V",
+                "fields": [
+                    "CPT_ENV_TYP"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "RGM_GRG_COD"
+            ],
+            "reference": {
+                "resource": "IR_RGM_V",
+                "fields": [
+                    "RGM_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSE_CAT_COD"
+            ],
+            "reference": {
+                "resource": "IR_CAT_V",
+                "fields": [
+                    "PFS_CAT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "BEN_QLT_COD"
+            ],
+            "reference": {
+                "resource": "IR_BEQ_V",
+                "fields": [
+                    "BEN_QLT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PRS_FJH_TYP"
+            ],
+            "reference": {
+                "resource": "IR_FJH_V",
+                "fields": [
+                    "PRS_FJH_TYP"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_DPT_COD"
+            ],
+            "reference": {
+                "resource": "IR_DPT_V",
+                "fields": [
+                    "GEO_DPT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSP_CNV_COD"
+            ],
+            "reference": {
+                "resource": "IR_CNV_V",
+                "fields": [
+                    "PFS_CNV_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "BEN_RES_DPT"
+            ],
+            "reference": {
+                "resource": "IR_DPT_V",
+                "fields": [
+                    "GEO_DPT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_TYP_COD"
+            ],
+            "reference": {
+                "resource": "IR_TYE_V",
+                "fields": [
+                    "ETB_TYP_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "FLX_EMT_TYP"
+            ],
+            "reference": {
+                "resource": "IR_TYT_V",
+                "fields": [
+                    "TYT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "CPL_COD"
+            ],
+            "reference": {
+                "resource": "IR_CPA_V",
+                "fields": [
+                    "CPL_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "DPN_QLF"
+            ],
+            "reference": {
+                "resource": "IR_DEP_V",
+                "fields": [
+                    "DPN_QLF"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PRS_REM_TYP"
+            ],
+            "reference": {
+                "resource": "IR_TYR_V",
+                "fields": [
+                    "PRS_REM_TYP"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "FLX_EMT_NUM"
+            ],
+            "reference": {
+                "resource": "IR_NEM_T",
+                "fields": [
+                    "EMT_NUM_RES"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ATT_NAT"
+            ],
+            "reference": {
+                "resource": "IR_ATT_V",
+                "fields": [
+                    "ATT_NAT"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PSP_ACT_NAT"
+            ],
+            "reference": {
+                "resource": "IR_ACT_V",
+                "fields": [
+                    "PFS_ACT_NAT"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PRS_PPU_SEC"
+            ],
+            "reference": {
+                "resource": "IR_PPU_V",
+                "fields": [
+                    "PPU_SEC"
+                ]
+            },
+            "description": "Nomenclature"
+        }
+    ]
+}

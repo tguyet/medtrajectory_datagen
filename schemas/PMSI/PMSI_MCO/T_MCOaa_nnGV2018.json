@@ -1,0 +1,97 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM",
+            "description": "Numéro FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETE_GHS_NUM",
+            "description": "Regroupage en GHS (format numérique de GHS_NUM)",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "GHM_NUM",
+            "description": "Regroupage en GHM",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "GHS_NUM",
+            "description": "Regroupage en GHS (utilisé pour la valorisation)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "GHS_THEO",
+            "description": "Regroupage en GHS (GHS correspond au GHM)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSA_NUM",
+            "description": "N° d'index du RSA ",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_MCOaa_nnGV2018",
+    "title": "Table de passage en version de GHM à partir de mars de l'année suivante",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI MCO",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RSA_NUM"
+            ],
+            "reference": {
+                "resource": "T_MCOaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RSA_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2017",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

@@ -1,0 +1,97 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM",
+            "description": "Numéro FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETE_GHS_NUM",
+            "description": "Code du supplément (n° GHS)",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "GHS_SUP_COD",
+            "description": "Code du supplément (n° GHS)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NBR_SUP",
+            "description": "Nombre de suppléments (Nb actes menant dans le GHS)",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSA_NUM",
+            "description": "N° d'index du RSA ",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSS_NUM",
+            "description": "Numéro de version du format du RSA",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_MCOaa_nnZ",
+    "title": "Fich comp radiothérapie",
+    "description": "Champ : Public",
+    "produit": "PMSI MCO",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RSA_NUM"
+            ],
+            "reference": {
+                "resource": "T_MCOaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RSA_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2011",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

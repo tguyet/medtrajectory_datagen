@@ -1,0 +1,185 @@
+{
+    "fields": [
+        {
+            "name": "ACV_ACT",
+            "description": "Activité",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ANP_ACT",
+            "description": "Association non prévue",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CDC_ACT",
+            "description": "Code CCAM (hors extension PMSI)",
+            "type": "string",
+            "nomenclature": "IR_CCAM_V54",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CMP_DAT",
+            "description": "Dates de validité de l'acte compatibles avec les dates du RUM",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DOC_ACT",
+            "description": "Extension documentaire",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_DAT_DEL",
+            "description": "Délai depuis la date d'entrée",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM",
+            "description": "Numéro FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "EXT_PMSI",
+            "description": "Extension PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2015",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "MOD_ACT",
+            "description": "Modificateurs",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NBR_EXE_ACT",
+            "description": "Nombre de réalisations de l'acte n° 1 pendant le séjour",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PHA_ACT",
+            "description": "Phase",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "REM_EXP_ACT",
+            "description": "Remboursement exceptionnel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSA_NUM",
+            "description": "N° d'index du RSA ",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSS_NUM",
+            "description": "Numéro de version du format du RSA",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_MCOaa_nnA",
+    "title": "Acte CCAM",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI MCO",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RSA_NUM"
+            ],
+            "reference": {
+                "resource": "T_MCOaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RSA_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2006",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

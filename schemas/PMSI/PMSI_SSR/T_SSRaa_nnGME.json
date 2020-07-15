@@ -1,0 +1,97 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM",
+            "description": "N° FINESS de l'établisement",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHA_VER",
+            "description": "N° version du format du RHA",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2013",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHA_NUM",
+            "description": "N° Séquentiel du séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NBR_JOU",
+            "description": "Nombre de jours de présence valorisables",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2013",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "GME_COD",
+            "description": "Code GME",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2013",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "GMT_NUM",
+            "description": "GMT",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_SSRaa_nnGME",
+    "title": "GME",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI SSR",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RHA_NUM"
+            ],
+            "reference": {
+                "resource": "T_SSRaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RHA_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2012",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

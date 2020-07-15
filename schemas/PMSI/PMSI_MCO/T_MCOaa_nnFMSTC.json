@@ -1,0 +1,438 @@
+{
+    "fields": [
+        {
+            "name": "ACV_ACT",
+            "description": "Activité",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ANP_ACT",
+            "description": "Code association d'actes non prévue",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CCAM_COD",
+            "description": "Code CCAM",
+            "type": "string",
+            "nomenclature": "IR_CCAM_V54",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DEL_DAT_ENT",
+            "description": "Délai par rapport à la date d'entrée",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2013",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_1",
+            "description": "N° dent 1",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_10",
+            "description": "N° dent 10",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_11",
+            "description": "N° dent 11",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_12",
+            "description": "N° dent 12",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_13",
+            "description": "N° dent 13",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_14",
+            "description": "N° dent 14",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_15",
+            "description": "N° dent 15",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_16",
+            "description": "N° dent 16",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_2",
+            "description": "N° dent 2",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_3",
+            "description": "N° dent 3",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_4",
+            "description": "N° dent 4",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_5",
+            "description": "N° dent 5",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_6",
+            "description": "N° dent 6",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_7",
+            "description": "N° dent 7",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_8",
+            "description": "N° dent 8",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DENT_NUM_9",
+            "description": "N° dent 9",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DOC_ACT",
+            "description": "Extension documentaire",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM",
+            "description": "Numéro FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_GEO",
+            "description": "Numéro FINESS géographique",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "MOD_ACT1",
+            "description": "Modificateur 1",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "MOD_ACT2",
+            "description": "Modificateur 2",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "MOD_ACT3",
+            "description": "Modificateur 3",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "MOD_ACT4",
+            "description": "Modificateur 4",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NUM_FAC",
+            "description": "N° Facture séquentiel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PHA_ACT",
+            "description": "Phase",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PSH_DMT",
+            "description": "Discipline de prestation (ex DMT)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PSH_MDT",
+            "description": "Mode de traitement",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "REM_EXP_ACT",
+            "description": "Code remboursement sous condition",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSF_TYP",
+            "description": "Type de format RSF (1 : ancien, 2 : nouveau)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SEQ_NUM",
+            "description": "N° séquentiel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2008",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SOR_ANN",
+            "description": "Année de sortie",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2008",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SOR_MOI",
+            "description": "Mois de sortie",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2008",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "TYP_ART",
+            "description": "Type d'enregistrement",
+            "type": "string",
+            "nomenclature": "MS_ENR_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_MCOaa_nnFMSTC",
+    "title": "ACE actes CCAM",
+    "description": "Champ : Public",
+    "produit": "PMSI MCO",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "SEQ_NUM"
+            ],
+            "reference": {
+                "resource": "T_MCOaa_nnFASTC",
+                "fields": [
+                    "ETA_NUM",
+                    "SEQ_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2007",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

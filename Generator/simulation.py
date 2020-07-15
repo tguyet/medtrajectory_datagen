@@ -7,7 +7,7 @@ from data_factory import FactoryContext, PatientFactory, PhysicianFactory, Pharm
 
 class simulation:
     def __init__(self):
-        self.nomencl_db = "/home/tguyet/Progs/SNDS/medtrajectory_datagen/Generator/snds_nomenclature.db"
+        self.nomencl_db = "/home/tguyet/Progs/medtrajectory_datagen/Generator/snds_nomenclature.db"
         self.context = FactoryContext(nomenclatures=self.nomencl_db)
         self.pharms = []
         self.GPs = []

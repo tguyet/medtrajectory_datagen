@@ -1,0 +1,229 @@
+{
+    "fields": [
+        {
+            "name": "ACT_RUM_NBR",
+            "description": "Nombre de zones d'actes du RUM (Nb_Act_R_1)",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "AGE_GES",
+            "description": "Age gestationnel du RUM",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2014",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "AUT_TYP1_UM",
+            "description": "Premier type d'autorisation d'UM",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "AUT_TYP2_UM",
+            "description": "Deuxième type d'autorisation d'UM",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DGN_ASS_NBR",
+            "description": "Nombre de diagnostics associés du RUM (Nb_DA_R_1)",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DGN_PAL",
+            "description": "DP",
+            "type": "string",
+            "nomenclature": "MS_CIM_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2008",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DGN_REL",
+            "description": "DR",
+            "type": "string",
+            "nomenclature": "MS_CIM_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2008",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM",
+            "description": "Numéro FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_GEO",
+            "description": "Premier numéro FINESS géographique",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2013",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "IGS2_COD",
+            "description": "IGS2",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PAR_DUR_SEJ",
+            "description": "Durée séjour partielle",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSA_NUM",
+            "description": "N° d'index du RSA ",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSS_NUM",
+            "description": "Numéro de version du format du RSA",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SUP_TYP1_NAT",
+            "description": "Nature du supplément pour le premier type",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SUP_TYP1_NBR",
+            "description": "Nombre de supplément pour le premier type",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SUP_TYP2_NAT",
+            "description": "Nature du supplément pour le deuxième type",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SUP_TYP2_NBR",
+            "description": "Nombre de supplément pour le deuxième type",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "UM_ORD_NUM",
+            "description": "N° séquentiel de RUM",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_MCOaa_nnUM",
+    "title": "Unité médicale",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI MCO",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RSA_NUM"
+            ],
+            "reference": {
+                "resource": "T_MCOaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RSA_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2006",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

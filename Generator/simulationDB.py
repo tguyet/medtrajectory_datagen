@@ -22,11 +22,11 @@ class simDB(simulation):
 
 
     def generate(self):
-        rootschemas="/home/tguyet/Progs/SNDS/schemas"
-        #rootsnomencl="/home/tguyet/Tools/SNDS/synthetic-snds/nomenclatures"
+        rootschemas="/home/tguyet/Progs/medtrajectory_datagen/schemas"
+        #rootsnomencl="/home/tguyet/Tools/synthetic-snds/nomenclatures"
         
-        copyfile("/home/tguyet/Progs/SNDS/snds_nomenclature.db", "/home/tguyet/Progs/SNDS/snds_testgen.db")
-        db = sa.create_engine('sqlite:////home/tguyet/Progs/SNDS/snds_testgen.db')
+        copyfile("/home/tguyet/Progs/medtrajectory_datagen/Generator/snds_nomenclature.db", "/home/tguyet/Progs/medtrajectory_datagen/Generator/snds_testgen.db")
+        db = sa.create_engine('sqlite:////home/tguyet/Progs/medtrajectory_datagen/Generator/snds_testgen.db')
         
         
         ########  Physicians and Pharmacists #############

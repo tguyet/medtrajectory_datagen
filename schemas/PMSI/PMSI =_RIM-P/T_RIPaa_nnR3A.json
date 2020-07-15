@@ -1,0 +1,310 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM_EPMSI",
+            "description": "N° FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FOR_NUM",
+            "description": "N° format",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FOR_NUM_ORI",
+            "description": "N° format RIM d'orgine",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_TWO",
+            "description": "Second n° FINESS",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "IPP_IRR_CRY",
+            "description": "Cryptage irreversible de l'IPP",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": [],
+            "constraints": {
+                "unique": true
+            }
+        },
+        {
+            "name": "SEJ_IDT",
+            "description": "Identifiant de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "AGE_ANN",
+            "description": "Age du patient en années à la date de réalisation de l'acte",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "AGE_JOU",
+            "description": "Age du patient en jours pour les enfants de moins d'un an",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "COD_SEX",
+            "description": "Sexe du patient",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "BDI_COD",
+            "description": "Code géographique de résidence",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "BDI_DEP",
+            "description": "Code département de résidence",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FOR_ACT",
+            "description": "Forme d'activité",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SEC_NUM",
+            "description": "N°de secteur ou de dispositif intersectoriel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "MOD_SOI",
+            "description": "Mode légal de soins",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ORD_NUM",
+            "description": "N° d'ordre",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RAL_ACT_MOI",
+            "description": "Mois de la date de réalisation de l'acte",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RAL_ACT_ANN",
+            "description": "Année de la date de réalisation de l'acte",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ACT_NAT",
+            "description": "Nature de l’acte",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ACT_LIEU",
+            "description": "Lieu de l’acte",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "PRO_CAT",
+            "description": "Catégorie professionnelle de l’intervenant",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "INT_NBR",
+            "description": "Nombre d’intervenants",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ANO_IND",
+            "description": "Indicateur d'anomalie",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ACT_LIB_IND",
+            "description": "Indicateur d’activité libérale",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETB_SAN_AUTOR",
+            "description": "Indicateur FINESS géographique sans autorisation",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DGN_PAL",
+            "description": "Diagnostic principal ou motif de prise en charge principale",
+            "type": "string",
+            "nomenclature": "MS_CIM_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NBR_DGN",
+            "description": "Nombre de diagnostics et facteurs associés",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_RIPaa_nnR3A",
+    "title": "Résumé par acte ambulatoire anonymisé",
+    "description": "Champ : Public (et qq privé)",
+    "produit": "PMSI RIM-P",
+    "missingValues": [
+        ""
+    ],
+    "primaryKey": [
+        "ETA_NUM_EPMSI",
+        "ORD_NUM",
+        "SEJ_IDT"
+    ],
+    "history": {
+        "dateCreated": "2007",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

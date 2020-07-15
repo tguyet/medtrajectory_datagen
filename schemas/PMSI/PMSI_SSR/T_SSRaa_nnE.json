@@ -1,0 +1,94 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM",
+            "description": "N°FINESS",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SOC_RAI",
+            "description": "Raison sociale",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "REG_ETA",
+            "description": "Région",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ANN_TRT",
+            "description": "N° du trimestre PMSI transmis",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "STA_ETA",
+            "description": "Statut de l'établissement",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "VAL_ETA",
+            "description": "Validation des données",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETB_EXE_FIN",
+            "description": "N°FINESS sans clé",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2006",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_SSRaa_nnE",
+    "title": "Etablissement",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI SSR",
+    "missingValues": [
+        ""
+    ],
+    "primaryKey": "ETA_NUM",
+    "history": {
+        "dateCreated": "2006",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

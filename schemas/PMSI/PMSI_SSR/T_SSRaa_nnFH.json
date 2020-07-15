@@ -1,0 +1,207 @@
+{
+    "fields": [
+        {
+            "name": "RHA_NUM",
+            "description": "N° Séquentiel du séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "TYP_ART",
+            "description": "Type d'enregistrement (H)",
+            "type": "string",
+            "nomenclature": "MS_ENR_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSF_TYP",
+            "description": "Type de format RSF (1=Ancien/2=Nouveau)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NUM_FAC",
+            "description": "N° Facture séquentiel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DEL_DAT_ENT",
+            "description": "Délai par rapport à la date d'entrée",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2012",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM",
+            "description": "N° FINESS",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "COD_UCP_CIP",
+            "description": "Code UCD",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ACH_PRI",
+            "description": "Prix d'achat",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "QUA_COD",
+            "description": "Quantité ",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FAC_TOT",
+            "description": "Montant total facturé",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "UCD_UCD_COD",
+            "description": "Code UCD (0 à gauche)",
+            "type": "string",
+            "nomenclature": "NU_UCD_R",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2007",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_ANN",
+            "description": "Année de début de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_MOI",
+            "description": "mois de début de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FRACT_COE",
+            "description": "Coefficient de fractionnement",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "MNT_UNI_ECA",
+            "description": "Montant unitaire écart indemnisable",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "TOT_MNT_ECA",
+            "description": "Montant total de l'écart indémnisable",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2017",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_SSRaa_nnFH",
+    "title": "OQN med en sus",
+    "description": "Champ : Privé",
+    "produit": "PMSI SSR",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RHA_NUM"
+            ],
+            "reference": {
+                "resource": "T_SSRaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RHA_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2007",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

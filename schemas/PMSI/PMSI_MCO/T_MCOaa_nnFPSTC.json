@@ -1,0 +1,218 @@
+{
+    "fields": [
+        {
+            "name": "DEL_DAT_ENT",
+            "description": "Délai par rapport à la date d'entrée",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2013",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_ANN",
+            "description": "Année début de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ENT_MOI",
+            "description": "Mois de début de séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM",
+            "description": "Numéro FINESS e-PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "ETA_NUM_GEO",
+            "description": "Numéro FINESS géographique",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "FAC_MNT",
+            "description": "Montant total facturé",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "LPP_COD",
+            "description": "Code référence LPP",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "LPP_PRI_UNI",
+            "description": "Prix d'achat unitaire",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "LPP_PU_DEV",
+            "description": "Tarif référence LPP ou Prix Unitaire sur devis",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "LPP_QUA",
+            "description": "Quantité",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "MNT_UNI_ECA",
+            "description": "Montant unitaire de l'écart indemnisable",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "NUM_FAC",
+            "description": "N° Facture séquentiel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RSF_TYP",
+            "description": "Type de format RSF (1 : ancien, 2 : nouveau)",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "SEQ_NUM",
+            "description": "N° séquentiel",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "TIP_PRS_IDE",
+            "description": "Code référence LPP (format numérique)",
+            "type": "number",
+            "nomenclature": "NT_LPP",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "TOT_MNT_ECA",
+            "description": "Montant total de l'écart indemnisable",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "TYP_ART",
+            "description": "Type d'enregistrement",
+            "type": "string",
+            "nomenclature": "MS_ENR_V",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2011",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_MCOaa_nnFPSTC",
+    "title": "ACE DMI en sus",
+    "description": "Champ : Public",
+    "produit": "PMSI MCO",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "SEQ_NUM"
+            ],
+            "reference": {
+                "resource": "T_MCOaa_nnFASTC",
+                "fields": [
+                    "ETA_NUM",
+                    "SEQ_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2011",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

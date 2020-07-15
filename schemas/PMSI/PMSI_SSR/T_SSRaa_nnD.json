@@ -1,0 +1,88 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM",
+            "description": "N° FINESS de l'établisement",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHA_VER",
+            "description": "N° version du format du RHA",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHA_NUM",
+            "description": "N° Séquentiel du séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHS_NUM",
+            "description": "Numéro séquentiel du RHS",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "DGN_COD",
+            "description": "DAS ",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_SSRaa_nnD",
+    "title": "diagnostic associé",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI SSR",
+    "missingValues": [
+        ""
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RHA_NUM",
+                "RHS_NUM"
+            ],
+            "reference": {
+                "resource": "T_SSRaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RHA_NUM",
+                    "RHS_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2009",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}

@@ -1,0 +1,647 @@
+{
+    "name": "EB_ETE_F",
+    "title": "Table des données des établissements",
+    "produit": "EGB",
+    "champ": "",
+    "history": {
+        "dateCreated": "",
+        "dateDeleted": "",
+        "dateMissing": []
+    },
+    "observation": "",
+    "missingValues": [
+        ""
+    ],
+    "fields": [
+        {
+            "name": "FLX_DIS_DTD",
+            "description": "Date de mise à disposition des données",
+            "type": "date",
+            "length": "8",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "date"
+        },
+        {
+            "name": "ETE_MCO_COE",
+            "description": "Coefficient (Non Signé) MCO",
+            "type": "number",
+            "length": "7,4",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000000,
+                "decimals": 4
+            }
+        },
+        {
+            "name": "REM_TYP_AFF",
+            "description": "type de remboursement affiné",
+            "type": "integer",
+            "length": "8",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000000
+            }
+        },
+        {
+            "name": "ORG_CLE_NUM",
+            "description": "organisme de liquidation des prestations (avant fusion des caisses)",
+            "type": "string",
+            "length": "9",
+            "nomenclature": "IR_ORG_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 9
+            }
+        },
+        {
+            "name": "DDP_COD",
+            "description": "Code de la discipline de Prestations (ou discipline médico tarifaire)",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_DDP_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "ORG_CLE_NEW",
+            "description": "Code de l'organisme de liquidation",
+            "type": "string",
+            "length": "3",
+            "nomenclature": "IR_ORG_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 3
+            }
+        },
+        {
+            "name": "FLX_TRT_DTD",
+            "description": "Date d'entrée des données dans le système d'information",
+            "type": "date",
+            "length": "8",
+            "nomenclature": "IR_DTE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "date"
+        },
+        {
+            "name": "DCT_ORD_NUM",
+            "description": "numéro d'ordre du décompte dans l'organisme",
+            "type": "integer",
+            "length": "9",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000000000
+            }
+        },
+        {
+            "name": "ETE_CAT_COD",
+            "description": "Catégorie de l'établissement exécutant",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_CET_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "ETE_NAT_FSJ",
+            "description": "Nature de fin de séjour",
+            "type": "string",
+            "length": "1",
+            "nomenclature": "IR_NFS_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 1
+            }
+        },
+        {
+            "name": "MDT_COD",
+            "description": "Code du mode de traitement",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_MDT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "ETE_TYP_COD",
+            "description": "Code du type de l'établissement exécutant",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_TYE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "FLX_EMT_TYP",
+            "description": "Type d'émetteur",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_TYT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "ETB_EXE_FIN",
+            "description": "N° FINESS de l'établissement exécutant",
+            "type": "string",
+            "length": "8",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 8
+            }
+        },
+        {
+            "name": "ETE_STJ_COD",
+            "description": "Statut Juridique de l'établissement juridique",
+            "type": "integer",
+            "length": "3",
+            "nomenclature": "IR_SJE_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 1000
+            }
+        },
+        {
+            "name": "ETE_MCO_DDP",
+            "description": "Code discipline MCO établissement exécutant",
+            "type": "string",
+            "length": "1",
+            "nomenclature": "IR_MCO_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 1
+            }
+        },
+        {
+            "name": "CLE_TEC_PRS",
+            "description": "Clé technique Prestation",
+            "type": "string",
+            "length": "100",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 100
+            }
+        },
+        {
+            "name": "ETE_GHS_NUM",
+            "description": "Numéro du GHS",
+            "type": "integer",
+            "length": "4",
+            "nomenclature": "IR_GHS_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000
+            }
+        },
+        {
+            "name": "ETE_IND_TAA",
+            "description": "Indicateur TAA",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_TAA_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        },
+        {
+            "name": "ETE_ETA_TRF",
+            "description": "Numéro d'établissement de transfert",
+            "type": "string",
+            "length": "15",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "string",
+            "constraints": {
+                "maximum": 15
+            }
+        },
+        {
+            "name": "FLX_EMT_NUM",
+            "description": "numéro d'émetteur du flux",
+            "type": "integer",
+            "length": "4",
+            "nomenclature": "IR_NEM_T",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000
+            }
+        },
+        {
+            "name": "PRS_ORD_NUM",
+            "description": "Numéro d'ordre de la prestation dans le décompte",
+            "type": "integer",
+            "length": "5",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100000
+            }
+        },
+        {
+            "name": "FLX_EMT_ORD",
+            "description": "numéro de séquence du flux",
+            "type": "integer",
+            "length": "4",
+            "nomenclature": "-",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10000
+            }
+        },
+        {
+            "name": "MFT_COD",
+            "description": "Code du mode de fixation des tarifs",
+            "type": "integer",
+            "length": "2",
+            "nomenclature": "IR_MFT_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 100
+            }
+        },
+        {
+            "name": "PRS_PPU_SEC",
+            "description": "Code privé - public de la Prestations",
+            "type": "integer",
+            "length": "1",
+            "nomenclature": "IR_PPU_V",
+            "dateCreated": "",
+            "dateDeleted": "",
+            "dateMissing": [],
+            "format": "default",
+            "regle_gestion": "",
+            "observation": "",
+            "type_oracle": "number",
+            "constraints": {
+                "minimum": 0,
+                "maximum": 10
+            }
+        }
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ORG_CLE_NUM"
+            ],
+            "reference": {
+                "resource": "IR_ORG_V",
+                "fields": [
+                    "ORG_NUM"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "DDP_COD"
+            ],
+            "reference": {
+                "resource": "IR_DDP_V",
+                "fields": [
+                    "DDP_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ORG_CLE_NEW"
+            ],
+            "reference": {
+                "resource": "IR_ORG_V",
+                "fields": [
+                    "ORG_NUM"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "FLX_TRT_DTD"
+            ],
+            "reference": {
+                "resource": "IR_DTE_V",
+                "fields": [
+                    "DTE_DTE"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_CAT_COD"
+            ],
+            "reference": {
+                "resource": "IR_CET_V",
+                "fields": [
+                    "ETB_CAT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_NAT_FSJ"
+            ],
+            "reference": {
+                "resource": "IR_NFS_V",
+                "fields": [
+                    "NFS_NAT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "MDT_COD"
+            ],
+            "reference": {
+                "resource": "IR_MDT_V",
+                "fields": [
+                    "MDT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_TYP_COD"
+            ],
+            "reference": {
+                "resource": "IR_TYE_V",
+                "fields": [
+                    "ETB_TYP_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "FLX_EMT_TYP"
+            ],
+            "reference": {
+                "resource": "IR_TYT_V",
+                "fields": [
+                    "TYT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_STJ_COD"
+            ],
+            "reference": {
+                "resource": "IR_SJE_V",
+                "fields": [
+                    "ETB_STJ_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_MCO_DDP"
+            ],
+            "reference": {
+                "resource": "IR_MCO_V",
+                "fields": [
+                    "GHS_DDP_MCO"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_GHS_NUM"
+            ],
+            "reference": {
+                "resource": "IR_GHS_V",
+                "fields": [
+                    "GHS_NUM"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "ETE_IND_TAA"
+            ],
+            "reference": {
+                "resource": "IR_TAA_V",
+                "fields": [
+                    "TAA_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "FLX_EMT_NUM"
+            ],
+            "reference": {
+                "resource": "IR_NEM_T",
+                "fields": [
+                    "EMT_NUM_RES"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "MFT_COD"
+            ],
+            "reference": {
+                "resource": "IR_MFT_V",
+                "fields": [
+                    "MFT_COD"
+                ]
+            },
+            "description": "Nomenclature"
+        },
+        {
+            "fields": [
+                "PRS_PPU_SEC"
+            ],
+            "reference": {
+                "resource": "IR_PPU_V",
+                "fields": [
+                    "PPU_SEC"
+                ]
+            },
+            "description": "Nomenclature"
+        }
+    ]
+}

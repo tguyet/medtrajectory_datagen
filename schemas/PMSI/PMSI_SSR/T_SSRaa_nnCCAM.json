@@ -1,0 +1,179 @@
+{
+    "fields": [
+        {
+            "name": "ETA_NUM",
+            "description": "N° FINESS de l'établissement",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHA_VER",
+            "description": "N° version du format du RHA",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHA_NUM",
+            "description": "N° Séquentiel du séjour",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "RHS_NUM",
+            "description": "Numéro séquentiel du RHS",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CCAM_DEL_ENT_UM",
+            "description": "Délai depuis l'entrée dans l'UM",
+            "type": "number",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CCAM_ACT",
+            "description": "Code de l'acte CCAM",
+            "type": "string",
+            "nomenclature": "IR_CCAM_V54",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "EXT_PMSI",
+            "description": "Extension PMSI",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2016",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CCAM_PHA_ACT",
+            "description": "Code de la phase",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CCAM_COD_ACT",
+            "description": "Code de l'activité",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CCAM_EXT_DOC",
+            "description": "Extension documentaire",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CCAM_NBR_REA",
+            "description": "Nombre de réalisation",
+            "type": "number",
+            "nomenclature": "-",
+            "length": "5",
+            "format": "default",
+            "dateCreated": "2009",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "CCAM_VAL_DAT",
+            "description": "Date de validité de l'acte compatible avec  la semaine",
+            "type": "string",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        },
+        {
+            "name": "rowid",
+            "description": "",
+            "type": "integer",
+            "nomenclature": "-",
+            "length": null,
+            "format": "default",
+            "dateCreated": "2010",
+            "dateDeleted": "2017",
+            "dateMissing": []
+        }
+    ],
+    "name": "T_SSRaa_nnCCAM",
+    "title": "Acte CCAM",
+    "description": "Champ : Public et Privé",
+    "produit": "PMSI SSR",
+    "missingValues": [
+        ""
+    ],
+    "primaryKey": [
+        "rowid"
+    ],
+    "foreignKeys": [
+        {
+            "fields": [
+                "ETA_NUM",
+                "RHA_NUM",
+                "RHS_NUM"
+            ],
+            "reference": {
+                "resource": "T_SSRaa_nnB",
+                "fields": [
+                    "ETA_NUM",
+                    "RHA_NUM",
+                    "RHS_NUM"
+                ]
+            }
+        }
+    ],
+    "history": {
+        "dateCreated": "2009",
+        "dateDeleted": "2017",
+        "dateMissing": []
+    }
+}
