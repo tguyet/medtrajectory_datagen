@@ -15,6 +15,9 @@ from datetime import date, datetime
 from shutil import copyfile
 import sqlite3
 
+from dateutil.relativedelta import *
+from datetime import date
+
 class simDB(simulation):
     def __init__(self):
         super().__init__()
@@ -44,6 +47,14 @@ class simDB(simulation):
             table=Table([], schema=rootschemas+"/DCIR_DCIRS/BE_IDE_R.json")
             table.save(table.schema.descriptor['name'], storage='sql', engine=db)
             modified=True
+        if "T_MCOaa_nnE" not in tables:
+            table=Table([], schema=rootschemas+"/PMSI/PMSI_MCO/T_MCOaa_nnE.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            modified=True
+        if "T_SSRaa_nnE" not in tables:
+            table=Table([], schema=rootschemas+"/PMSI/PMSI_SSR/T_SSRaa_nnE.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            modified=True
         
         if modified:
             Base = automap_base()
@@ -61,7 +72,8 @@ class simDB(simulation):
         for p in self.pharms:
             s.add( self.createInsert_PS(Base, p)[0] )
             
-        s.add( self.createInsert_Etablissement(Base, self.etablissement))
+        for e in self.createInsert_Etablissement(Base, self.etablissement):
+            s.add( e )
         s.commit()
         
         ########  Patients and their care trajectories #############
@@ -92,6 +104,20 @@ class simDB(simulation):
             modified=True
         if "ER_CAM_F" not in tables:
             table=Table([], schema=rootschemas+"/DCIR/ER_CAM_F.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            modified=True
+            
+        #Table for hospital stays
+        if "T_MCOaa_nnB" not in tables:
+            table=Table([], schema=rootschemas+"/PMSI/PMSI_MCO/T_MCOaa_nnB.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            modified=True
+        if "T_MCOaa_nnC" not in tables:
+            table=Table([], schema=rootschemas+"/PMSI/PMSI_MCO/T_MCOaa_nnC.json")
+            table.save(table.schema.descriptor['name'], storage='sql', engine=db)
+            modified=True
+        if "T_MCOaa_nnD" not in tables:
+            table=Table([], schema=rootschemas+"/PMSI/PMSI_MCO/T_MCOaa_nnD.json")
             table.save(table.schema.descriptor['name'], storage='sql', engine=db)
             modified=True
             
@@ -230,13 +256,189 @@ class simDB(simulation):
         
         for d in p.medicalacts:
             ret += self.createInsert_MedicalAct(Base, p, d)
+            
+            
+        for d in p.hospitalStays:
+            ret += self.createInsert_SejourMCO(Base, p, d)
+            
         return ret
 
+
+    def createInsert_SejourMCO(self, Base, patient, stay):
+        """
+        return list of database objects
+        """
+        
+        #increment the RSA_Num of the hospital
+        stay.hospital.current_RSA_NUM += 1
+        
+        age = relativedelta(date.today(), stay.patient.BD)
+        aged = (date.today()-stay.patient.BD).days
+        
+        sejour = Base.classes.T_MCOaa_nnB(
+                ##### Clé #####
+                ETA_NUM	=	stay.hospital.id,	#	nombre entier	Numéro FINESS e-PMSI
+                RSA_NUM	=	stay.hospital.current_RSA_NUM,	                        #	nombre entier	N° d'index du RSA
+                
+                
+                ##### Attributs importants (utilisés) ####
+                DGN_PAL	=	stay.DP,	                #	chaîne de caractères	Diagnostic principal (DP)
+                DGN_REL	=	"",	                    #	chaîne de caractères	Diagnostic relié (DR)
+                
+                RSS_NUM	=	"",	                #	chaîne de caractères	Numéro de version du format du RSA
+                
+                GRC_GHM	=	"",	        #	chaîne de caractères	GHM calculé par la clinique
+                
+                SOR_ANN	=	stay.finish_date.year,	            #	année	Année de sortie
+                SOR_MOI	=	stay.finish_date.month,	            #	date	Mois de sortie
+                
+                ENT_PRV	=	"",	                    #	chaîne de caractères	Provenance
+                SOR_DES	=	"",	                    #	chaîne de caractères	Destination
+                
+                SEJ_NBJ	=	1,	                    #	nombre entier	Durée totale du séjour dans le champ du PMSI (vide si séances)
+                
+                ####### Autres variables ##############
+                AGE_ANN	=	age.year,	                        #	nombre entier	Age en années
+                AGE_GES	=	0,	                        #	nombre entier	Age gestationnel
+                AGE_JOU	=	aged,	                    #	nombre entier	Age en jours
+                
+                BDI_COD	=	patient.City,	#	chaîne de caractères	Code géographique de résidence !!! je reprends le code commune !!
+                BDI_DEP	=	patient.Dpt,	#	chaîne de caractères	Code département de résidence
+                COD_SEX	=	int(patient.Sex),	#	chaîne de caractères	Sexe
+                
+                ANT_SUP_NBR	=	0,	                #	nombre entier	Nombre de suppléments antepartum
+                AUT_PGV_NBR	=	0,	                #	nombre entier	Nombre d'autorisations d'unités médicales à portée globale valides (Nb_AutPGV)
+                BEB_SEJ	=	"",	        #	chaîne de caractères	Type de séjour inférieur à la borne extrême basse
+                BEH_NBJ	=	0,	                    #	nombre entier	Nombre de journées au-delà de la borne extrême haute
+                CAI_SUP_NBR	=	0,	                #	nombre entier	Nombre de suppléments caisson hyperbare
+                DEL_REG_ENT	=	0,	                    #	nombre entier	Délai de la date des dernières règles par rapport à la date d'entrée
+                DOS_TYP	=	"",	                    #	chaîne de caractères	Type de dosimétrie
+                ENT_MOD	=	"",	                    #	chaîne de caractères	Mode d'entrée dans le champ du PMSI-MCO
+                
+                ETE_GHS_NUM	=	0,	                    #	nombre entier	Numéro de GHS (du GHM GENRSA)
+                EXB_NBJ	=	0,	                    #	nombre entier	Nb journées EXB
+                GHS_9615_ACT	=	0,	        #	nombre entier	Nombre d'actes menant dans le GHS 9615
+                GHS_HS_INNOV	=	0,	                #	nombre entier	GHS si non prise en compte de l'innovation
+                GHS_NUM	=	0,	                        #	nombre entier	Numéro de GHS (du GHM GENRSA)
+                GRC_RET	=	0,	                        #	booléen	Groupage établissement Code Retour
+                GRC_VER	=	0,	                        #	nombre entier	Groupage établissement Version classification
+                GRG_GHM	=	"",	                #	chaîne de caractères	GHM calculé par le GENRSA
+                GRG_RET	=	1,	                        #	booléen	Code retour obtenu par GENRSA
+                GRG_VER	=	"",	        #	chaîne de caractères	Groupage GENRSA :Version de la classification
+                INNOV_NUM	=	"",	            #	chaîne de caractères	Numéro d'innovation
+                MACH_TYP_RAD	=	"",	#	chaîne de caractères	Type de machine en radiothérapie
+                NBR_ACT	=	1,	                    #	nombre entier	Nombre de zones d'actes (nA) dans ce RSA
+                NBR_DGN	=	len(stay.cim_das),	                    #	nombre entier	Nombre de diagnostics associés significatifs (nDAS) dans ce RSA
+                NBR_RUM	=	0,	                    #	nombre entier	Nombre de RUM composant le RSS d'origine (NbRUM)
+                NBR_SEA	=	0,	                    #	nombre entier	Nombre de séances
+                NBR_SUP_NN1	=	0,	                #	nombre entier	Nombre de suppléments NN1
+                NBR_SUP_NN2	=	0,	                #	nombre entier	Nombre de suppléments NN2
+                NBR_SUP_NN3	=	0,	                #	nombre entier	Nombre de suppléments NN3
+                NBR_SUP_REA	=	0,	                #	nombre entier	Nombre de suppléments pour REA (réanimation)
+                NBR_SUP_REP	=	0,	                #	nombre entier	Nombre de suppléments REP (réanimation pédiatrique)
+                NBR_SUP_SOI	=	0,	                #	nombre entier	Nombre de suppléments soins intensifs provenant de la réanimation
+                NBR_SUP_SRC	=	0,	                #	nombre entier	Nombre de suppléments pour SRC (surveillance continue)
+                NBR_SUP_STF	=	0,	                #	nombre entier	Nombre de suppléments pour STF (soins intensifs)
+                PAS_LIT_DED	=	0,	                    #	booléen	Passage dans un lit dédié de soins palliatifs
+                PLO_ACT	=	0,	                        #	nombre entier	Type de prestation de prélèvement d'organe
+                POI_NAI	=	0,	                    #	nombre entier	Poids d'entrée (en grammes)
+                
+                RTH_SUP_NBR	=	0,	                #	nombre entier	Nombre de zones de suppléments de radiothérapie (Nb_Rdth)
+                SEJ_COD_CONF	=	"",	            #	chaîne de caractères	Confirmation du codage du séjour
+                SEJ_TYP	=	"",	        #	chaîne de caractères	Type de séjour
+                SEQ_RUM	=	0,	                    #	nombre entier	N° séquentiel du RUM ayant fourni le DP (RUM:Résumé d'Unité Médicale)
+                SOR_MOD	=	"",	                    #	chaîne de caractères	Mode de sortie du champ PMSI-MCO
+                SUP_ENT_DPA	=	0,	            #	nombre entier	Nombre de suppléments pour les entraînements à la dialyse péritonéale automatisée hors séances
+                SUP_ENT_DPC	=	0,	            #	nombre entier	Nombre de suppléments pour les entraînements à la dialyse péritonéale continue ambulatoire hors séances
+                SUP_ENT_HEM	=	0,	            #	nombre entier	Nombre de suppléments pour les entraînements à l'hémodialyse hors séances
+                SUP_HEM_HS	=	0,	            #	nombre entier	Nombre de suppléments pour hémodialyse hors séances
+                SUP_RAD_PED	=	0,	            #	nombre entier	Nombre de suppléments radiothérapie pédiatrique
+                TAR_SEQ_NUM	=	"",	    #	chaîne de caractères	Numéro séquentiel de tarifs
+                TOP_AVASTIN	=	0,	                    #	booléen	Top Radiation partielle Avastin
+                TOP_DEF_CARD	=	0,	                #	booléen	Supplément défibrillateur cardiaque
+                TOP_GHS_MIN_SUS	=	0,	                #	booléen	Top GHS minoré
+                TOP_VLV_AOR	=	0,	                    #	booléen	Top valves aortiques percutanées
+                TYP_GEN_RSA	=	0,	                    #	nombre entier	Type de génération automatique du RSA
+                UHCD_TOP	=	0	                    #	booléen	Top UHCD
+        )
+        
+        
+        sejourB = Base.classes.T_MCOaa_nnC(
+            ## 
+            ETA_NUM	=	sejour.ETA_NUM,	                #	nombre entier	Numéro FINESS e-PMSI
+            RSA_NUM	=	sejour.RSA_NUM,	                #	nombre entier	N° séquentiel dans fichier PMSI
+            
+            ## Variables importantes -> le lien au bénéficiare + dates
+            NIR_ANO_17	=	patient.NIR,	#	chaîne de caractères	N° anonyme
+            EXE_SOI_DTD	=	datetime(stay.start_date.year,stay.start_date.month,stay.start_date.day,12,0,0),	#	date et heure	Date d'entrée (date)
+            EXE_SOI_DTF	=	datetime(stay.finish_date.year,stay.finish_date.month,stay.finish_date.day,12,0,0),	    #	date et heure	Date de sortie (date)
+            
+            SEJ_NUM	=	1,	#	nombre entier	N° de séjour
+            
+            RNG_BEN	=	str(patient.RNG_GEM),	#	chaîne de caractères	Rang du bénéficiaire
+            RNG_NAI	=	patient.RNG_GEM,	    #	nombre entier	Rang de naissance
+            
+            ENT_DAT	=	stay.start_date,	    #	date	date d'entrée
+            EXE_SOI_AMD	=	stay.start_date,	#	année et mois	Date d'entrée au format année + mois
+            
+            SOR_DAT	=	stay.finish_date,	    #	date	date de sortie
+            EXE_SOI_AMF	=	stay.finish_date,	#	année et mois	Date de sortie au format année + mois
+            SOR_ANN	=	sejour.SOR_ANN,	    #	année	Année de sortie  //-> utilisé comme clé de jointure avec B, donc je mets les mêmes ici
+            SOR_MOI	=	sejour.SOR_ANN,	    #	date	Mois de sortie   //-> utilisé comme clé de jointure avec B, donc je mets les mêmes ici
+            
+            NIR_ANO_MAM	=	"",	#	chaîne de caractères	N° anonyme mère-enfant ???
+            HOS_NN_MAM	=	0,	        #	booléen	Hospitalisation d'un nouveau-né auprès de la mère
+            HOS_PLO	=	0,	            #	booléen	Hospitalisation pour prélèvement d'organe
+            
+            FOR_NUM	=	"",	#	chaîne de caractères	N° format
+            VID_HOSP_FOR	=	1,      	#	nombre entier	N° format VID-HOSP
+            ORG_CPL_NUM	=	"",	#	chaîne de caractères	N° d’organisme complémentaire
+            ORG_CPL_NUM_RET	=	1,	        #	booléen	Code retour contrôle " N° d’organisme complémentaire"
+            
+            NUM_DAT_AT	=	"",	#	nombre entier	Numéro accident du travail ou date d’accident de droit commun
+            
+            COH_NAI_RET	=	1,	#	booléen	Code retour contrôle « Cohérence date naissance »
+            COH_SEX_RET	=	1,	#	booléen	Code retour contrôle « Cohérence sexe »
+            DAT_RET	=	"",	#	chaîne de caractères	Code retour contrôle « date de référence» (date d'entrée)
+            ETA_NUM_RET	=	1,	#	booléen	Code retour contrôle "N° FINESS d’inscription e-PMSI"
+            FHO_RET	=	1,	    #	booléen	Code retour « fusion ANO HOSP et HOSP PMSI »
+            HOS_NNE_RET	=	1,	#	booléen	Code retour contrôle « Hospitalisation d'un nouveau-né auprès de la mère »
+            HOS_ORG_RET	=	1,	#	booléen	Code retour contrôle « Hospitalisation pour prélèvement d'organe »
+            NAI_RET	= "",	    #	chaîne de caractères	Code retour contrôle « date de naissance »
+            NIR_RET	= 1,	    #	booléen	Code retour contrôle « n° sécurité sociale »
+            NUM_DAT_AT_RET = 1,	#	booléen	Code retour contrôle " Numéro accident du travail ou date d’accident de droit commun"
+            PMS_RET	=	1,	    #	booléen	Code retour « fusion ANO PMSI et fichier PMSI »
+            RNG_BEN_RET	= "",	#	booléen	Code retour contrôle « Rang du bénéficiaire »
+            RNG_NAI_RET	= 1,	#	booléen	Code retour contrôle « Rang de naissance »
+            SEJ_MER_RET	= 1,	#	booléen	Code retour contrôle « N° administratif de séjour de la mère »
+            SEJ_RET	= 1,	    #	booléen	Code retour contrôle « n° d’identification administratif de séjour »
+            SEX_RET	= 1 	    #	booléen	Code retour contrôle « sexe »
+        )
+        
+        ret=[sejour, sejourB]
+        
+        #add entries for the associated diagnosis
+        diag_ass_num=0
+        for cim in stay.cim_das:
+            ## ajout d'un diagnostic associé :
+            #       -> incrémenter le DGN_ASS_NUM pour chaque couple ETA_NUM,RSA_NUM
+            sejourD = Base.classes.T_MCOaa_nnD(
+                ETA_NUM	=	sejour.ETA_NUM,	#	nombre entier	Numéro FINESS e-PMSI
+                RSA_NUM	=	sejour.RSA_NUM,	#	nombre entier	N° d'index du RSA
+                DGN_ASS_NUM	= diag_ass_num,   	        #	nombre entier	Numero de diag par couple eta_num rsa_num
+                
+                ASS_DGN	= cim,   	    #	chaîne de caractères	Diagnostic associé (dans table MS_CIM_V)
+                RSS_NUM	= ""                #	chaîne de caractères	Numéro de version du format du RSA
+            )
+            ret.append( sejourD )
+            diag_ass_num += 1
+        
+        return ret
 
     def createInsert_Etablissement(self, Base, eta):
         ## Création d'un établissement
         etablissement = Base.classes.BE_IDE_R(
-            IDE_ETA_NUM	=	"",
+            IDE_ETA_NUM	=	eta.id,
             IDE_ETA_NU8	=	eta.id,
             IDE_ETA_NOM	=	"EhvAeahPbftsZtVqF",
             IDE_IDE_CPL	=	"LzLc",
@@ -310,7 +512,37 @@ class simDB(simulation):
             IDE_HAD_DTE	=	datetime(1919,9,18,0,0,0),#"1919-09-18",
             IDE_IMP_DPT	=	"Xm"
         )
-        return etablissement
+        
+        #Création de l'etablissement pour les volets MCO et SSR
+        etablissementpmsi = Base.classes.T_MCOaa_nnE(
+            ###### clés de la table #####
+            ETA_NUM	=	etablissement.IDE_ETA_NUM,	    #	chaîne de caractères	Numéro FINESS e-PMSI
+            
+            ### Autres attributs 
+            ANN_TRT	=	"",	        #	chaîne de caractères	N° du trimestre PMSI transmis
+            ETB_EXE_FIN	=""	,	                #	chaîne de caractères	N°FINESS sans clé
+            REG_ETA	=	"",	        #	chaîne de caractères	Région
+            SOC_RAI	=	"",	#	chaîne de caractères	Raison sociale
+            STA_ETA	=	"",	        #	chaîne de caractères	Statut de l'établissement
+            VAL_ETA	=	"",	#	chaîne de caractères	Validation des données
+        )
+        
+        #recopie du même établissement pour les SSR
+        etablissementssr = Base.classes.T_SSRaa_nnE(
+            ###### clés de la table #####
+            ETA_NUM	=	etablissementpmsi.ETA_NUM,	    #	chaîne de caractères	Numéro FINESS e-PMSI
+            
+            ### Autres attributs 
+            ANN_TRT	=	etablissementpmsi.ANN_TRT,	        #	chaîne de caractères	N° du trimestre PMSI transmis
+            ETB_EXE_FIN	= etablissementpmsi.ETB_EXE_FIN	,	                #	chaîne de caractères	N°FINESS sans clé
+            REG_ETA	=	etablissementpmsi.REG_ETA,	        #	chaîne de caractères	Région
+            SOC_RAI	=	etablissementpmsi.SOC_RAI,	#	chaîne de caractères	Raison sociale
+            STA_ETA	=	etablissementpmsi.STA_ETA,	        #	chaîne de caractères	Statut de l'établissement
+            VAL_ETA	=	etablissementpmsi.VAL_ETA,	#	chaîne de caractères	Validation des données
+        )
+        
+        
+        return [etablissement, etablissementpmsi, etablissementssr]
 
 
     def createPRS(self, Base, p, ma):

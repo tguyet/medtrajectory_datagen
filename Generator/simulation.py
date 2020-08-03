@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 
-from data_factory import FactoryContext, PatientFactory, PhysicianFactory, PharmacyFactory, DrugsDeliveryFactory, EtablissementFactory, VisitFactory, ActFactory
+from data_factory import FactoryContext, PatientFactory, PhysicianFactory, PharmacyFactory, DrugsDeliveryFactory, EtablissementFactory, VisitFactory, ActFactory, ShortStayFactory
 #import os
-
+import numpy as np
 
 class simulation:
     def __init__(self):
@@ -38,7 +38,12 @@ class simulation:
             
         actfact=ActFactory(self.context, self.specialists)
         for p in self.patients:
-            actfact.generate(p,30)
+            actfact.generate(p, 30)
+            
+        shortstayfact=ShortStayFactory(self.context,[self.etablissement])
+        for p in self.patients:
+            #shortstayfact.generate(p, np.random.randint(4) )
+            shortstayfact.generate(p, 4 )
             
 if __name__ == "__main__":
     sim = simulation()
@@ -46,5 +51,11 @@ if __name__ == "__main__":
     
     for p in sim.patients:
         for dd in p.drugdeliveries:
+            print(dd)
+        for dd in p.visits:
+            print(dd)
+        for dd in p.medicalacts:
+            print(dd)
+        for dd in p.hospitalStays:
             print(dd)
         print("========")

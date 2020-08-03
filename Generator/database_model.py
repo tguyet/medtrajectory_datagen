@@ -77,6 +77,7 @@ class Patient:
         self.drugdeliveries=[]
         self.visits=[]
         self.medicalacts=[]
+        self.hospitalStays=[]
         
         
     def __str__(self):
@@ -87,6 +88,7 @@ class Patient:
 class Etablissement:
     def __init__(self):
         self.id="dfdsfds"
+        self.current_RSA_NUM=1
     
 
 class CareDelivery:
@@ -165,6 +167,9 @@ class MedicalVisit(CareDelivery):
         
         #self.actes=[]   #list of MedicalActs qui ont été délivrés pdt la consutation [?]
 
+    def __str__(self):
+        return "patient ("+self.patient.NIR+") visited " + str(self.provider.id)+ " (" + str(self.code_pres)+") at date "+self.date_debut.isoformat()+"."
+        
 
 class MedicalAct(CareDelivery):
     """
@@ -180,7 +185,7 @@ class MedicalAct(CareDelivery):
         self.code_ccam = CCAM
         
         self.activitycode = "1"
-        """
+        """ 
         1 pour l’acte principal,
         2 pour le2ème geste éventuel d'un même acte,
         3 pour le 3ème geste éventuel d'un même acte,
@@ -191,4 +196,28 @@ class MedicalAct(CareDelivery):
         """
         
         self.treatmentphase = 0
-        #defaut 0, 
+        
+    def __str__(self):
+        return "patient ("+self.patient.NIR+") gets medical act " + str(self.code_ccam)+" at date "+self.date_debut.isoformat()+"."
+        
+class ShortHospStay:
+    """
+    Short stay in a hospital (Sejour MCO from PMSI)
+    """
+    
+    def __init__(self, patient, hospital, CIM_DP):
+        
+        self.patient = patient
+        self.hospital = hospital
+        self.DP = CIM_DP            # principal diagnosis
+        self.cim_das = []           # associate/related diagnosis
+        self.ccam = []              # list of CCAM codes (medical acts) that have been delivered during the stay
+        #self.from = None           # from another stay before (PMSI care pathways)
+        #self.to = None             # to another stay after (PMSI care pathways)
+        self.start_date = None      # beginning of the stay 
+        self.finish_date = None     # endding of the stay
+        
+        
+    def __str__(self):
+        return "patient ("+self.patient.NIR+") gone to hospital with diagnosis " + str(self.DP)+" from "+self.start_date.isoformat()+" to "+self.finish_date.isoformat()+"."
+    

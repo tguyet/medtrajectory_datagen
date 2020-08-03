@@ -6,7 +6,7 @@ Created on Sun May  3 10:44:59 2020
 @author: tguyet
 """
 
-from database_model import Patient, GP, Specialist, Provider, DrugDelivery, Etablissement, MedicalVisit, MedicalAct
+from database_model import Patient, GP, Specialist, Provider, DrugDelivery, Etablissement, MedicalVisit, MedicalAct, ShortHospStay
 import sqlalchemy as sa
 import pandas as pd
 import numpy as np
@@ -279,6 +279,57 @@ class ActFactory:
         """
         - p patient
         - nbs number of act to generate for a patient
+        """
+        for i in range(nbs):
+            self.generate_one(p)
+
+class ShortStayFactory:
+    def __init__(self, con, hospitals):
+        self.context=con
+        
+        #get the list of CIM codes
+        cur = self.context.conn.cursor()
+        cur.execute("SELECT CIM_COD FROM IR_CIM_V;")
+        cims = cur.fetchall()
+        cur.close()
+        self.cims = [c[0] for c in cims]
+        
+        self.hospitals = hospitals
+        
+        """
+        cur = self.context.conn.cursor()
+        cur.execute("SELECT CAM_PRS_IDE_COD FROM IR_CCAM_V54;")
+        ccams = cur.fetchall()
+        cur.close()
+        self.ccams = [c[0] for c in ccams]
+        """
+        
+    
+    def generate_one(self, p):
+        """
+        - p patient
+        """
+        DP = rd.choice(self.cims)
+        e = rd.choice(self.hospitals)
+        stay = ShortHospStay(p, e, DP )
+        
+        
+        stay.start_date = self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+        stay.finish_date = self.context.generate_date(begin = stay.start_date, end=date(2020,1,1))
+        
+        #generate associated diagnosis (use aideaucodage.fr)
+        for i in range(4):
+            stay.cim_das.append( rd.choice(self.cims) )           # associate/related diagnosis
+        """
+        stay.ccam = []
+        """
+        p.hospitalStays.append(stay)
+        
+        
+    def generate(self, p, nbs=3):
+        """
+        - p patient
+        - nbs number of hospitalisation to generate for a patient
         """
         for i in range(nbs):
             self.generate_one(p)
