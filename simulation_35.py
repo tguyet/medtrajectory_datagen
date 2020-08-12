@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
 
-from Generator.data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory
-from Generator.database_model import Provider, Etablissement, GP, Specialist, Patient
+from Generator.data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory
+from Generator.database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay
 #import os
 import numpy as np
 import pandas as pd
 import numpy.random as rd
-from datetime import datetime, date
-
+import json
+from datetime import datetime, date, timedelta
+from dateutil.relativedelta import *
 
 
 class FinessEtablissementFactory(EtablissementFactory):
@@ -459,6 +460,102 @@ class OpenPatientFactory(PatientFactory):
     
         return patients
 
+class OpenShortStayFactory(ShortStayFactory):
+    def __init__(self, con, hospitals):
+        """
+        Factory of short hospital stays (séjours MCO) based on PMSI statistics
+        
+        Requires files:
+            - p_host.csv
+            - p_sej.csv
+            - cim_stats.json
+
+        Parameters
+        ----------
+        con : Context
+            Simulation context.
+        hospitals : List
+            List of hopitals.
+        """
+        super().__init__(con,hospitals)
+        self.hospitals = hospitals
+        
+        #load statistics details about hospital stays
+        self.p_hosp=pd.read_csv("./data/p_host.csv")
+        self.p_sej=pd.read_csv("./data/p_sej.csv")
+        self.p_sej.set_index("dpt",inplace=True)
+        f=open("./data/PMSI/cim_stats.json")
+        self.cims_stats=json.load(f)
+        counts={i:[s['count']] for i,s in self.cims_stats.items()}
+        counts=pd.DataFrame.from_dict(counts, orient="index")
+        counts['p']=counts[0]/np.sum(counts[0])
+        self.cims=list(counts.reset_index().sample(n=10000, replace=True, weights='p', random_state=1)['index'])
+        self.cim_id=0
+    
+    def __generate_one__(self, p,age,sex,dpt):
+        """
+        Generate the details of a short hopital stay
+
+        Parameters
+        ----------
+        p : Patient
+        """
+        
+        #choice of the cim code at position cims_id in the list of random cims
+        DP = self.cims[self.cim_id]
+        #next cim id (circular)
+        self.cim_id = (self.cim_id+1)%len(self.cims)
+        
+        #random choice of hospital
+        e = rd.choice(self.hospitals)
+        
+        #create the stay to append to the patient history
+        stay = ShortHospStay(p, e, DP )
+        
+        duration = rd.poisson( float(self.p_hosp[(self.p_hosp['dpt'].astype(str)==str(dpt)) & (self.p_hosp['age']==age) & (self.p_hosp['sex']==sex) & (self.p_hosp['type']==0) ]['DMS'].str.replace(",",".")) )
+        
+        stay.start_date = self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+        stay.finish_date = stay.start_date+timedelta(days=duration)
+        
+        #generate 4 associated diagnosis 
+        counts=pd.DataFrame.from_dict( dict(self.cims_stats[DP]["cim"]), orient='index' )
+        counts[0]=counts[0]/np.sum(counts[0])
+        stay.cim_das=list(counts.sample(n=4,weights=counts[0]).reset_index()['index'])
+        """
+        stay.ccam = []
+        """
+        p.hospitalStays.append(stay)
+        
+        
+    def generate(self, p):
+        """
+        Generate the hospital stays for a patient p
+        It determines the number of hopital stays it is likely to occur for that patient 
+        considering its location (dpt), sex and age
+
+        Parameters
+        ----------
+        p : Patient
+        """
+        dpt=str(p.Dpt)
+        
+        age= relativedelta(date.today(), p.BD).years
+        age= age-age%5 #
+        if age>95:
+            age=95
+        sex=int(p.Sex) #1,2 ... pour le 9, on tire aléatoirement
+        if sex==9:
+            sex=rd.randint(2)+1
+            
+        
+        #probabilité d'être hospitalisé au moins une fois
+        phosp=np.sum( self.p_hosp[(self.p_hosp['dpt'].astype(str)==str(dpt)) & (self.p_hosp['age']==age) & (self.p_hosp['sex']==sex) ]['p'] )
+        
+        #nombre d'hospitalisations ensuite déterminé par une loi de Poisson
+        nbhosp=(1+rd.poisson(self.p_sej.loc[int(dpt)]['nbsejours']-1,1)) * ( int(rd.rand(1)<float(phosp)) )
+        nbhosp=nbhosp[0]
+        for i in range(nbhosp):
+            self.__generate_one__(p,age,sex,dpt)
 
 
 if __name__ == "__main__":
@@ -469,12 +566,12 @@ if __name__ == "__main__":
     ps= factory.generate()
     for p in ps:
         print(p)
-        
+    """
     factory = FinessEtablissementFactory(context, [22,35])
     etab= factory.generate()
     for p in etab:
         print(p)
-    """
+    
     factory = OpenPhysicianFactory(context, [22,35])
     GPs= factory.generate(1000)
     for p in GPs:
@@ -486,7 +583,11 @@ if __name__ == "__main__":
     """
     
     factory = OpenPatientFactory(context, GPs, [22,35])
-    etab= factory.generate(1000)
-    for p in etab:
+    patients= factory.generate(1000)
+    for p in patients:
         print(p)
     
+    factory=OpenShortStayFactory(context,etab)
+    for p in patients:
+        factory.generate(p)
+        print(p.hospitalStays)
