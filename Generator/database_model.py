@@ -13,11 +13,15 @@ import warnings
 #########################################
 # https://documentation-snds.health-data-hub.fr/fiches/professionnel_sante.html
 
-class PS: #praticien de soins
+class PS: #professionnel de soins
     def __init__(self):
         self.id="00000000000" #PFS_PFS_NUM: c'est le numéro du cabinet du praticien à 8 chiffres (2 chiffre dpt+3eme comme categorie professionnelle) ! (numéro PS officiel à 11 chiffres ... pas encore en place)
         self.dpt="" #code dpt a 2 chiffres !! (different de IR_DPT_V)
         self.catpro=9 # voir IR_CAT_V
+        self.finess=""
+        self.code_commune=""
+        self.nom_commune=""
+        self.CP=""
         
 
 class Physician(PS):
@@ -26,8 +30,9 @@ class Physician(PS):
     """
     def __init__(self):
         PS.__init__(self)
-        self.speciality=0 #PSP_SPE_COD (prescripteur), voir IR_SPE_V, 0="non renseigné" (plutôt que PSE_SPE_COD (executant))
+        self.speciality=0 #PSP_SPE_COD (prescripteur), voir IR_SPE_V / IR_SPA_D, 0="non renseigné" (plutôt que PSE_SPE_COD (executant))
         self.catpro=1
+        self.sex=9
         
     def __str__(self):
         return "Physician ("+str(self.id)+") [spe: "+str(self.speciality)+"]"
@@ -35,13 +40,13 @@ class Physician(PS):
 class GP(Physician):
     def __init__(self):
         Physician.__init__(self)
-        self.speciality=1 #PSP_SPE_COD (prescripteur), voir IR_SPE_V, 1="Médecine Generaliste" (plutôt que PSE_SPE_COD (executant))
+        self.speciality=1 #PSP_SPE_COD (prescripteur), voir IR_SPE_V / IR_SPA_D, 1="Médecine Generaliste" (plutôt que PSE_SPE_COD (executant))
     
 
 class Specialist(Physician):
     def __init__(self):
         Physician.__init__(self)
-        self.speciality=0  #valeur entre 2 et 85 dans la liste IR_SPE_V (virer le 36: dentiste ???)
+        self.speciality=0  #valeur entre 2 et 85 dans la liste IR_SPE_V / IR_SPA_D (virer le 36: dentiste ???)
 
 class Provider(PS):    
     """
@@ -51,7 +56,7 @@ class Provider(PS):
         PS.__init__(self)
         self.speciality=None #PSE_SPE_COD (executant)
         self.cat_nat=50 #PSE_ACT_NAT (nature), voir codes dans IR_ACT_V[PFS_ACT_NAT] -> pharmacie 50
-        self.catpro=2
+        self.catpro=2 # voir IR_EPS_V (d'après doc en ligne, mais je l'ai pas !!) 2: LIBERAL ACTIVITE SALARIEE
     def __str__(self):
         return "Care Provider ("+str(self.id)+") [cat: "+str(self.cat_nat)+"]"
         
@@ -81,16 +86,31 @@ class Patient:
         
         
     def __str__(self):
-        s="patient ("+self.NIR+") [sex: "+str(self.Sex)+", birth:"+self.BD.isoformat()+", loc:("+self.Dpt+","+self.City+")]"
+        s="patient ("+self.NIR+") [sex: "+str(self.Sex)+", birth:"+self.BD.isoformat()+", loc:("+self.Dpt+","+self.City+")"
+        if len(self.ALD)>0:
+            s+=", ALD:" + str(self.ALD[0])
+            for ald in self.ALD[1:]:
+                s+=","+str(ald)
+        s+="]"
         return s
 
 
 class Etablissement:
     def __init__(self):
-        self.id="dfdsfds"
+        self.id="dfdsfds" #numeru finess
         self.current_RSA_NUM=1
+        self.rs="" #raison sociale / nom
+        self.dpt=""
+        self.code_commune=""
+        self.nom_commune=""
+        self.cp=""
+        self.cat="" #catégorie etablissement
+        self.numvoie=""
+        self.typvoie=""
+        self.voie=""
+    def __str__(self):
+        return "Etablissement ("+str(self.id)+") [cat: "+str(self.cat)+","+self.rs+","+self.nom_commune+"]"
     
-
 class CareDelivery:
     """
     - This class correspond to the concepts of the PRS table

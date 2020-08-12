@@ -66,14 +66,14 @@ class PharmacyFactory:
         
     def generate(self, n):
         """
-        Generate n physicians including half GPs and half specialists
+        Generate n pharmacies including half GPs and half specialists
         """
         Pharmacies=[]
         for i in range(n):
             p=Provider()
             p.dpt = self.context.__genDpt2__()
             p.cat_nat=50 #pharmacie de ville
-            p.id = p.dpt+"2{:05}".format(rd.randint(99999))
+            p.id = p.dpt+p.catpro+"{:05}".format(rd.randint(99999))
             Pharmacies.append(p)
         return Pharmacies
 
@@ -90,7 +90,7 @@ class PhysicianFactory:
         - 1 character with category
         - 5 random numbers
         """
-        return p.dpt+str(p.catpro)+"{:05}".format(rd.randint(99999))
+        return str(p.dpt)+str(p.catpro)+"{:05}".format(rd.randint(99999))
 
     def generateGP(self, n):
         """

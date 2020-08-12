@@ -16,6 +16,8 @@ vmargin.sty
 main.pdf
 *eps-converted-to.pdf
 *~
+.spyproject
+__pycache__
 
 
 ## some rules related to the jupyter notebooks

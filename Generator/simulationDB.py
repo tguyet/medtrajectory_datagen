@@ -21,7 +21,6 @@ from datetime import date
 class simDB(simulation):
     def __init__(self):
         super().__init__()
-    
 
 
     def generate(self):
@@ -140,57 +139,58 @@ class simDB(simulation):
         
     def createInsert_PS(self, Base, p):
         professional = Base.classes.DA_PRA_R(
-                        DTE_MOI_FIN = "",#"s" ,
-                        DTE_ANN_TRT = "",#"haHoKysholbSI" ,
-                        PFS_PFS_NUM = p.id,
-                        TRT_SNI_COD = "",#"cz" ,
-                        IPP_IDV_NUM = "",#"KvGzDJyBNqe" ,
-                        IPP_SEX_COD = "",#"TiItWYuZgJBjmkTGQ" ,
-                        IPP_ANN_NAI = "",#"Aw" ,
-                        CAI_NUM = "",#"oXIvSJrfpuRxEOf" ,
-                        ACT_CAB_COD = "",#"GJkJopq" ,
-                        T733_CTR_NUM = "",#"AdxiUEcG" ,
-                        PFS_PRA_SPE = p.speciality,#"HDinVkEUqUGcwxTbVTD"    ,
-                        CES_CES_COD = "",#"tCJE" ,
-                        PRA_MEP_COD = "",#"mj" ,
-                        CNV_CNV_COD = "",#"tgAvExXqPTePHoNaI" ,
-                        PRA_IDP_DDP = "",#"x" ,
-                        PRA_IDP_SAL = "",#"mZsVZwAcmzCnqCsNmP"	,
-                        EXC_EXC_NAT = p.catpro,#"bDPTitf"    , 
-                        STA_PFS_NUM = "",#"ojvqEDZKs" ,
-                        STA_CAI_NUM = "",#"uZubwzwJSlFensZ" ,
-                        STA_CTR_NUM = "",#"kkwEGtaeDpklQOqlbh" ,
-                        T733_STA_URC = "",#"fmfsysVqECeQQe" ,
-                        FIS_PFS_NUM = "",#"mzrIhRTnbONZZWO" ,
-                        FIS_CAI_NUM = "",#"oBHGsDvOoCCJs" ,
-                        FIS_URC_COD = "",#"Bt" ,
-                        PFS_ACP_DSD = "",#"hX" ,
-                        EXC_EFF_DSD = "",#"qhvMpRUBSVCGLE" ,
-                        EXC_FIN_MTF = "",#"g" ,
-                        PFS_INS_DSD = "",#"DsS" ,
-                        PRA_SAL_SPE1 = "",#"fjZmWNqGqa" ,
-                        PRA_SAL_SPE2 = "",#"MY" ,
-                        PRA_SAL_SPE3 = "",#"EhDLltKG" ,
-                        PRA_SAL_SPE4 = "",#"CZtuZwCDlhrnhHuhrGk" ,
-                        PRA_SAL_SPE5 = "",#"LQRcDGSREUwXRB",
-                        PRA_SAL_SPE6 = "",#"dDWCtmpAyts" ,
-                        PRA_DIP_NBR = "",#"pJEushmm" ,
-                        PRA_SAL_NBR = "",#"qVQtgU" ,
-                        PFS_SPE_ANT = "",#"MkCw" ,
-                        PFS_AMB_NBR = "",#"zITIAxzx" ,
-                        PFS_VSL_NBR = "",#"jEDsMbkauvCJRyIW" ,
-                        PFS_TXI_NBR = "",#"GsXF" ,
-                        PRA_TOP_REF = "",#"AdfljPDitfnymcd" ,
-                        CAB_REF_DSD = "",#"XDaFucHQm" ,
-                        CAB_REF_DSF = "",#"SomNgu" ,
-                        LAB_CAT_COD = "" ,
-                        PRA_CIV_COD = "",#"VgmI" ,
-                        PFS_EXC_COM = "",#"avmHSXRaDvOl" ,
-                        PFS_COD_POS = "",#"XM" ,
-                        PFS_LIB_COM = "",#"TfKQLE" ,
-                        PFS_FIN_NUM = "",#"lL" ,
-                        PFS_MAJ_DAT = "",#"JYgZWrHLKJZZR" ,
-                        PFS_SCN_COD = ""#"KhwflLkNcjwhYUz"
+                        PFS_PFS_NUM = p.id, #Numéro du cabinet du praticien à 8 chiffres (2 chiffre dpt+3eme comme categorie professionnelle) !
+                        PFS_PRA_SPE = p.speciality,#Spécialité Médicale PS	voir: IR_SPA_D (50: PHARMACIE D OFFICINE)
+                        PRA_MEP_COD = 0,#Mode d'exercice particulier	voir IR_MEP_V (0: sans objet, 67: NEPHROLOGIE)
+                        CNV_CNV_COD = 1,#Code convention nationale du P.S.	voir IR_CNV_V (1	PRATICIEN CONVENTIONNE)
+                        EXC_EXC_NAT = p.catpro,#Nature d exercice	voir IR_EPS_V (1: LIBERAL INTEGRAL, 2: LIBERAL ACTIVITE SALARIEE)
+                        PFS_FIN_NUM = p.finess,#NUMERO FINESS
+                        IPP_SEX_COD = p.sex,#Sexe du PS
+                        PFS_EXC_COM = p.code_commune,#Code commune adr. prof du P.S.
+                        PFS_LIB_COM = p.nom_commune,#Libele commune
+                        PFS_COD_POS = p.cp,#Code postal adr. prof du P.S.
+                        DTE_MOI_FIN = "",#
+                        DTE_ANN_TRT = "",#
+                        TRT_SNI_COD = "",#
+                        IPP_IDV_NUM = "",#N.I.R. du P.S
+                        IPP_ANN_NAI = "",#Année de naissance du P.S.
+                        CAI_NUM = "",# Cpam gestionnaire du P.S.
+                        T733_CTR_NUM = "",#
+                        CES_CES_COD = "",#Code diplôme du P.S
+                        PRA_IDP_DDP = "",#Droit à dépassement
+                        PRA_IDP_SAL = "",#Top salarié
+                        STA_PFS_NUM = "",#Num. P.S de chainage statistique.
+                        STA_CAI_NUM = "",#CPAM resp. relevés stat P.S.
+                        STA_CTR_NUM = "",#
+                        T733_STA_URC = "",#
+                        FIS_PFS_NUM = "",#Numéro chainage fiscal d'un P.S.
+                        FIS_CAI_NUM = "",#CPAM resp. relevé fisc. du P.S.
+                        FIS_URC_COD = "",#
+                        PFS_ACP_DSD = "",#
+                        EXC_EFF_DSD = "",#
+                        EXC_FIN_MTF = "",#Motif de fin d'exercice libéral	voir EXC_FIN_MTF (3	CESSATION ACTIVITE)
+                        PFS_INS_DSD = "",#Date installation
+                        PRA_SAL_SPE1 = "",#Spécialité salariés 1
+                        PRA_SAL_SPE2 = "",#
+                        PRA_SAL_SPE3 = "",#
+                        PRA_SAL_SPE4 = "",#
+                        PRA_SAL_SPE5 = "",#
+                        PRA_SAL_SPE6 = "",#
+                        PRA_DIP_NBR = "",#Nb de salariés diplômés
+                        PRA_SAL_NBR = "",#Nb de salariés diplômés
+                        PFS_SPE_ANT = "",#Spécialité Médicale PS antérieure
+                        PFS_AMB_NBR = "",#Effectif du véhicule de type ambulance
+                        PFS_VSL_NBR = "",#Effectif du véhicule de type VSL
+                        PFS_TXI_NBR = "",#Effectif du véhicule de type Taxi
+                        PRA_TOP_REF = "",#Code options conventionnelles
+                        ACT_CAB_COD = "",#Code cabinet d'un praticien
+                        CAB_REF_DSD = "",#Date début du code options conventionnelles
+                        CAB_REF_DSF = "",#Date fin du code options conventionnelles
+                        LAB_CAT_COD = "",#Code catégorie laboratoire
+                        PRA_CIV_COD = "",#Code civilité du PS
+                        
+                        PFS_MAJ_DAT = "",#
+                        PFS_SCN_COD = ""#
                     )
         return [professional]
 
@@ -434,82 +434,82 @@ class simDB(simulation):
             diag_ass_num += 1
         
         return ret
-
+        
     def createInsert_Etablissement(self, Base, eta):
         ## Création d'un établissement
         etablissement = Base.classes.BE_IDE_R(
-            IDE_ETA_NUM	=	eta.id,
-            IDE_ETA_NU8	=	eta.id,
-            IDE_ETA_NOM	=	"EhvAeahPbftsZtVqF",
-            IDE_IDE_CPL	=	"LzLc",
-            IDE_VOI_NUM	=	"eB",
-            IDE_VOI_CNU	=	"",
-            IDE_VOI_TYP_LRG	=	"",
-            IDE_VOI_LIB	=	"oXIvSJrfpuRxEOf",
-            IDE_ADR_CPL	=	"pJHkSzJGJoqOUDJ",
-            IDE_RSD_LIB	=	"AcZaAckxCilGUEdOw",
-            IDE_BDI_COD	=	"nDGT",
-            IDE_TEL_NU1	=	"CJ",
-            IDE_TEL_NU2	=	"m",
-            IDE_INT_ADR	=	"biEHAWnTdbovlgayPKpjJXyqILPKtgnxReN",
+            IDE_ETA_NUM	=	eta.id, #Numéro Finess de l'Etablissement
+            IDE_ETA_NU8	=	eta.id, #Numéro Finess de l'Etabt sans clé
+            IDE_ETA_NOM	=	eta.rs, #Raison Sociale Abrégée
+            IDE_IDE_CPL	=	"", #Complément d'identification
+            IDE_VOI_NUM	=	eta.numvoie, #Numéro dans la voie
+            IDE_VOI_CNU	=	"", #Complément Numéro de voie
+            IDE_VOI_TYP_LRG	=	eta.typvoie, #Nature de la voie
+            IDE_VOI_LIB	=	eta.voie, #Nom de la voie
+            IDE_ADR_CPL	=	"", #Complément d'adresse
+            IDE_RSD_LIB	=	eta.nom_commune, #Nom de la localité ou bureau distributeur
+            IDE_BDI_COD	=	eta.cp, #Code postal
+            IDE_TEL_NU1	=	"", #Numéro téléphone1
+            IDE_TEL_NU2	=	"",
+            IDE_INT_ADR	=	"", #Adresse internet
             IDE_FAX_NUM	=	"",
-            IDE_CPT_RSC	=	"EWqlstqmwLqQGJEQWmiicgnmQsUUrNFsYelCpQCtPLLZgVRmizCMvRQNagUxciLnZoyebCdXAk",
-            IDE_INS_COM	=	"f",
-            IDE_CPA_NUM	=	"Ks",
-            IDE_CRA_NUM	=	"l",
-            IDE_NUM_NOU	=	"QtDweklGp",
-            IDE_NUM_DTE	=	datetime(1972,6,1,0,0,0),
-            IDE_PSH_CAT	=	"NhO",
-            IDE_CCL_DTE	=	datetime(1928,6,4,0,0,0),
-            IDE_PSH_STJ	=	"",
-            IDE_STJ_DTE	=	datetime(1970,12,18,0,0,0),#
-            IDE_PSH_MFT	=	"SD",
-            IDE_MFT_DTE	=	datetime(1938,7,7,0,0,0),#"1938-07-07",
-            IDE_HON_TYP	=	"",
-            IDE_HON_DTE	=	datetime(1924,2,16,0,0,0),#"1924-02-16",
-            IDE_GES_NUM	=	"Y",
-            IDE_GES_DTE	=	datetime(1983,7,21,0,0,0),#"1983-07-21",
-            IDE_SRT_NUM	=	"GutNwhCZhZhnl",
-            IDE_ETA_DTE	=	datetime(1973,12,18,0,0,0),#"1973-12-18",
-            IDE_ATI_COD	=	"D",
-            IDE_PSP_NAT	=	"u",
-            IDE_PSP_DTE	=	datetime(1906,4,7,0,0,0),#"1906-04-07",
-            IDE_BGL_PEX	=	"C",
-            IDE_ETA_TYP	=	"z",
-            IDE_COD_A24	=	"vIJ",
+            IDE_CPT_RSC	=	"", #Raison sociale complète
+            IDE_INS_COM	=	str(eta.dpt)+" "+str(eta.code_commune), #Numéro de Département Numéro de Commune
+            IDE_CPA_NUM	=	"", #Code Caisse de rattachement de l'Etablissement
+            IDE_CRA_NUM	=	"", #Code CRAM de rattachement de l'Etablissement
+            IDE_NUM_NOU	=	"", #Nouveau FINESS
+            IDE_NUM_DTE	=	datetime(1972,6,1,0,0,0), #Date nouveau Finess
+            IDE_PSH_CAT	=	"", #Code catégorie de l'Etablissement
+            IDE_CCL_DTE	=	datetime(1928,6,4,0,0,0), #Date de classement de l'Etablissement
+            IDE_PSH_STJ	=	"", #Statut Juridique de l'Etablissement
+            IDE_STJ_DTE	=	datetime(1970,12,18,0,0,0),#Date d'effet du Statut Juridique de l'Etablissement
+            IDE_PSH_MFT	=	"",#Code MFT de l'Etablissement
+            IDE_MFT_DTE	=	datetime(1938,7,7,0,0,0), #Date d'effet du MFT de l'Etablissement
+            IDE_HON_TYP	=	"", #Code Type d'Honoraire de l'Etablissement
+            IDE_HON_DTE	=	datetime(1924,2,16,0,0,0), #Date d'effet du Type d'Honoraire de l'Etablissement
+            IDE_GES_NUM	=	"", #Numéro Finess Gestionnaire
+            IDE_GES_DTE	=	datetime(1983,7,21,0,0,0), #Date d'effet du rattachement
+            IDE_SRT_NUM	=	"", #SIRET
+            IDE_ETA_DTE	=	datetime(1973,12,18,0,0,0), #Date d'effet du Code Activité de l'Etablissement
+            IDE_ATI_COD	=	"", #Code Activité de l'Etablissement
+            IDE_PSP_NAT	=	"", #Code PSPH de l'Etablissement
+            IDE_PSP_DTE	=	datetime(1906,4,7,0,0,0), #Date d'effet du PSPH de l'Etablissement
+            IDE_BGL_PEX	=	"",
+            IDE_ETA_TYP	=	"",
+            IDE_COD_A24	=	"",
             IDE_SAN_PUB	=	"",
-            IDE_IDE_EAM	=	"3583766311",
-            IDE_IDE_DAM	=	datetime(1905,12,27,0,0,0),#"1905-12-27",
-            IDE_IDE_FAM	=	datetime(1980,8,26,0,0,0),#"1980-08-26",
-            IDE_IDE_EAS	=	"4265207648",
-            IDE_IDE_DAS	=	datetime(1985,4,26,0,0,0),#"1985-04-26",
-            IDE_IDE_FAS	=	datetime(1984,3,8,0,0,0),#"1984-03-08",
-            IDE_IDE_CON	=	"2912602989",
-            IDE_IDE_DON	=	datetime(1919,11,25,0,0,0),#"1919-11-25",
-            IDE_IDE_FON	=	datetime(1926,2,18,0,0,0),#"1926-02-18",
-            IDE_NUM_ANC	=	"KLYJHJ",
-            IDE_ANC_DTE	=	datetime(1978,10,30,0,0,0),#"1978-10-30",
-            IDE_IDE_CTR	=	"2",
-            IDE_IDE_DTR	=	datetime(1929,9,30,0,0,0),#"1929-09-30",
-            IDE_IDE_FTR	=	datetime(1927,11,29,0,0,0),#"1927-11-29",
+            IDE_IDE_EAM	=	"3583766311", #Code AM de l'Etablissement
+            IDE_IDE_DAM	=	datetime(1905,12,27,0,0,0), #Date de Début de l'AM de l'Etablissement
+            IDE_IDE_FAM	=	datetime(1980,8,26,0,0,0),
+            IDE_IDE_EAS	=	"4265207648", #Code AS de l'Etablissement
+            IDE_IDE_DAS	=	datetime(1985,4,26,0,0,0),
+            IDE_IDE_FAS	=	datetime(1984,3,8,0,0,0),
+            IDE_IDE_CON	=	"2912602989", #Code contrat de l'Etablissement
+            IDE_IDE_DON	=	datetime(1919,11,25,0,0,0),
+            IDE_IDE_FON	=	datetime(1926,2,18,0,0,0),
+            IDE_NUM_ANC	=	"KLYJHJ", #No Finess ancien
+            IDE_ANC_DTE	=	datetime(1978,10,30,0,0,0), #Date Finess ancien
+            IDE_IDE_CTR	=	"2", #Code convention tripartite
+            IDE_IDE_DTR	=	datetime(1929,9,30,0,0,0),
+            IDE_IDE_FTR	=	datetime(1927,11,29,0,0,0),
             IDE_A24_24	=	"B",
             IDE_A24_24B	=	"Kc",
             IDE_A24_24C	=	"mMy",
             IDE_A24_24Q	=	"D",
             IDE_A24_24S	=	"I",
             IDE_A24_24T	=	"R",
-            IDE_NUM_PCP	=	"VMSSnUe",
-            IDE_CBU_CTR	=	"5",
-            IDE_CBU_EFF	=	datetime(1910,11,21,0,0,0),#"1910-11-21",
+            IDE_NUM_PCP	=	"VMSSnUe", #Code établissement principal
+            IDE_CBU_CTR	=	"5", #Code contrat médicaments
+            IDE_CBU_EFF	=	datetime(1910,11,21,0,0,0), #Date effet contrat médicaments
             IDE_CBU_TAU	=	"HbJ",
-            IDE_CBU_DTF	=	datetime(1921,2,25,0,0,0),#"1921-02-25",
+            IDE_CBU_DTF	=	datetime(1921,2,25,0,0,0),
             IDE_FIN_IND	=	"",
             IDE_CAI_PIV	=	"oD",
-            IDE_NAT_ORI	=	"YpM",
-            IDE_MCO_COE	=	"77652",
-            IDE_COE_HAD	=	"65768",
-            IDE_MCO_DTE	=	datetime(2010,10,5,0,0,0),#"2010-10-05",
-            IDE_HAD_DTE	=	datetime(1919,9,18,0,0,0),#"1919-09-18",
+            IDE_NAT_ORI	=	"YpM", #Code Nature de l'Origine de l'Etablissement (CPAM ou CRAM)
+            IDE_MCO_COE	=	"77652", #Coefficient MCO
+            IDE_COE_HAD	=	"65768", #Coefficient HDA
+            IDE_MCO_DTE	=	datetime(2010,10,5,0,0,0),
+            IDE_HAD_DTE	=	datetime(1919,9,18,0,0,0),
             IDE_IMP_DPT	=	"Xm"
         )
         
@@ -520,11 +520,11 @@ class simDB(simulation):
             
             ### Autres attributs 
             ANN_TRT	=	"",	        #	chaîne de caractères	N° du trimestre PMSI transmis
-            ETB_EXE_FIN	=""	,	                #	chaîne de caractères	N°FINESS sans clé
+            ETB_EXE_FIN	=""	,	    #	chaîne de caractères	N°FINESS sans clé
             REG_ETA	=	"",	        #	chaîne de caractères	Région
-            SOC_RAI	=	"",	#	chaîne de caractères	Raison sociale
+            SOC_RAI	=	"",	        #	chaîne de caractères	Raison sociale
             STA_ETA	=	"",	        #	chaîne de caractères	Statut de l'établissement
-            VAL_ETA	=	"",	#	chaîne de caractères	Validation des données
+            VAL_ETA	=	""	        #	chaîne de caractères	Validation des données
         )
         
         #recopie du même établissement pour les SSR
@@ -607,19 +607,19 @@ class simDB(simulation):
             BSE_REM_MNT	=	0.00,	#	nombre réel
             BSE_REM_PRU	=	0.00,	#	nombre réel
             BSE_REM_SGN	=	1,	#	nombre entier Signe du remboursement, IR_SNG_V
-            CPL_REM_BSE	=	78090389879.25,	#	nombre réel
-            CPL_REM_MNT	=	41950861634.87,	#	nombre réel
-            CPL_REM_PRU	=	81140362630858.48,	#	nombre réel
+            CPL_REM_BSE	=	0.0,	#	nombre réel
+            CPL_REM_MNT	=	0.0,	#	nombre réel
+            CPL_REM_PRU	=	0.0,	#	nombre réel
             CPL_REM_SGN	=	0,	#	nombre entier
-            PRS_ACT_CFT	=	661328942.45,	#	nombre réel
-            PRS_ACT_COG	=	153215936.9,	#	nombre réel
+            PRS_ACT_CFT	=	0.0,	#	nombre réel
+            PRS_ACT_COG	=	0.0,	#	nombre réel
             PRS_ACT_NBR	=	0,	#	nombre réel Dénombrement signé d'actes (pour les indemnités journalières)
             PRS_ACT_QTE	=	0,	#	nombre réel Quantité signé d'actess
             
             PRS_DEP_MNT	=	0.0,	#	nombre réel, montant déplacemnt
-            PRS_ETA_RAC	=	74790551649.64,	#	nombre réel
-            PRS_PAI_MNT	=	91738548395.16,	#	nombre réel
-            RGO_MOD_MNT	=	90206152481.25,	#	nombre réel
+            PRS_ETA_RAC	=	0.0,	#	nombre réel
+            PRS_PAI_MNT	=	0.0,	#	nombre réel
+            RGO_MOD_MNT	=	0.0,	#	nombre réel
             ORB_BSE_NUM	=	"03C021",	#	chaîne de caractères
             ORL_BSE_NUM	=	"03C024",	#	chaîne de caractères
             RGM_COD	=	6,	#	nombre entier
@@ -637,7 +637,7 @@ class simDB(simulation):
             DRG_NAT	=	10,	#	nombre entier voir IR_DRG_V, 10=Tier Payant
             EXE_LIE_COD	=	8,	#	nombre entier
             EXO_MTF	=	44,	#	nombre entier
-            IJR_EMP_NUM	=5866418702621912,	#	nombre entier
+            IJR_EMP_NUM	= 0,	#	nombre entier
             IJR_RVL_NAT	=	"MP",	#	chaîne de caractères
             MTM_NAT	=	3,	#	nombre entier
             ORG_CLE_NEW	=	"01C731220",	#	chaîne de caractères
@@ -685,10 +685,10 @@ class simDB(simulation):
             BEN_CTA_TYP	=	865,	#	nombre entier
             PRS_DRA_AME	=	"Vqt",	#	année et mois Date réelle (année et mois) de l'accouchement
             DRG_AFF_NAT	=	0,	#	nombre entier
-            PRS_MNT_MAJ	=	2977390.3,	#	nombre réel
+            PRS_MNT_MAJ	=	0.0,	#	nombre réel
             PRE_IND_PEL	=	"uBvUXVf",	#	chaîne de caractères Indicateur Prescription en Ligne
             PRS_DIS_PRE	=	"xyH",	#	chaîne de caractères
-            CPL_REM_TAU	=	6695907.79,	#	nombre réel
+            CPL_REM_TAU	=	0.0,	#	nombre réel
             PRS_QTT_MAJ	=	7460	#	nombre entier Quantité de majorations
         )
         return prestation
@@ -718,19 +718,19 @@ class simDB(simulation):
             CAM_REM_COD	=	"kkwEGtaeDpklQOqlbh",	#	chaîne de caractères	Code remboursement exceptionnel
             ORG_CLE_NEW	=	"01C682674",	#	chaîne de caractères	Code de l'organisme de liquidation
         
-            CAM_MI4_MNT	=	553941022.5,	#	nombre réel	Montant Minoration due à association sur Modificateur4
-            CAM_MM4_MNT	=	379098525.43,	#	nombre réel	Montant Majoration Modificateur4
+            CAM_MI4_MNT	=	0.0,	#	nombre réel	Montant Minoration due à association sur Modificateur4
+            CAM_MM4_MNT	=	0.0,	#	nombre réel	Montant Majoration Modificateur4
             CAM_GRI_TAR	=	"oBHGsDvOoCCJs",	#	chaîne de caractères	Grille tarifaire
-            CAM_SUP_MNT	=	154287578.13,	#	nombre réel	Montant supplément de Charge en Cabinet
-            CAM_MI1_MNT	=	545851429.93,	#	nombre réel	Montant Minoration due à association sur Modificateur1
-            CAM_NRM_MNT	=	259371469.95,	#	nombre réel	Montant Non Rmb du à annulation du tarif pr acte non rmb
-            CAM_MI3_MNT	=	296249161.67,	#	nombre réel	Montant Minoration due à association sur Modificateur3
-            CAM_MM2_MNT	=	927480538.62,	#	nombre réel	Montant Majoration Modificateur2
-            CAM_MM3_MNT	=	185575274.82,	#	nombre réel	Montant Majoration Modificateur3
-            CAM_RED_MNT	=	9,	#	nombre réel	Montant réduction Tarif due à praticien non conventionné
-            CAM_MPU_MNT	=	106738202.26,	#	nombre réel	Montant Minoration due à association sur PU de l' Acte
-            CAM_MM1_MNT	=	642689915.79,	#	nombre réel	Montant Majoration Modificateur1
-            CAM_MI2_MNT	=	202202293.43,	#	nombre réel	Montant Minoration due à association sur Modificateur2
+            CAM_SUP_MNT	=	0.0,	#	nombre réel	Montant supplément de Charge en Cabinet
+            CAM_MI1_MNT	=	0.0,	#	nombre réel	Montant Minoration due à association sur Modificateur1
+            CAM_NRM_MNT	=	0.0,	#	nombre réel	Montant Non Rmb du à annulation du tarif pr acte non rmb
+            CAM_MI3_MNT	=	0.0,	#	nombre réel	Montant Minoration due à association sur Modificateur3
+            CAM_MM2_MNT	=	0.0,	#	nombre réel	Montant Majoration Modificateur2
+            CAM_MM3_MNT	=	10.0,	#	nombre réel	Montant Majoration Modificateur3
+            CAM_RED_MNT	=	0.0,	#	nombre réel	Montant réduction Tarif due à praticien non conventionné
+            CAM_MPU_MNT	=	0.0,	#	nombre réel	Montant Minoration due à association sur PU de l' Acte
+            CAM_MM1_MNT	=	0.0,	#	nombre réel	Montant Majoration Modificateur1
+            CAM_MI2_MNT	=	0.0,	#	nombre réel	Montant Minoration due à association sur Modificateur2
                 
             ## Référence à l'enregistrement de la prestation
             DCT_ORD_NUM	=	prestation.DCT_ORD_NUM,
