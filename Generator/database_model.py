@@ -223,6 +223,8 @@ class MedicalAct(CareDelivery):
 class ShortHospStay:
     """
     Short stay in a hospital (Sejour MCO from PMSI)
+    
+    Ajouter les GHM ?? [pas utilisés par André]
     """
     
     def __init__(self, patient, hospital, CIM_DP):
@@ -230,12 +232,14 @@ class ShortHospStay:
         self.patient = patient
         self.hospital = hospital
         self.DP = CIM_DP            # principal diagnosis
-        self.cim_das = []           # associate/related diagnosis
+        self.DRel = ""              # related diagnosis
+        self.cim_das = []           # associate diagnosis
         self.ccam = []              # list of CCAM codes (medical acts) that have been delivered during the stay
         #self.from = None           # from another stay before (PMSI care pathways)
         #self.to = None             # to another stay after (PMSI care pathways)
         self.start_date = None      # beginning of the stay 
         self.finish_date = None     # endding of the stay
+        self.GHM = ""
         
         
     def __str__(self):

@@ -1,23 +1,46 @@
 # -*- coding: utf-8 -*-
 
 
-from Generator.data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory
-from Generator.database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay
-#import os
+from Generator.data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory, DrugsDeliveryFactory
+from Generator.database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay, DrugDelivery
+import os
 import numpy as np
 import pandas as pd
 import numpy.random as rd
 import json
 from datetime import datetime, date, timedelta
-from dateutil.relativedelta import *
+from dateutil.relativedelta import relativedelta
+
+
+
+
+class OpenDataFactoryContext(FactoryContext):
+    """
+    Attributes
+    ----------
+    datarep: repository of the data files
+    
+    """    
+    def __init__(self, nomenclatures=None, datarep="./data/"):
+        if nomenclatures:
+            super().__init__(nomenclatures)
+        else:
+            super().__init__(os.path.join(datarep,"snds_nomenclature.db"))
+        self.datarep=datarep
 
 
 class FinessEtablissementFactory(EtablissementFactory):
     """
     Class to generate the hospitalisation structure from the FINESS dataset
+    
+    
+    required file: finess-clean.csv
+    
+    Attributes
+    ----------
+    dpts: list of departements from which are sampled the hospitals
+    
     """
-
-    dataset_file="./data/finess-clean.csv"
     
     def __init__(self, con, dpts=[]):
         """
@@ -27,11 +50,6 @@ class FinessEtablissementFactory(EtablissementFactory):
         dpts : List of strings
             List of departement numbers in which the hospitals must be randomly choiced.
             The list must contains integers (dept numbers) or strings ("2A", "2B")
-            
-        Returns
-        -------
-        None.
-
         """
         super().__init__(con)
         self.dpts=dpts
@@ -39,22 +57,19 @@ class FinessEtablissementFactory(EtablissementFactory):
     
     def generate(self, n=0):
         """
-        
-
         Parameters
         ----------
-        n : TYPE, optional
-            DESCRIPTION. The default is 0.
+        n : int, optional
+            Number of etablissement to generate. The default is 0.
 
         Returns
         -------
-        Etablissement : TYPE
-            DESCRIPTION.
-
+        A list of Etablissement instances
         """
         
         ## Finess dataset load
-        data=pd.read_csv(FinessEtablissementFactory.dataset_file, sep=";")
+        dataset_file= os.path.join(self.context.datarep,"finess-clean.csv")
+        data=pd.read_csv(dataset_file, sep=";")
         data["departement"]=data["departement"].astype('str')
         data["numvoie"].fillna(0, inplace=True)
         data["numvoie"]=data["numvoie"].astype(int)
@@ -100,10 +115,14 @@ class FinessEtablissementFactory(EtablissementFactory):
 class FinessPharmacyFactory(PharmacyFactory):
     """
     Class to generate the pharmacies from the finess dataset
+    
+    required file: finess-clean.csv
+    
+    Attributes
+    ----------
+    dpts: list of departements from which are sampled the pharmacies
+    
     """
-    
-    dataset_file="./data/finess-clean.csv"
-    
     def __init__(self, con, dpts=[]):
         """
         Parameters
@@ -113,11 +132,6 @@ class FinessPharmacyFactory(PharmacyFactory):
             List of departement numbers in which the drugstores must be randomly choiced.
             The list must contains integers (dept numbers) or strings ("2A", "2B")
             The drugstores are selected by the aggregated category number (which gathers "Pharmacie d'Officine", "Propharmacie", "Pharmacie Mutualiste", ...)
-            
-        Returns
-        -------
-        None.
-
         """
         super().__init__(con)
         self.dpts=dpts
@@ -138,7 +152,8 @@ class FinessPharmacyFactory(PharmacyFactory):
         """
         
         ## Finess dataset load
-        data=pd.read_csv(FinessPharmacyFactory.dataset_file, sep=";")
+        dataset_file= os.path.join(self.context.datarep,"finess-clean.csv")
+        data=pd.read_csv(dataset_file, sep=";")
         data["departement"]=data["departement"].astype('str')
         data["numvoie"].fillna(0, inplace=True)
         data["numvoie"]=data["numvoie"].astype(int)
@@ -166,6 +181,7 @@ class FinessPharmacyFactory(PharmacyFactory):
         for index, d in ddpt.iterrows():
             p=Provider()
             p.dpt = d['departement']
+            p.code_commune = d['commune']
             p.cat_nat=50 #pharmacie de ville
             p.id = p.dpt+"2{:05}".format(rd.randint(99999)) #PFS_PFS_NUM: c'est le numéro du cabinet du praticien à 8 chiffres (2 chiffre dpt+3eme comme categorie professionnelle) ! (numéro PS officiel à 11 chiffres ... pas encore en place)
             p.finess = d['nofinesset']
@@ -179,31 +195,34 @@ class OpenPhysicianFactory(PhysicianFactory):
     Génération d'une base de médecins de "ville" (exercants en libéral), avec
         -> des médecins généralistes
         -> des médecins spécialistes
+        
+        
+    required file: ps-infospratiques.csv
+    
+    Attributes
+    ----------
+    dpts : List of strings
+        List of departement numbers in which the drugstores must be randomly choiced.
+        The list must contains integers (dept numbers) or strings ("2A", "2B")
     """
     
-    dataset_file="./data/ps-infospratiques.csv"
     #definition d'une table de correspondance entre les codes professionnelles (du jeu des données de PS) et du codage des spécialités dans le SNDS (table IR_SPA_COD)
     # si pas d'entrée dans cette map, alors mettre la valeur '0' (non défini)
 
-    catprof_SPACOD={45:1,3:2,6:3,7:4,22:5,67:6,37:7,33:8,72:9,52:10,59:11,60:12,64:13,70:14,56:15,15:16,54:17,74:18,18:19,69:20,71:21,46:22,47:23,39:24,43:26,61:27,57:28,58:29,40:30,73:31,53:32,65:33,34:34,51:35,19:36,2:37,41:39,42:40,12:41,23:42,8:43,9:44,10:45,13:46,14:47,16:48,17:49,62:50,62:51,63:52,18:53,19:54,1:55,24:60,25:61,26:62,27:63,28:64,29:65,30:66,31:67,32:68,11:69,35:70,38:71,49:72,5:73,4:74,66:75,68:76,55:77,48:78,36:79,50:80,69:83}
+    catprof_SPACOD={45:1,3:2,6:3,7:4,22:5,67:6,37:7,33:8,72:9,52:10,59:11,60:12,64:13,70:14,56:15,15:16,54:17,74:18,71:21,46:22,47:23,39:24,43:26,61:27,57:28,58:29,40:30,73:31,53:32,65:33,34:34,51:35,2:37,41:39,42:40,12:41,23:42,8:43,9:44,10:45,13:46,14:47,16:48,17:49,62:50,63:52,18:53,19:54,1:55,24:60,25:61,26:62,27:63,28:64,29:65,30:66,31:67,32:68,11:69,35:70,38:71,49:72,5:73,4:74,66:75,68:76,55:77,48:78,36:79,50:80,69:83}
 
     def __init__(self,con,dpts):
         """
         Parameters
         ----------
         con : Simulation context
-
-        Returns
-        -------
-        None.
-
         """
         super().__init__(con)
         self.dpts=dpts
     
     def generate(self, n=0):
-    
-        data = pd.read_csv(OpenPhysicianFactory.dataset_file, sep=";", header=None, encoding="latin_1")
+        dataset_file= os.path.join(self.context.datarep,"ps-infospratiques.csv")
+        data = pd.read_csv(dataset_file, sep=";", header=None, encoding="latin_1")
         data.rename(columns={
                         0:"Sexe", 
                         1:"nom", 
@@ -298,125 +317,37 @@ class OpenPatientFactory(PatientFactory):
     It also:
         - assigns a GP (médecin traitant) from the list of available GPs in the simulation. The GP is assigned such that she/he is in the same town, or at least in the same dpt
         - assigns a list of ALDs (according to statistics in real poputlation)
+        
+    required files
+        - count_ALD_dpt.xls
+        - pop.csv
+        
+    Attributes
+    ----------
+    dpts: List of departement numbers
+    GPs: List of general practitioners
+    pop: population statistics
+    tot_pop: total number of patients
     """
 
     def __init__(self, con, GPs=None, dpts=[]):
         super().__init__(con, GPs)
         self.dpts=dpts
         
-        pop_saq = pd.read_csv("./data/pop-sexe-age-quinquennal.zip", header=0, sep=',', encoding="latin_1", dtype={'DR':str,'DR18':str })
-        pop_saq.dropna(inplace=True) #some cities disappeared leading to none lines
-        try:
-            #remove some a priori useless columns
-            del(pop_saq['RR'])
-            del(pop_saq['CR'])
-            del(pop_saq['DR'])
-            del(pop_saq['STABLE'])
-        except:
-            pass
-        
-        #Gather all the columns in a unique column with variables to describe them ('sex' and 'age')
-        pop_saq=pop_saq.melt(id_vars=['DR18','LIBELLE'])
-        tmp=pop_saq['variable'].str.extract(r'ageq_rec(?P<age>\d+)s(?P<sex>\d)rpop2016')
-        pop_saq=pd.concat([tmp,pop_saq],axis=1)
-        pop_saq['age']=(pd.to_numeric(pop_saq['age'])-1)*5 #counts for 5 years intervals of ages
-        del(tmp)
-        del(pop_saq['variable'])
-        
-        #rename columns
-        pop_saq=pop_saq.rename(columns={'LIBELLE':'Ville', 'DR18':'dpt'})
-        pop_saq['Ville']=pop_saq['Ville'].str.lower()
-        
-        pop_cities = pd.read_csv("./data/population.zip", header=0, sep=';', encoding="utf-8")
-        pop_cities['dpt'] = pop_cities['Code'].str[:-3].str.pad(width=2, fillchar='0')
-        
-        pop_cities['Ville']=pop_cities['Ville'].str.lower()
-        # on arrange déjà en enlevant certains "l'" en début
-        pop_cities['Ville']=pop_cities['Ville'].str.replace(pat="^l'",repl="")
-        pop_cities['Ville']=pop_cities['Ville'].str.replace(pat="^la ",repl="")
-        pop_cities['Ville']=pop_cities['Ville'].str.replace(pat="^le ",repl="")
-        pop_cities['Ville']=pop_cities['Ville'].str.replace(pat="^les ",repl="")
-        pop_cities['Ville']=pop_cities['Ville'].str.replace(pat="œ",repl="?")
-        
-        ## le merge fait perdre environ 775 communes (dont des grosses) ... mais aucune en bretagne
-        pop=pd.merge(pop_saq,pop_cities,how='inner', on=('dpt','Ville'))
+        dataset_file= os.path.join(self.context.datarep,"pop.csv")
+        pop=pd.read_csv(dataset_file)
         
         #selection des données uniquement pour les départements d'intérêt
         dpts=["%02d"%d for d in dpts]
-        self.pop=pop[ pop['dpt'].isin(dpts)]
+        self.pop = pop[ pop['dpt'].isin(dpts)]
         self.tot_pop = np.sum(self.pop['value'])
         #pop contient des informations sur la population par sex, par age (tranches de 5 ans), par communes
         # colonnes 'age', 'sex', 'dpt', 'Ville', 'value', 'Code'
-        #print(self.tot_pop)
         
-        del(pop_cities)
-        
-        ## Gather statistics about ALD
-        # population per Age, sex and dpt
-        pop_ASD=pop_saq.groupby(["age","sex",'dpt']).agg({"value":"sum"})
-        pop_ASD= pop_ASD.reset_index() #transform the group object into a dataframe
-        pop_ASD.columns = pop_ASD.columns.get_level_values(0)
-        pop_ASD['value']=pop_ASD['value']/self.tot_pop
-        pop_ASD['sex']=pop_ASD['sex'].astype("int64")
-        
-        del(pop_saq)
-        
-        #counts of ALD per departement
-        ald_per_dpt=pd.read_excel('./data/count_ALD_dpt.xls', sheet_name='dpt')
-        ald_per_dpt=pd.melt(ald_per_dpt,id_vars=['dpt'])
-        ald_per_dpt.rename(columns={'variable':'ALD'},inplace=True)
-        #incidence of each ALD in each dpt
-        pop_D=pop_ASD.groupby(['dpt']).agg({"value":"sum"})
-        pop_D= pop_D.reset_index()
-        pop_D.columns = pop_D.columns.get_level_values(0)
-        pALD_knowing_dpt = pd.merge(ald_per_dpt,pop_D,how="inner",on="dpt")
-        pALD_knowing_dpt['p'] = pALD_knowing_dpt['value_x']/pALD_knowing_dpt['value_y']
-        pALD_knowing_dpt = pALD_knowing_dpt[['dpt','ALD','p']]
-        
-        #estimate the incidence of each ALD in the general population
-        ald=ald_per_dpt.groupby(["ALD"]).agg({"value":["sum"]})
-        ald= ald.reset_index()
-        ald.columns = ald.columns.get_level_values(0)
-        ald.set_index("ALD", inplace=True)
-        ald['p']=ald['value']/self.tot_pop
-        ald.reset_index(inplace=True)
-        
-        
-        #counts of ALD per sex/age
-        ald_per_sexage=pd.read_excel('./data/count_ALD_dpt.xls', sheet_name='sexe-age')
-        ald_per_sexage=pd.melt(ald_per_sexage,id_vars=['Ald','Sexe'])
-        ald_per_sexage.rename(columns={'Ald':'ALD', 'variable':"age", 'Sexe':'sex'},inplace=True)
-        ald_per_sexage['age']=ald_per_sexage['age'].astype("int64")
-        #incidence of each ALD for each sex/age
-        pop_AS=pop_ASD.groupby(['sex','age']).agg({"value":"sum"})
-        pop_AS= pop_AS.reset_index()
-        pop_AS.columns = pop_AS.columns.get_level_values(0)
-        pALD_knowing_sexage = pd.merge(ald_per_sexage, pop_AS, how="inner", on=["sex","age"])
-        pALD_knowing_sexage['p'] = pALD_knowing_sexage['value_x']/pALD_knowing_sexage['value_y']
-        pALD_knowing_sexage = pALD_knowing_sexage[['sex','age','ALD','p']]
-
-        p_d_ald=pd.merge(ald_per_dpt,ald, how="inner", on='ALD')
-        p_d_ald['p']=p_d_ald['value_x']/p_d_ald['value_y']
-        p_d_ald=p_d_ald[['dpt','ALD','p']]
-        p_sa_ald=pd.merge(ald_per_sexage,ald, how="inner", on='ALD')
-        p_sa_ald['p']=p_sa_ald['value_x']/p_sa_ald['value_y']
-        p_sa_ald=p_sa_ald[['sex','age','ALD','p']]
-        #estimate join distribution (with independance assumption between dpt and sex)
-        p_dsa_ald=pd.merge(p_sa_ald,p_d_ald,how="inner",on="ALD")
-        p_dsa_ald['p']=p_dsa_ald['p_x']*p_dsa_ald['p_y']
-        p_dsa_ald=p_dsa_ald[['sex','age','ALD','dpt', 'p']]
-        
-        P=pd.merge(p_dsa_ald,ald[['ALD','p']],how="inner",on="ALD")
-        P.rename(columns={'p_x':'p_dsa_ald','p_y':'p_ald'},inplace=True)
-        P=pd.merge(P,pop_ASD,how="inner",on=["sex","age","dpt"])
-        P.rename(columns={'value':'p_dsa'},inplace=True)
-        P['p'] = P['p_dsa_ald']*P['p_ald']/P['p_dsa']
-        self.P=P[['sex','age','dpt','ALD','p']]
-        
+        ## Get statistics about ALD per sex/age/dpt
+        dataset_file= os.path.join(self.context.datarep,"ALD_p.csv")
+        self.P=pd.read_csv(dataset_file)
         #p gives the conditional probabilities of having ALD knowing the dpt, sex and age
-        
-        #free memory
-        #del(pop_ASD,pop_AS,ald_per_dpt,ald_per_sexage,pALD_knowing_sexage,p_d_ald,p_sa_ald)
         
         
     def generate(self, n=0):
@@ -442,9 +373,6 @@ class OpenPatientFactory(PatientFactory):
                     if len(gps)==0:
                         #si il n'y en a pas, même département
                         gps=[gp for gp in self.GPs if gp.dpt==p.Dpt]
-                        #print("\tGP found")
-                    #else:
-                    #    print("\tGP not found")
                     if len(gps)==0:
                         #sinon, on les prends tous
                         gps=self.GPs
@@ -454,22 +382,174 @@ class OpenPatientFactory(PatientFactory):
                     
                 #generate a list of ALDs 
                 pALD=self.P[(self.P['dpt']==ps['dpt']) & (self.P['age']==ps['age'])& (self.P['sex']==ps['sex'])][["ALD",'p']]
-                p.ALD=pALD[pALD['p']>=rd.rand(len(pALD))]['ALD']
+                p.ALD=list(pALD[pALD['p']>=rd.rand(len(pALD))]['ALD'])
             
                 patients.append( p )
     
         return patients
 
+
+class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
+    '''
+    The OpenDrugsDeliveryFactory is based on the OpenMedic dataset to generate 
+    drugs deliveries for patients.
+    
+    This class requires two csv files to feed the main dataframes
+    
+    required files:
+        - drugs_freq.csv
+        - mean_deliveries.csv
+
+    Attributes
+    ----------
+    drug_freq: Pandas Dataframe, probabilities to deliver each CIP13 code per
+        age, sex and region
+        
+    mean_deliveries: Pandas dataframe, mean numbers of deliveries 
+        per type of personnes
+    '''
+    def __init__(self, con, Pharmacies):
+        """
+        Parameters
+        ----------
+        con : Factory context
+            Include a connexion to the nomenclature database
+        Pharmacies : List of Pharmacies
+            Represent possible care delivers of drugs.
+        """
+            
+        super().__init__(con, Pharmacies)
+        try:
+            self.drug_freq=pd.read_csv( os.path.join(self.context.datarep,"drugs_freq.csv") )
+            self.mean_deliveries=pd.read_csv( os.path.join(self.context.datarep,"mean_deliveries.csv") )
+        except FileNotFoundError:
+            print("Error: missing data file")
+            self.drug_freq=None
+            self.mean_deliveries=None
+        
+    def generate(self, p):
+        """
+        Generate the drug deliveries for one patient p
+        The deliveries are added to the patient itself.
+        
+        A patient always goes in the same pharmacy
+        
+        Parameters
+        ----------
+        p: Patient
+            A patient to which generate a drug delivery
+        """
+        
+        #compute the patient age
+        age= relativedelta(date.today(), p.BD).years
+        
+        ## TODO déterminer la région à partir du dpt
+        region=53
+        
+        sex=int(p.Sex)
+        if sex==9:
+            sex=rd.choice([1,2])
+
+        """        
+        #we first determine the number of deliveries over the total life of the patient !!
+        nb=0
+        if age<20:
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += age * int(np.abs(rd.normal(loc=mean,scale=5)))
+        elif age<60:
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += 20 * int(np.abs(rd.normal(loc=mean,scale=5)))
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==20) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += (age-20) * int(np.abs(rd.normal(loc=mean,scale=10)))
+        elif age<95:
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += 20 * int(np.abs(rd.normal(loc=mean,scale=5)))
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==20) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += 40 * int(np.abs(rd.normal(loc=mean,scale=10)))
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==60) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += (age-60) * int(np.abs(rd.normal(loc=mean,scale=10)))
+        else:
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += 20 * int(np.abs(rd.normal(loc=mean,scale=5)))
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==20) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += 40 * int(np.abs(rd.normal(loc=mean,scale=10)))
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==60) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += 35 * int(np.abs(rd.normal(loc=mean,scale=10)))
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==95) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb += (age-95) * int(np.abs(rd.normal(loc=mean,scale=10)))
+        """
+        #we first determine the number of deliveries within a year
+        if age<20:
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb = int(np.abs(rd.normal(loc=mean,scale=5)))
+        elif age<60:
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==20) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb = int(np.abs(rd.normal(loc=mean,scale=10)))
+        elif age<95:
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==60) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb = int(np.abs(rd.normal(loc=mean,scale=10)))
+        else:
+            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==95) & (self.mean_deliveries['sex']==sex)]['mean']
+            nb = int(np.abs(rd.normal(loc=mean,scale=10)))
+        
+        # select the drugs from the OpenMedic dataset
+        if age<20:
+            drugs = self.drug_freq[(self.drug_freq['age']==0) & (self.drug_freq['sexe']==sex) & (self.drug_freq['BEN_REG']==region)]
+        elif age<60:
+            drugs = self.drug_freq[(self.drug_freq['age']==20) & (self.drug_freq['sexe']==sex) & (self.drug_freq['BEN_REG']==region)]
+        elif age<90:
+            drugs = self.drug_freq[(self.drug_freq['age']==60) & (self.drug_freq['sexe']==sex) & (self.drug_freq['BEN_REG']==region)]
+        else:
+            drugs = self.drug_freq[(self.drug_freq['age']==99) & (self.drug_freq['sexe']==sex) & (self.drug_freq['BEN_REG']==region)]
+
+        #generate a collection of nb drug deliveries
+        drugs=rd.choice(np.array(drugs['CIP13']), nb, p=np.array(np.array(drugs['p'])), replace=True)
+        if len(drugs)==0:
+            p.drugdeliveries=[]
+            return
+        
+        #selection des pharmacies de la même ville, où a défault dans le même département
+        pharms=[ph for ph in self.Pharmacies if ph.code_commune==p.City]
+        if len(pharms)==0:
+            pharms=[ph for ph in self.Pharmacies if ph.dpt==p.Dpt]
+        if len(pharms)==0:
+            #sinon, on les prends tous
+            pharms=self.Pharmacies
+            
+        #et on tire au hasard au milieu de ces pharmacies
+        pharm=rd.choice( pharms )
+        for drug in drugs:
+            dd=DrugDelivery(drug, p, pharm)
+    
+            dd.date_debut=self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+            dd.date_fin=dd.date_debut
+            p.drugdeliveries.append(dd)
+            
+
+
 class OpenShortStayFactory(ShortStayFactory):
+    """
+    Factory of short hospital stays (séjours MCO) based on PMSI statistics
+    
+    Requires files:
+        - p_host.csv
+        - p_sej.csv
+        - cim_stats.json
+        
+    Attributes
+    ----------
+    hospitals: list of hospital
+    
+    p_hosp: proba of behing hospitalized in the year
+    p_sej: number of hospitalisation per years 
+    cims_stats: statistics of diagnosis codes (primary diagnosis, related and associate diagnosis and CCAM codes)
+    
+    cims: (internal) list of primary diagnosis
+    cim_id: (internal) 
+    
+    """
     def __init__(self, con, hospitals):
         """
-        Factory of short hospital stays (séjours MCO) based on PMSI statistics
-        
-        Requires files:
-            - p_host.csv
-            - p_sej.csv
-            - cim_stats.json
-
         Parameters
         ----------
         con : Context
@@ -481,11 +561,22 @@ class OpenShortStayFactory(ShortStayFactory):
         self.hospitals = hospitals
         
         #load statistics details about hospital stays
-        self.p_hosp=pd.read_csv("./data/p_host.csv")
-        self.p_sej=pd.read_csv("./data/p_sej.csv")
+        try:
+            self.p_hosp=pd.read_csv( os.path.join(self.context.datarep,"p_host.csv") )
+            self.p_sej=pd.read_csv( os.path.join(self.context.datarep,"p_sej.csv") )
+        except FileNotFoundError:
+            print("Error: missing data file")
+            return
         self.p_sej.set_index("dpt",inplace=True)
-        f=open("./data/PMSI/cim_stats.json")
-        self.cims_stats=json.load(f)
+        
+        try:
+            f=open( os.path.join(self.context.datarep,"cim_stats.json") )
+            self.cims_stats=json.load(f)
+        except FileNotFoundError:
+            print("Error: missing data file")
+            self.p_hosp=None
+            self.p_sej=None
+        
         counts={i:[s['count']] for i,s in self.cims_stats.items()}
         counts=pd.DataFrame.from_dict(counts, orient="index")
         counts['p']=counts[0]/np.sum(counts[0])
@@ -495,6 +586,8 @@ class OpenShortStayFactory(ShortStayFactory):
     def __generate_one__(self, p,age,sex,dpt):
         """
         Generate the details of a short hopital stay
+        
+        TODO add the related diagnosis
 
         Parameters
         ----------
@@ -521,9 +614,18 @@ class OpenShortStayFactory(ShortStayFactory):
         counts=pd.DataFrame.from_dict( dict(self.cims_stats[DP]["cim"]), orient='index' )
         counts[0]=counts[0]/np.sum(counts[0])
         stay.cim_das=list(counts.sample(n=4,weights=counts[0]).reset_index()['index'])
-        """
-        stay.ccam = []
-        """
+        
+        ##generate a GHM code
+        counts=pd.DataFrame.from_dict( dict(self.cims_stats[DP]["ghm"]), orient='index' )
+        counts[0]=counts[0]/np.sum(counts[0])
+        stay.GHM=str(counts.sample(n=1,weights=counts[0]).reset_index()['index'])
+        
+        #generates up to 4 medical acts (CCAM codes)
+        nb_acts=rd.randint(5)
+        counts=pd.DataFrame.from_dict( dict(self.cims_stats[DP]["ccam"]), orient='index' )
+        counts[0]=counts[0]/np.sum(counts[0])
+        stay.ccam=list(counts.sample(n=nb_acts,weights=counts[0]).reset_index()['index'])
+        
         p.hospitalStays.append(stay)
         
         
@@ -546,7 +648,6 @@ class OpenShortStayFactory(ShortStayFactory):
         sex=int(p.Sex) #1,2 ... pour le 9, on tire aléatoirement
         if sex==9:
             sex=rd.randint(2)+1
-            
         
         #probabilité d'être hospitalisé au moins une fois
         phosp=np.sum( self.p_hosp[(self.p_hosp['dpt'].astype(str)==str(dpt)) & (self.p_hosp['age']==age) & (self.p_hosp['sex']==sex) ]['p'] )
@@ -560,34 +661,45 @@ class OpenShortStayFactory(ShortStayFactory):
 
 if __name__ == "__main__":
     
-    context = FactoryContext(nomenclatures="/home/tguyet/Progs/medtrajectory_datagen/Generator/snds_nomenclature.db")
-    """
-    factory = FinessPharmacyFactory(context, [35])
-    ps= factory.generate()
-    for p in ps:
-        print(p)
-    """
-    factory = FinessEtablissementFactory(context, [22,35])
-    etab= factory.generate()
-    for p in etab:
-        print(p)
-    
+    context = OpenDataFactoryContext(datarep="/home/tguyet/Progs/medtrajectory_datagen/datarep")
+
+    ## Liberal physicians
     factory = OpenPhysicianFactory(context, [22,35])
-    GPs= factory.generate(1000)
-    for p in GPs:
+    physicians= factory.generate(100)
+    for p in physicians:
         print(p)
-    
+        
     """
-    spes =  [ p.speciality for p in etab ]
+    #graphic
+    spes =  [ p.speciality for p in physicians ]
     pd.Series(spes).hist(bins=50)
     """
+    
+    #General practicioners
+    GPs =  [ p for p in physicians if p.speciality==1 ]
     
     factory = OpenPatientFactory(context, GPs, [22,35])
     patients= factory.generate(1000)
     for p in patients:
         print(p)
-    
+        
+    factory = FinessEtablissementFactory(context, [22,35])
+    etab= factory.generate()
+    for p in etab:
+        print(p)
+        
     factory=OpenShortStayFactory(context,etab)
     for p in patients:
         factory.generate(p)
         print(p.hospitalStays)
+    
+    factory = FinessPharmacyFactory(context, [35])
+    ps= factory.generate(100)
+    for p in ps:
+        print(p)
+    
+    factory=OpenDrugsDeliveryFactory(context,ps)
+    for p in patients:
+        factory.generate(p)
+        print(p.drugdeliveries)
+    
