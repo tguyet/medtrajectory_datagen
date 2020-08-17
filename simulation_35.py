@@ -221,81 +221,35 @@ class OpenPhysicianFactory(PhysicianFactory):
         self.dpts=dpts
     
     def generate(self, n=0):
-        dataset_file= os.path.join(self.context.datarep,"ps-infospratiques.csv")
-        data = pd.read_csv(dataset_file, sep=";", header=None, encoding="latin_1")
-        data.rename(columns={
-                        0:"Sexe", 
-                        1:"nom", 
-                        2:"prenom", 
-                        3:"Adresse ligne 1,", 
-                        4:"Adresse ligne 2",
-                        5:"Adresse ligne 3",
-                        6:"Adresse ligne 4",
-                        7:"CP", ## un numéro qui sembl être un CP (mais des soucis avec les 2 ... (?))
-                        8:"Ville",
-                        9:"Téléphone", 
-                        10:"Profession", #code de profession (voir nommenclature ci-dessous)
-                        11:"mode", #mode d'exercice
-                        12:"nature", #nature d'exercice
-                        13:"convention", 
-                        14:"option contrat", 
-                        15:"sesam_vital", 
-                        16:"Type", # Liberal/hors activité, etc.
-                        17:"Type consultation", 
-                        18:"heure_debut", 
-                        19:"heure_debut",
-                        20:"jour"}, inplace=True)
-        # Médecins libéraux exercant en ville dans le département 35
-        datadpt=data[(data['CP']//1000==int(self.dpts[0])) & (data['Type']!=0) & (data['Type']!=6) & (data['Type']!=7) & (data['Type']!=8) ]
+        dataset_file= os.path.join(self.context.datarep,"medecins.csv")
+        medecins = pd.read_csv(dataset_file)
         
+        medecins_dpt=medecins[ (medecins['CP']//1000==int(self.dpts[0])) ]
         for dpt in self.dpts[1:]:
-            datadpt = pd.concat( (datadpt, data[(data['CP']//1000==int(dpt)) & (data['Type']!=0) & (data['Type']!=6) & (data['Type']!=7) & (data['Type']!=8) ]) )
-            
-        # codage du sex selon la IR_SEX_COD
-        datadpt["Sexe"].fillna("9",inplace=True)
-        datadpt["Sexe"]=datadpt["Sexe"].str.replace(pat="F",repl="2")
-        datadpt["Sexe"]=datadpt["Sexe"].str.replace(pat="H",repl="1")
-        # suppression des CEDEX
-        datadpt["Ville"]=datadpt["Ville"].str.replace(pat=" CEDEX.*",repl="", regex=True)
-        
-        datadpt=datadpt[["Sexe","nom","prenom","CP","Ville","Profession"]].drop_duplicates()
-        # on supprime les "non-médecins" (parce qu'ils ne correspondent pas à cette classe des spécialistes)
-        datadpt=datadpt[ datadpt["Profession"]!=1 ] # suppression dans ambulanciers
-        datadpt=datadpt[ datadpt["Profession"]!=2 ] # suppression dans anathamo-patho
-        datadpt=datadpt[ (datadpt["Profession"]<18) | (datadpt["Profession"]>21) ] # suppression des dentistes
-        datadpt=datadpt[ (datadpt["Profession"]<24) | (datadpt["Profession"]>32) ] # suppression des fournisseurs de matériel
-        datadpt=datadpt[ (datadpt["Profession"]!=39) ] # suppression des infirmiers
-        datadpt=datadpt[ (datadpt["Profession"]<40) | (datadpt["Profession"]>42)] # suppression des laboratoires
-        datadpt=datadpt[ (datadpt["Profession"]!=43) ] # suppression des kinés
-        datadpt=datadpt[ (datadpt["Profession"]!=57) ] # suppression des orthophonistes
-        datadpt=datadpt[ (datadpt["Profession"]!=58) ] # suppression des orthoptiste
-        datadpt=datadpt[ (datadpt["Profession"]!=58) ] # suppression des pédicures-podologues
-        datadpt=datadpt[ (datadpt["Profession"]<62) | (datadpt["Profession"]>63)] # suppression des pharmaciens
-        datadpt=datadpt[ (datadpt["Profession"]!=71) ] # suppression des sages-femmes
-        
+            medecins_dpt = pd.concat( (medecins_dpt, medecins[(medecins['CP']//1000==int(dpt))] ) )
         if n>0:
-            datadpt=datadpt.sample(n=n, random_state=1)
+            medecins_dpt=medecins_dpt.sample(n=n, random_state=1)
         
         physicians=[]
-        for index, ps in datadpt.iterrows():
+        for index, ps in medecins_dpt.iterrows():
             if ps["Profession"]<=47 and ps["Profession"]>=45:
                 p=GP()
                 p.dpt = "%02d"%(ps['CP']//1000)
                 p.id = super().__generatePSNUM__(p)
                 p.sex = ps["Sexe"]
                 p.CP=ps['CP']
-                p.code_commune="%03d"%(ps['CP']%1000) #code issue du CP
+                p.code_commune=ps["Code_commune_INSEE"]
                 p.finess=""
                 p.nom_commune=ps['Ville']
                 
                 physicians.append(p)
             else: #specialists
                 p=Specialist()
-                p.dpt = ps['CP']//1000
+                p.dpt = "%02d"%(ps['CP']//1000)
                 p.id = super().__generatePSNUM__(p)
                 p.sex = ps["Sexe"]
                 p.CP=ps['CP']
-                p.code_commune="" #TODO ??
+                p.code_commune=ps["Code_commune_INSEE"]
                 p.finess=""
                 p.nom_commune=ps['Ville']
                 try:
