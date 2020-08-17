@@ -283,11 +283,11 @@ class simDB(simulation):
                 
                 ##### Attributs importants (utilisés) ####
                 DGN_PAL	=	stay.DP,	                #	chaîne de caractères	Diagnostic principal (DP)
-                DGN_REL	=	"",	                    #	chaîne de caractères	Diagnostic relié (DR)
+                DGN_REL	=	stay.DRel,	                    #	chaîne de caractères	Diagnostic relié (DR)
                 
                 RSS_NUM	=	"",	                #	chaîne de caractères	Numéro de version du format du RSA
                 
-                GRC_GHM	=	"",	        #	chaîne de caractères	GHM calculé par la clinique
+                GRC_GHM	=	stay.GHM,	        #	chaîne de caractères	GHM calculé par la clinique
                 
                 SOR_ANN	=	stay.finish_date.year,	            #	année	Année de sortie
                 SOR_MOI	=	stay.finish_date.month,	            #	date	Mois de sortie
