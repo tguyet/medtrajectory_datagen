@@ -233,8 +233,9 @@ class EtablissementFactory:
 
 
 class VisitFactory:
-    def __init__(self, con, Specialists):
+    def __init__(self, con, physicians):
         self.context=con
+        self.physicians=physicians
         
     def generate_one(self, p):
         """

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from Generator.data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory, DrugsDeliveryFactory
-from Generator.database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay, DrugDelivery
+from Generator.data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory, DrugsDeliveryFactory, VisitFactory
+from Generator.database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay, DrugDelivery, MedicalVisit
 import os
 import numpy as np
 import pandas as pd
@@ -613,6 +613,65 @@ class OpenShortStayFactory(ShortStayFactory):
             self.__generate_one__(p,age,sex,dpt)
 
 
+
+class OpenVisitFactory(VisitFactory):
+    
+    def __init__(self, con, physicians):
+        super().__init__(con, physicians)
+        
+        #Load the statistics computed from Open Data
+        self.nb_prs_spedpt =pd.read_csv( os.path.join(self.context.datarep, "nb_prs_dptspe.csv") )
+        self.nb_prs_spedpt.set_index(['dpt','exe_spe'],inplace=True)
+        self.p_nat_spedpt =pd.read_csv( os.path.join(self.context.datarep, "p_prsnat_dptspe.csv") )
+        self.p_nat_spedpt.set_index(['dpt','exe_spe'],inplace=True)
+        
+        
+    def generate(self, p):
+        """
+
+        Parameters
+        ----------
+        p : Patient
+            DESCRIPTION.
+        """
+        #compute the list of specialties that are actually in the set of physicians !!
+        spes = list(set([ p.speciality for p in self.physicians]))
+        dpt  = p.Dpt
+        
+        for spe in spes:
+            #random number of visits for a specialist
+            try:
+                nb=int(np.floor(rd.exponential(self.nb_prs_spedpt.loc[dpt,spe]['nb'])))
+            except KeyError:
+                print("Unknown prs for spe/dpt:",spe,"/",dpt)
+                continue
+            except TypeError:
+                print("Unknown prs for spe/dpt:",spe,"/",dpt)
+                continue
+            
+            if spe==1:
+                #Generalist consultation => Medecin Traitant
+                for i in range(nb):
+                    visit = MedicalVisit(p,p.MTT)
+                    visit.code_pres = self.p_nat_spedpt.loc[dpt,spe].sample(1,weights='p')['prs_nat'].iloc[0]
+                    visit.date_debut = self.context.generate_date(begin = p.BD, end=date(2021,1,1))
+                    visit.date_fin = visit.date_debut
+                    p.visits.append( visit )
+            else:
+                # always the same specialist for a patient
+                physis=[ p for p in self.physicians if p.speciality==spe]
+                med = rd.choice(physis) 
+                for i in range(nb):
+                    visit = MedicalVisit(p, med)
+                    visit.code_pres = self.p_nat_spedpt.loc[dpt,spe].sample(1,weights='p')['prs_nat'].iloc[0]
+                    visit.date_debut = self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+                    visit.date_fin = visit.date_debut
+                    p.visits.append( visit )
+                
+            
+
+
+
 if __name__ == "__main__":
     
     context = OpenDataFactoryContext(datarep="/home/tguyet/Progs/medtrajectory_datagen/datarep")
@@ -637,6 +696,12 @@ if __name__ == "__main__":
     for p in patients:
         print(p)
         
+    factory=OpenVisitFactory(context,physicians)
+    for p in patients:
+        factory.generate(p)
+        print(p.visits)
+        
+    """
     factory = FinessEtablissementFactory(context, [22,35])
     etab= factory.generate()
     for p in etab:
@@ -656,4 +721,4 @@ if __name__ == "__main__":
     for p in patients:
         factory.generate(p)
         print(p.drugdeliveries)
-    
+    """
