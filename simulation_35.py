@@ -27,6 +27,14 @@ class OpenDataFactoryContext(FactoryContext):
         else:
             super().__init__(os.path.join(datarep,"snds_nomenclature.db"))
         self.datarep=datarep
+        
+        #Load Dpt/Region map
+        try:
+            self.reg_dpt = pd.read_csv( os.path.join(self.context.datarep,"reg_dpt.csv"), sep=";" )
+            self.reg_dpt.set_index("DPT_COD")
+        except FileNotFoundError:
+            print("Error: missing data file")
+            self.reg_dpt=None
 
 
 class FinessEtablissementFactory(EtablissementFactory):
@@ -397,8 +405,8 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
         #compute the patient age
         age= relativedelta(date.today(), p.BD).years
         
-        ## TODO déterminer la région à partir du dpt
-        region=53
+        ## Déterminer la région à partir du dpt
+        region=self.con.reg_dpt.loc[p.Dpt]['REG_COD']
         
         sex=int(p.Sex)
         if sex==9:
