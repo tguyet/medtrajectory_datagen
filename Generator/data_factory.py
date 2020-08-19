@@ -73,7 +73,7 @@ class PharmacyFactory:
             p=Provider()
             p.dpt = self.context.__genDpt2__()
             p.cat_nat=50 #pharmacie de ville
-            p.id = p.dpt+p.catpro+"{:05}".format(rd.randint(99999))
+            p.id = str(p.dpt)+str(p.catpro)+"{:05}".format(rd.randint(99999))
             Pharmacies.append(p)
         return Pharmacies
 
@@ -254,9 +254,9 @@ class VisitFactory:
 
 
 class ActFactory:
-    def __init__(self, con, Specialists):
+    def __init__(self, con, physicians):
         self.context=con
-        self.spes = Specialists
+        self.physicians = physicians
         
         cur = self.context.conn.cursor()
         cur.execute("SELECT CAM_PRS_IDE_COD FROM IR_CCAM_V54;")
@@ -269,7 +269,7 @@ class ActFactory:
         - p patient
         """
         ccam = rd.choice(self.ccams)
-        spe = rd.choice(self.spes)
+        spe = rd.choice(self.physicians)
         mact= MedicalAct(ccam, p,spe)
         mact.date_debut=self.context.generate_date(begin = p.BD, end=date(2020,1,1))
         mact.date_fin=mact.date_debut

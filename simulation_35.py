@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from Generator.data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory, DrugsDeliveryFactory, VisitFactory
-from Generator.database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay, DrugDelivery, MedicalVisit
+from Generator.data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory, DrugsDeliveryFactory, VisitFactory, ActFactory
+from Generator.database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay, DrugDelivery, MedicalVisit, MedicalAct
 import os
 import numpy as np
 import pandas as pd
@@ -30,8 +30,8 @@ class OpenDataFactoryContext(FactoryContext):
         
         #Load Dpt/Region map
         try:
-            self.reg_dpt = pd.read_csv( os.path.join(self.context.datarep,"reg_dpt.csv"), sep=";" )
-            self.reg_dpt.set_index("DPT_COD")
+            self.reg_dpt = pd.read_csv( os.path.join(self.datarep,"reg_dpt.csv"), sep=";" )
+            self.reg_dpt.set_index("DPT_COD", inplace=True)
         except FileNotFoundError:
             print("Error: missing data file")
             self.reg_dpt=None
@@ -406,7 +406,7 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
         age= relativedelta(date.today(), p.BD).years
         
         ## Déterminer la région à partir du dpt
-        region=self.con.reg_dpt.loc[p.Dpt]['REG_COD']
+        region=self.context.reg_dpt.loc[p.Dpt]['REG_COD']
         
         sex=int(p.Sex)
         if sex==9:
@@ -622,7 +622,10 @@ class OpenShortStayFactory(ShortStayFactory):
 
 
 
-class OpenVisitFactory(VisitFactory):
+class OpenVisitFactoryDpt(VisitFactory):
+    """
+    A visit Factory that is based on the DAMIR R files, representative of dpt
+    """
     
     def __init__(self, con, physicians):
         super().__init__(con, physicians)
@@ -678,7 +681,158 @@ class OpenVisitFactory(VisitFactory):
                 
             
 
+class OpenVisitFactory(VisitFactory):
+    """
+    A visit factory based on the A files of DAMIR, data based representative of age and sex, but at the regional level
+    """
+    
+    def __init__(self, con, physicians):
+        super().__init__(con, physicians)
+        
+        #Load the statistics computed from Open Data
+        self.nb_prs =pd.read_csv( os.path.join(self.context.datarep, "nb_prs_rragesex.csv") )
+        self.nb_prs.set_index(['RR','age','sex','exe_spe'],inplace=True)
+        self.p_nat =pd.read_csv( os.path.join(self.context.datarep, "p_prsnat_rragesex.csv") )
+        self.p_nat.set_index(['RR','age','sex','exe_spe'],inplace=True)
+        
+        
+    def generate(self, p):
+        """
+        Parameters
+        ----------
+        p : Patient
+            DESCRIPTION.
+        """
+        #compute the list of specialties that are actually in the set of physicians !!
+        spes = list(set([ p.speciality for p in self.physicians]))
+        
+        #get the location region of the patient
+        RR=self.context.reg_dpt.loc[p.Dpt]['REG_COD']
+        
+        age= relativedelta(date.today(), p.BD).years
+        age= age-age%10 # arrondis à la dixaine
+        #2 exceptions: pas de valeurs 10, pas de détails >80
+        if age==10:
+            age=0
+        if age>80:
+            age=80
+            
+        sex=int(p.Sex) #1,2 ... pour le 9, on tire aléatoirement
+        if sex==9:
+            sex=rd.randint(2)+1
+        
+        for spe in spes:
+            #random number of visits for a specialist
+            try:
+                nb=int(np.floor(rd.exponential(self.nb_prs.loc[RR,age,sex,spe]['nb'])))
+            except KeyError:
+                print("Unknown prs for spe/RR/age/sex:",spe,"/",RR,"/",age,"/",sex)
+                continue
+            except TypeError:
+                print("Unknown prs for spe/RR/age/sex:",spe,"/",RR,"/",age,"/",sex)
+                continue
+            
+            if spe==1:
+                #Generalist consultation => Medecin Traitant
+                med = p.MTT
+            else:
+                # always the same specialist for a patient
+                physis=[ p for p in self.physicians if p.speciality==spe]
+                med = rd.choice(physis) 
+                
+            for i in range(nb):
+                visit = MedicalVisit(p, med)
+                visit.code_pres = self.p_nat.loc[RR,age,sex,spe].sample(1,weights='p')['prs_nat'].iloc[0]
+                visit.date_debut = self.context.generate_date(begin = p.BD, end=date(2021,1,1))
+                visit.date_fin = visit.date_debut
+                p.visits.append( visit )
 
+
+class OpenActFactory(ActFactory):
+    def __init__(self, con, physicians):
+        super().__init__(con, physicians)
+        
+        
+        #Load the statistics computed from Open Data
+        self.nb_acts =pd.read_csv( os.path.join(self.context.datarep, "nb_acts_rragesex.csv") )
+        self.nb_acts.set_index(['RR','age','sex'],inplace=True)
+        self.nb_exespe =pd.read_csv( os.path.join(self.context.datarep, "p_exespe_acts.csv") )
+        self.nb_exespe.set_index(['RR','age','sex','prs_nat'],inplace=True)
+        self.p_ccam =pd.read_csv( os.path.join(self.context.datarep, "p_act_prs.csv") )
+        self.p_ccam.set_index(['prs_nat'],inplace=True)
+    
+    def generate_one(self, p):
+        """
+        - p patient
+        """
+        ccam = rd.choice(self.ccams)
+        spe = rd.choice(self.spes)
+        mact= MedicalAct(ccam, p,spe)
+        mact.date_debut=self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+        mact.date_fin=mact.date_debut
+        
+        p.medicalacts.append(mact)
+
+    def generate(self, p):
+        """
+        Parameters
+        ----------
+        p : Patient
+            DESCRIPTION.
+        """
+        
+        #get the location region of the patient
+        RR=self.context.reg_dpt.loc[p.Dpt]['REG_COD']
+        
+        age= relativedelta(date.today(), p.BD).years
+        age= age-age%10 # arrondis à la dixaine
+        #2 exceptions: pas de valeurs 10, pas de détails >80
+        if age==10:
+            age=0
+        if age>80:
+            age=80
+            
+        sex=int(p.Sex) #1,2 ... pour le 9, on tire aléatoirement
+        if sex==9:
+            sex=rd.randint(2)+1
+        
+        nb_prs=self.nb_acts.loc[RR,age,sex]
+        for index, row in nb_prs.iterrows():
+            prs_nat = row['prs_nat']
+            if prs_nat==1352: ##pas de CCAM associé (?) TODO: vérifier la génération de données
+                continue
+            
+            #generate a random number of cares of type 'prs_nat'
+            nb = int(np.floor(rd.exponential(row['nb'])))
+            for i in range(nb):
+                # generate a random CCAM code for this care
+                ccam = str(self.p_ccam.loc[prs_nat].sample(n=1,weights="p")["ccam"])
+                
+                #find a physician ...
+                
+                #he/she must have the right specialty
+                spes=[]
+                it=0
+                while len(spes)==0 and it<10:
+                    # generate a specialty for this care
+                    spe = int(self.nb_exespe.loc[RR,age,sex,prs_nat].sample(n=1,weights="p")["exe_spe"])
+                    
+                    spes=[ ps for ps in self.physicians if ps.speciality==spe]
+                    it+=1
+                if len(spes)==0:
+                    print("no specialist to deliver act "+str(ccam)+": you will die!!")
+                    continue
+                
+                #and prefer physician in the same Dpt
+                spes_loc=[ ps for ps in spes if str(ps.dpt)==str(p.Dpt)]
+                if len(spes_loc)==0:
+                    spes_loc=spes
+                
+                #create the care delivery and add it to the patient history
+                mact= MedicalAct(ccam, p, rd.choice(spes_loc))
+                mact.date_debut=self.context.generate_date(begin = p.BD, end=date(2021,1,1))
+                mact.date_fin=mact.date_debut
+                p.medicalacts.append(mact)
 
 if __name__ == "__main__":
     
@@ -704,12 +858,18 @@ if __name__ == "__main__":
     for p in patients:
         print(p)
         
+        
+    factory=OpenActFactory(context,physicians)
+    for p in patients:
+        factory.generate(p)
+        print(p.medicalacts)
+    """
     factory=OpenVisitFactory(context,physicians)
     for p in patients:
         factory.generate(p)
         print(p.visits)
         
-    """
+    
     factory = FinessEtablissementFactory(context, [22,35])
     etab= factory.generate()
     for p in etab:
