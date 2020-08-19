@@ -15,7 +15,7 @@ from datetime import date, datetime
 from shutil import copyfile
 import sqlite3
 
-from dateutil.relativedelta import *
+from dateutil.relativedelta import relativedelta
 from datetime import date
 
 class simDB(simulation):
@@ -148,7 +148,7 @@ class simDB(simulation):
                         IPP_SEX_COD = p.sex,#Sexe du PS
                         PFS_EXC_COM = p.code_commune,#Code commune adr. prof du P.S.
                         PFS_LIB_COM = p.nom_commune,#Libele commune
-                        PFS_COD_POS = p.cp,#Code postal adr. prof du P.S.
+                        PFS_COD_POS = p.CP,#Code postal adr. prof du P.S.
                         DTE_MOI_FIN = "",#
                         DTE_ANN_TRT = "",#
                         TRT_SNI_COD = "",#
@@ -238,7 +238,7 @@ class simDB(simulation):
                 ORG_CLE_NEW = beneficiaire.ORG_CLE_NEW,
                 BEN_DTE_INS = beneficiaire.BEN_DTE_INS,
                 BEN_DTE_MAJ = beneficiaire.BEN_DTE_MAJ
-            )
+        )
         
         beneficiaire_carto=Base.classes.CT_IDE_AAAA_GN(
                 id_carto = beneficiaire.ASS_NIR_ANO,
@@ -565,7 +565,7 @@ class simDB(simulation):
             BEN_RNG_GEM	=	ma.patient.RNG_GEM,	            #	nombre entier           # FOREIGN KEY: IR_BEN_R [ BEN_NIR_PSA, BEN_RNG_GEM ]
         
             ###### identification des acteurs de santé (EXE: executant, PRE: prescripteur, MTT: medecin traitant) ######
-            ETB_PRE_FIN	=	self.etablissement.id,	         #	chaîne de caractères    # FOREIGN KEY:      BE_IDE_R [ IDE_ETA_NU8 ]
+            ETB_PRE_FIN	=	ma.prescriber.finess,	 #	chaîne de caractères  n°FINESS de l'etablissement prescripteur   # FOREIGN KEY:      BE_IDE_R [ IDE_ETA_NU8 ]
             PFS_EXE_NUM	=	ma.provider.id,	     #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
             PFS_EXE_NUMC	=	"",	            #	
             PFS_PRE_NUM	=	ma.prescriber.id,	                    #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]

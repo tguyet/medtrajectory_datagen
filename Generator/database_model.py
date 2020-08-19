@@ -22,6 +22,7 @@ class PS: #professionnel de soins
         self.code_commune=""
         self.nom_commune=""
         self.CP=""
+        self.sex=9
         
 
 class Physician(PS):
@@ -32,7 +33,6 @@ class Physician(PS):
         PS.__init__(self)
         self.speciality=0 #PSP_SPE_COD (prescripteur), voir IR_SPE_V / IR_SPA_D, 0="non renseigné" (plutôt que PSE_SPE_COD (executant))
         self.catpro=1
-        self.sex=9
         
     def __str__(self):
         return "Physician ("+str(self.id)+") [spe: "+str(self.speciality)+"]"
