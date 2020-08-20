@@ -683,4 +683,10 @@ if gen_hosps_csv:
     print("\t generate cim_stats.json")
     with open( os.path.join(outdir,"cim_stats.json"),"w") as f:
         json.dump(cim_stats,f)
+        
+## COPY USEFUL FILES
+if outdir!=indir:
+    from shutil import copyfile
+    for fname in ['finess-clean.csv','reg_dpt.csv']:
+        copyfile(os.path.join(indir,fname), os.path.join(outdir,fname))
     
