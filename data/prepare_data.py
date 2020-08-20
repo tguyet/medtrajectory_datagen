@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-Spyder Editor
 
-This is a temporary script file.
+
+TODO:
+    * protect missing files (to finish)
+
+
+@author: Thomas Guyet
+@date: 08/2020
 """
 
 import pandas as pd
 import numpy as np
+import json
 
 import os.path
 outdir="../data"
@@ -18,7 +24,8 @@ gen_ALD_csv=False
 gen_medecins_csv=False
 gen_visits_csv=False
 gen_acts_csv=False
-gen_drugs_csv=True
+gen_drugs_csv=False
+gen_hosps_csv=True
 
 
 ############ Population ###################
@@ -483,4 +490,166 @@ if gen_drugs_csv:
     
     print("\t generate mean_deliveries.csv")
     mean_deliveries.to_csv( os.path.join(outdir,"mean_deliveries.csv") )
+    
+
+############ Hospitalisations ###################
+if gen_hosps_csv:
+    print("############ Hospitalisations ###################")
+    # "p_hosp.csv"
+    # "p_sej.csv"
+    
+    try:pop
+    except: pop=None
+    if pop is None:
+        try:
+            pop=pd.read_csv( os.path.join(outdir,"pop.csv") )
+        except:
+            print("Error while opening file pop.csv")
+    
+    #population par département
+    pop_D=pop.groupby(['dpt']).agg({"pop":"sum"})
+    pop_D= pop_D.reset_index()
+    pop_D.columns = pop_D.columns.get_level_values(0)
+    
+    #proba of Age, Sex per dpt
+    pop_AS_D=pop.groupby(["age","sex",'dpt']).agg({"pop":"sum"})
+    pop_AS_D= pop_AS_D.reset_index() #transform the group object into a dataframe
+    pop_AS_D.columns = pop_AS_D.columns.get_level_values(0)
+    nb_dpt=pd.merge(pop_AS_D,pop_D,on="dpt")
+    pop_AS_D['p']=nb_dpt['pop_x']/nb_dpt['pop_y']
+    
+    
+    sejours=pd.read_csv( os.path.join(indir,"PMSI/nbhosp_region.csv"),sep=";")[['Dpt',"nbsejours","nbpatients"]]
+    sejours.rename(columns={"Dpt":"dpt"},inplace=True)
+    
+    p_sej=pd.merge(sejours,pop_D,on='dpt')
+    p_sej['p']=p_sej["nbsejours"].astype(float)*p_sej["nbpatients"]/p_sej["pop"]
+    p_sej=p_sej[['dpt',"nbsejours",'p']]
+    p_sej.set_index("dpt",inplace=True)
+    p_sej.to_csv( os.path.join(outdir,"p_sej.csv") )
+    
+    # chargement du tableau de correspondance entre les numéros des régions 
+    # anciennes régions reconstruites manuellement puisque les stats sont 
+    # données en utilisant les anciennes régions comme délimiation administrative) 
+    # et les numéros des départements
+    reg_dpt=pd.read_csv( os.path.join(indir,"reg_dpt.csv"),sep=";")[["DPT_COD","REG_COD_AFF"]]
+    reg_dpt.rename(columns={"DPT_COD":"dpt","REG_COD_AFF":"reg"},inplace=True)
+    count_dpts_reg=reg_dpt.groupby(['reg']).agg({"dpt":"count"})
+    
+    #on définit une fonction qui divide le nombre de séjours par le nombre de département par région pour avoir des comptes par départements
+    # cette fonction est utilisée à plusieurs reprise par la suite
+    def norm_dpt(d):
+        return d['nbsej']/count_dpts_reg.loc[d['reg']]
+    
+    type_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_type_region.csv"),sep=";")[["reg","type","nbsej","DMS","nbpatients"]]
+    p_sejtype_dpt=pd.merge(reg_dpt, type_sej, how="left", on="reg")
+    p_sejtype_dpt=pd.merge(p_sejtype_dpt, count_dpts_reg, on="reg",suffixes=('','_count'))
+    #p_sejtype_dpt['nbpatients']=p_sejtype_dpt['nbpatients']/p_sejtype_dpt['dpt_count']
+    p_sejtype_dpt=pd.merge(p_sejtype_dpt,pop_D,on='dpt')
+    p_sejtype_dpt['nbsej']=p_sejtype_dpt['nbsej']/p_sejtype_dpt['dpt_count']
+    p_sejtype_dpt['p']=p_sejtype_dpt['nbsej']/p_sejtype_dpt['pop']
+    p_sejtype_dpt=p_sejtype_dpt[["reg","dpt","type","DMS",'nbsej',"p"]]
+    
+    #Chargement des statistques sur les sexes
+    p_sex_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_sexe_region.csv"),sep=";")[["reg","Type","Sexe","Nb séjours","DMS"]]
+    p_sex_sej.rename(columns={"Nb séjours":"nbsej", "Type":"type", "Sexe":"sex"}, inplace=True)
+    
+    p_sex_sejdpt=pd.merge(reg_dpt, p_sex_sej, how="left", on="reg")
+    
+    p_sex_sejdpt['nbsej']=p_sex_sejdpt.apply(norm_dpt,axis=1)
+    #on estime les probas en utilisant les comptes par départements obtenus précédement
+    p_sex_sejdpt=pd.merge(p_sex_sejdpt,p_sejtype_dpt[['dpt','type','nbsej']], on=['dpt','type'],suffixes=('','_tot'))
+    p_sex_sejdpt['p']=p_sex_sejdpt['nbsej']/p_sex_sejdpt['nbsej_tot']
+    p_sex_sejdpt=p_sex_sejdpt[['reg','dpt','type','sex','DMS','p']]
+    
+    #On fait la même chose pour les ages
+    p_age_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_age_region.csv"),sep=";")[["reg","type","age","nbsej","DMS"]]
+    p_age_sejdpt=pd.merge(reg_dpt, p_age_sej, how="left", on="reg")
+    p_age_sejdpt['nbsej']=p_age_sejdpt.apply(norm_dpt,axis=1)
+    
+    p_age_sejdpt=pd.merge(p_age_sejdpt,p_sejtype_dpt[['dpt','type','nbsej']], on=['dpt','type'],suffixes=('','_tot'))
+    p_age_sejdpt['p']=p_age_sejdpt['nbsej']/p_age_sejdpt['nbsej_tot']
+    p_age_sejdpt=p_age_sejdpt[['reg','dpt','type','age','DMS','p']]
+        
+    #on aligne sur les ages du dénominateurs (classes d'ages de 5 ans)
+    p_age_sejdpt.reset_index(inplace=True)
+    
+    #creation d'un tableau avec les entrées souhaitées
+    ages = np.arange(0,20)*5
+    dpt = p_age_sejdpt['dpt'].unique()
+    typef = p_age_sejdpt['type'].unique()
+    index = pd.MultiIndex.from_product([ages, dpt, typef], names = ["age", "dpt", 'type'])
+    p_agerefined_sejdpt=pd.DataFrame(index = index).reset_index()
+    
+    p_age_sejdpt.set_index(['dpt','type','age'],inplace=True)
+    
+    def augment(x):
+        DMS=0
+        p=0
+        if x['age']<=16:
+            DMS = p_age_sejdpt.loc[x['dpt'],x['type'],0]['DMS']
+            p = p_age_sejdpt.loc[x['dpt'],x['type'],0]['p']*5/16
+        elif 17<=x['age'] and x['age']<=24:
+            DMS = p_age_sejdpt.loc[x['dpt'],x['type'],17]['DMS']
+            p = p_age_sejdpt.loc[x['dpt'],x['type'],17]['p']*5/8
+        elif 25<=x['age'] and x['age']<=44:
+            DMS = p_age_sejdpt.loc[x['dpt'],x['type'],26]['DMS']
+            p = p_age_sejdpt.loc[x['dpt'],x['type'],26]['p']/4
+        elif 45<=x['age'] and x['age']<=54:
+            DMS = p_age_sejdpt.loc[x['dpt'],x['type'],46]['DMS']
+            p = p_age_sejdpt.loc[x['dpt'],x['type'],46]['p']/2
+        elif 55<=x['age'] and x['age']<=69:
+            DMS = p_age_sejdpt.loc[x['dpt'],x['type'],56]['DMS']
+            p = p_age_sejdpt.loc[x['dpt'],x['type'],56]['p']/3
+        elif 70<=x['age'] and x['age']<=79:
+            DMS = p_age_sejdpt.loc[x['dpt'],x['type'],70]['DMS']
+            p = p_age_sejdpt.loc[x['dpt'],x['type'],70]['p']/2
+        elif 80<=x['age']:
+            DMS = p_age_sejdpt.loc[x['dpt'],x['type'],80]['DMS']
+            p = p_age_sejdpt.loc[x['dpt'],x['type'],80]['p']/4
+        return [x['dpt'], x['type'], x['age'], p, DMS]
+    
+    p_agerefined_sejdpt=p_agerefined_sejdpt.apply(augment, axis=1, result_type='expand')
+    p_age_sejdpt.reset_index(inplace=True)
+    
+    p_agerefined_sejdpt.rename(columns={0:'dpt',1:'type',2:'age',3:'p',4:'DMS'},inplace=True)
+    
+    # on extrait les termes du numérateur dans une seule et même matrice
+    merge=pd.merge( p_sejtype_dpt[['dpt','type','p']], p_sex_sejdpt[['dpt','sex','type','p']], on=['dpt','type'], suffixes=('_type','_sex') )
+    merge=pd.merge( merge, p_agerefined_sejdpt[['dpt','type','age','p', 'DMS']], on=['dpt','type'] )
+    merge.rename( columns={'p':'p_age'},inplace=True )
+    
+    # puis on ajoute aussi le dénominateur
+    merge['dpt']=merge['dpt'].str.replace("02B","2B")
+    merge['dpt']=merge['dpt'].str.replace("02A","2A")
+    pop_AS_D['sex']=pop_AS_D['sex'].astype(int)
+    
+    merge=pd.merge( merge, pop_AS_D, on=['dpt','sex','age'] )
+    merge.rename( columns={'p':'p_pop'},inplace=True )
+    #on fait le calcul
+    merge['p'] = merge['p_age']*merge['p_sex']*merge['p_type']/merge['p_pop']
+    p_hosp=merge[['dpt','type','sex','age','p','DMS']]
+    
+    #on sauvegarde cela
+    p_hosp.to_csv( os.path.join(outdir,"p_host.csv") )
+    
+    
+    ############## CIM STATS
+    with open( os.path.join(indir,"PMSI/result.json")) as f:
+        result=json.load(f)
+    cims=pd.read_csv( os.path.join(indir,"PMSI/cimcounts_all.csv"))[['cim', 'count']]
+    cims.set_index("cim", inplace=True)
+    #on ajoute le compte à l'intérieur
+    tot_cims=0
+    for cim,val in result.items():
+        try:
+            val['count']=int(cims.loc[cim]['count'])
+        except KeyError:
+            val['count']=0
+        tot_cims += int(val['count'])
+    #sélection uniquement des cims avec des comptes non-nuls
+    cim_stats = {r:v for r,v in result.items() if v['count']!=0}
+    # et on sauvegarde cela
+    with open( os.path.join(outdir,"cim_stats.json"),"w") as f:
+        json.dump(cim_stats,f)
     

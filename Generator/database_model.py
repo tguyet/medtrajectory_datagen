@@ -86,7 +86,7 @@ class Patient:
         
         
     def __str__(self):
-        s="patient ("+self.NIR+") [sex: "+str(self.Sex)+", birth:"+self.BD.isoformat()+", loc:("+self.Dpt+","+self.City+")"
+        s="patient ("+self.NIR+") [sex: "+str(self.Sex)+", birth:"+self.BD.isoformat()+", loc:("+str(self.Dpt)+","+str(self.City)+")"
         if len(self.ALD)>0:
             s+=", ALD:" + str(self.ALD[0])
             for ald in self.ALD[1:]:
