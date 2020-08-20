@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Script that prepare the data for the Open Data simulation.
 
-
-TODO:
-    * protect missing files (to finish)
-
+It takes as input a list of files that are given in the `data` repository or that you have to 
+download using the `load_data.py` script.
+It generates a set of files containing statistiques or counts that are used by the Open Data Simulation. 
 
 @author: Thomas Guyet
 @date: 08/2020
@@ -15,22 +15,22 @@ import numpy as np
 import json
 
 import os.path
-outdir="../data"
+outdir="../datarep"
 indir="../data"
 
 
-gen_pop_csv=False
-gen_ALD_csv=False
-gen_medecins_csv=False
-gen_visits_csv=False
-gen_acts_csv=False
-gen_drugs_csv=False
+gen_pop_csv=True
+gen_ALD_csv=True
+gen_medecins_csv=True
+gen_visits_csv=True
+gen_acts_csv=True
+gen_drugs_csv=True
 gen_hosps_csv=True
 
 
 ############ Population ###################
 if gen_pop_csv:
-    print("############ Population ###################")
+    print("############ POPULATION ###################")
     # "pop.csv"
     try:
         pop=pd.read_excel( os.path.join(indir,"pop-sexe-age-quinquennal6816.xls"), sheet_name="COM_2016", skiprows=[i for i in range(13)], dtype={'CR':str})
@@ -141,11 +141,13 @@ if gen_ALD_csv:
 
 
 if gen_medecins_csv:
-    print("############  Medecins ########################")
+    print("############  PHYSICIANS ########################")
     # "medecins.csv"
-    
-    
-    data = pd.read_csv( os.path.join(indir,"ps-infospratiques.csv"), sep=";", header=None, encoding="latin_1")
+
+    try:    
+        data = pd.read_csv( os.path.join(indir,"ps-infospratiques.csv"), sep=";", header=None, encoding="latin_1")
+    except:
+        print("Error while opening file ps-infospratiques.csv")
     data.rename(columns={
                     0:"Sexe", 
                     1:"nom", 
@@ -198,7 +200,10 @@ if gen_medecins_csv:
     
     # Alignement des noms de ville
     
-    data = pd.read_csv(os.path.join(indir,"laposte_hexasmal.csv"), sep=";", usecols=["Code_commune_INSEE","Code_postal","Nom_commune"])
+    try:
+        data = pd.read_csv(os.path.join(indir,"laposte_hexasmal.csv"), sep=";", usecols=["Code_commune_INSEE","Code_postal","Nom_commune"])
+    except:
+        print("Error while opening file laposte_hexasmal.csv")
     # du fait des libellés d'acheminement, il peut y avoir plusieurs entrées identique pour la correspondance CP/INSEE
     data.drop_duplicates(inplace=True)
     
@@ -238,8 +243,10 @@ if gen_visits_csv:
             pop=pd.read_csv( os.path.join(outdir,"pop.csv") )
         except:
             print("Error while opening file pop.csv")
-          
-    damir=pd.read_csv( os.path.join(indir,"A201601.csv"), sep=';', usecols=['BEN_SEX_COD','AGE_BEN_SNDS','BEN_RES_REG','PSE_ACT_CAT','PSE_SPE_SNDS', 'PRS_NAT', "PRS_ACT_QTE"])
+    try:
+        damir=pd.read_csv( os.path.join(indir,"A201601.csv"), sep=';', usecols=['BEN_SEX_COD','AGE_BEN_SNDS','BEN_RES_REG','PSE_ACT_CAT','PSE_SPE_SNDS', 'PRS_NAT', "PRS_ACT_QTE"])
+    except:
+        print("Error while opening file A201601.csv")
     damir.rename(columns={"BEN_RES_REG":"RR","BEN_SEX_COD":"sex","AGE_BEN_SNDS":"age","PRS_NAT":"prs_nat","PSE_ACT_CAT":"pse_cat","PSE_SPE_SNDS":"exe_spe", "PRS_ACT_QTE":"act_dnb"}, inplace=True)
     damir_dnb=damir.groupby(["RR","sex","age","prs_nat","pse_cat","exe_spe"]).agg({"act_dnb":'sum'}).reset_index()
     damir_dnb.columns = damir_dnb.columns.get_level_values(0)
@@ -339,7 +346,10 @@ if gen_acts_csv:
     try: damir
     except NameError: damir = None
     if damir is None:
-        damir=pd.read_csv(os.path.join(indir,"A201601.csv"), sep=';', usecols=['BEN_SEX_COD','AGE_BEN_SNDS','BEN_RES_REG','PSE_ACT_CAT','PSE_SPE_SNDS', 'PRS_NAT', "PRS_ACT_QTE"])
+        try:
+            damir=pd.read_csv(os.path.join(indir,"A201601.csv"), sep=';', usecols=['BEN_SEX_COD','AGE_BEN_SNDS','BEN_RES_REG','PSE_ACT_CAT','PSE_SPE_SNDS', 'PRS_NAT', "PRS_ACT_QTE"])
+        except:
+            print("Error while opening file A201601.csv")
         damir.rename(columns={"BEN_RES_REG":"RR","BEN_SEX_COD":"sex","AGE_BEN_SNDS":"age","PRS_NAT":"prs_nat","PSE_ACT_CAT":"pse_cat","PSE_SPE_SNDS":"exe_spe", "PRS_ACT_QTE":"act_dnb"}, inplace=True)
         damir_dnb=damir.groupby(["RR","sex","age","prs_nat","pse_cat","exe_spe"]).agg({"act_dnb":'sum'}).reset_index()
         damir_dnb.columns = damir_dnb.columns.get_level_values(0)
@@ -409,8 +419,10 @@ if gen_drugs_csv:
             pop=pd.read_csv( os.path.join(outdir,"pop.csv") )
         except:
             print("Error while opening file pop.csv")
-    
-    data = pd.read_csv(os.path.join(indir,"OPEN_MEDIC_2019.zip"), header=0, sep=';', encoding="latin_1")
+    try:
+        data = pd.read_csv(os.path.join(indir,"OPEN_MEDIC_2019.zip"), header=0, sep=';', encoding="latin_1")
+    except:
+        print("Error while opening file OPEN_MEDIC_2019.zip")
     #remove labels of drugs and useless codes
     try:
         del(data['l_ATC1'])
@@ -494,7 +506,7 @@ if gen_drugs_csv:
 
 ############ Hospitalisations ###################
 if gen_hosps_csv:
-    print("############ Hospitalisations ###################")
+    print("############ HOSPITALISATIONS ###################")
     # "p_hosp.csv"
     # "p_sej.csv"
     
@@ -518,14 +530,18 @@ if gen_hosps_csv:
     nb_dpt=pd.merge(pop_AS_D,pop_D,on="dpt")
     pop_AS_D['p']=nb_dpt['pop_x']/nb_dpt['pop_y']
     
-    
-    sejours=pd.read_csv( os.path.join(indir,"PMSI/nbhosp_region.csv"),sep=";")[['Dpt',"nbsejours","nbpatients"]]
+    try:
+        sejours=pd.read_csv( os.path.join(indir,"PMSI/nbhosp_region.csv"),sep=";")[['Dpt',"nbsejours","nbpatients"]]
+    except:
+        print("Error while opening file PMSI/nbhosp_region.csv")
     sejours.rename(columns={"Dpt":"dpt"},inplace=True)
     
     p_sej=pd.merge(sejours,pop_D,on='dpt')
     p_sej['p']=p_sej["nbsejours"].astype(float)*p_sej["nbpatients"]/p_sej["pop"]
     p_sej=p_sej[['dpt',"nbsejours",'p']]
     p_sej.set_index("dpt",inplace=True)
+    
+    print("\t generate p_sej.csv")
     p_sej.to_csv( os.path.join(outdir,"p_sej.csv") )
     
     # chargement du tableau de correspondance entre les numéros des régions 
@@ -540,8 +556,10 @@ if gen_hosps_csv:
     # cette fonction est utilisée à plusieurs reprise par la suite
     def norm_dpt(d):
         return d['nbsej']/count_dpts_reg.loc[d['reg']]
-    
-    type_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_type_region.csv"),sep=";")[["reg","type","nbsej","DMS","nbpatients"]]
+    try:
+        type_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_type_region.csv"),sep=";")[["reg","type","nbsej","DMS","nbpatients"]]
+    except:
+        print("Error while opening file PMSI/nbsejours_type_region.csv")
     p_sejtype_dpt=pd.merge(reg_dpt, type_sej, how="left", on="reg")
     p_sejtype_dpt=pd.merge(p_sejtype_dpt, count_dpts_reg, on="reg",suffixes=('','_count'))
     #p_sejtype_dpt['nbpatients']=p_sejtype_dpt['nbpatients']/p_sejtype_dpt['dpt_count']
@@ -551,7 +569,10 @@ if gen_hosps_csv:
     p_sejtype_dpt=p_sejtype_dpt[["reg","dpt","type","DMS",'nbsej',"p"]]
     
     #Chargement des statistques sur les sexes
-    p_sex_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_sexe_region.csv"),sep=";")[["reg","Type","Sexe","Nb séjours","DMS"]]
+    try:
+        p_sex_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_sexe_region.csv"),sep=";")[["reg","Type","Sexe","Nb séjours","DMS"]]
+    except:
+        print("Error while opening file PMSI/nbsejours_sexe_region.csv")
     p_sex_sej.rename(columns={"Nb séjours":"nbsej", "Type":"type", "Sexe":"sex"}, inplace=True)
     
     p_sex_sejdpt=pd.merge(reg_dpt, p_sex_sej, how="left", on="reg")
@@ -563,7 +584,10 @@ if gen_hosps_csv:
     p_sex_sejdpt=p_sex_sejdpt[['reg','dpt','type','sex','DMS','p']]
     
     #On fait la même chose pour les ages
-    p_age_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_age_region.csv"),sep=";")[["reg","type","age","nbsej","DMS"]]
+    try:
+        p_age_sej=pd.read_csv( os.path.join(indir,"PMSI/nbsejours_age_region.csv"),sep=";")[["reg","type","age","nbsej","DMS"]]
+    except:
+        print("Error while opening file PMSI/nbsejours_age_region.csv")
     p_age_sejdpt=pd.merge(reg_dpt, p_age_sej, how="left", on="reg")
     p_age_sejdpt['nbsej']=p_age_sejdpt.apply(norm_dpt,axis=1)
     
@@ -631,13 +655,18 @@ if gen_hosps_csv:
     p_hosp=merge[['dpt','type','sex','age','p','DMS']]
     
     #on sauvegarde cela
+    print("\t generate p_host.csv")
     p_hosp.to_csv( os.path.join(outdir,"p_host.csv") )
     
     
     ############## CIM STATS
-    with open( os.path.join(indir,"PMSI/result.json")) as f:
-        result=json.load(f)
-    cims=pd.read_csv( os.path.join(indir,"PMSI/cimcounts_all.csv"))[['cim', 'count']]
+    try:
+        with open( os.path.join(indir,"PMSI/result.json")) as f:
+            result=json.load(f)
+            
+        cims=pd.read_csv( os.path.join(indir,"PMSI/cimcounts_all.csv"))[['cim', 'count']]
+    except:
+        print("Error while opening file PMSI/cimcounts_all.csv or PMSI/result.json")
     cims.set_index("cim", inplace=True)
     #on ajoute le compte à l'intérieur
     tot_cims=0
@@ -650,6 +679,8 @@ if gen_hosps_csv:
     #sélection uniquement des cims avec des comptes non-nuls
     cim_stats = {r:v for r,v in result.items() if v['count']!=0}
     # et on sauvegarde cela
+    
+    print("\t generate cim_stats.json")
     with open( os.path.join(outdir,"cim_stats.json"),"w") as f:
         json.dump(cim_stats,f)
     
