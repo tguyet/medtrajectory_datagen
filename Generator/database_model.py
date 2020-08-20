@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun May  3 10:42:49 2020
+Data model for a SNDS data simulator.
 
-@author: tguyet
+This file contains a list of classes that represent our data model.
+This data model is both :
+* a high level conceptual framework that can be manipulated programmatically to create simulation, and 
+* a low level data representation (that can easily be mapped to the SNDS dataset)
+
+@author: Thomas Guyet
+@date: 08/2020
 """
 
 from datetime import date

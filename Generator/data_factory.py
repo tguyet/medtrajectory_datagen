@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sun May  3 10:44:59 2020
+Basic random data SNDS data simulator in our own data model.
+This file contains a list of Factory classes that yield coherent instances of the classes in our data model.
 
-@author: tguyet
+@author: Thomas Guyet
+@date: 08/2020
 """
 
 from database_model import Patient, GP, Specialist, Provider, DrugDelivery, Etablissement, MedicalVisit, MedicalAct, ShortHospStay

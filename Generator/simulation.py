@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Simulation class, it organizes the simulation processes.
 
+@author: Thomas Guyet
+@date: 08/2020
+"""
 
 from data_factory import FactoryContext, PatientFactory, PhysicianFactory, PharmacyFactory, DrugsDeliveryFactory, EtablissementFactory, VisitFactory, ActFactory, ShortStayFactory
 #import os

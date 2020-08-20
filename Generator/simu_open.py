@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+SNDS data simulator based on Open Data
 
+@author: Thomas Guyet
+@date: 08/2020
+"""
 
 from data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory, DrugsDeliveryFactory, VisitFactory, ActFactory
 from database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay, DrugDelivery, MedicalVisit, MedicalAct
@@ -10,8 +15,6 @@ import numpy.random as rd
 import json
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
-
-
 
 
 class OpenDataFactoryContext(FactoryContext):
@@ -839,8 +842,8 @@ class OpenActFactory(ActFactory):
 
 if __name__ == "__main__":
     
-    #context = OpenDataFactoryContext(datarep="/home/tguyet/Progs/medtrajectory_datagen/datarep")
-    context = OpenDataFactoryContext(datarep="/home/medtrajectory_datagen/data")
+    context = OpenDataFactoryContext(datarep="/home/tguyet/Progs/medtrajectory_datagen/datarep")
+    #context = OpenDataFactoryContext(datarep="/home/medtrajectory_datagen/data")
     ## Liberal physicians
     factory = OpenPhysicianFactory(context, [22,35])
     physicians= factory.generate(100)

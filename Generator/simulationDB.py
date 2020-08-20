@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+Concretizer of SNDS data simulation into a SQLite database (almost compliant with SNDS schema).
+
+In this part of the simulator, the classes transform the isntances of the data model into records in 
+the database compliant with SNDS schema.
+
+@author: Thomas Guyet
+@date: 08/2020
+"""
 
 from simulation import simulation
 from database_model import Patient, GP, Specialist, Provider, DrugDelivery
