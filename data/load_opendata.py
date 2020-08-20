@@ -62,7 +62,7 @@ sources={
         },
     }
 
-manual_downloads=[]
+manual_downloads=[] 
 
 for source,infos in sources.items():
     print("Data source: "+infos["description"])
@@ -80,7 +80,7 @@ for source,infos in sources.items():
             
             print("\tDownload")
             wget.download(source, out="data.zip")
-            print("\tUnzip file (ZIP)")
+            print("\n\tUnzip file (ZIP)")
             with zipfile.ZipFile("data.zip", 'r') as zip_ref:
                 zip_ref.extract(infos["filename"])
         except:
@@ -95,7 +95,7 @@ for source,infos in sources.items():
             
             print("\tDownload")
             wget.download(source, out="data.gz")
-            print("\tUnzip file (GZ)")
+            print("\n\tUnzip file (GZ)")
             with zipfile.ZipFile("data.gz", 'r') as zip_ref:
                 zip_ref.extract(infos["filename"])
         except:
@@ -105,6 +105,7 @@ for source,infos in sources.items():
         try:
             print("\tDownload")
             wget.download(source, out=infos["filename"])
+            print("\n")
         except:
             warnings.warn("ERROR")
             manual_downloads.append(source)
@@ -114,3 +115,10 @@ if len(manual_downloads)>0:
     print("remaining downloads (try them manually):")
     for d in manual_downloads:
         print("\t* "+str(d))
+        
+
+try:
+    os.remove("data.zip")
+    os.remove("data.gz")
+except FileNotFoundError:
+    pass
