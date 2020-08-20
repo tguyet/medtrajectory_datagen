@@ -32,8 +32,12 @@
 # How to proceed
 
 * Download all the raw data available online
-* Run the script `create_nomenclature.py` to create the nomenclature part of the SNDS
+  * In the `data` repository, run the script `load_opendata.py` to download and unzip open data in the repository
+  * Open data links may require user interactions to start the download, in this case, datasets have to be manually downloaded (use the links that will be provided by `load_opendata.py` script
 * Run the Notebooks to generate intermediary files
+  * Start by running the script `prepare_data.py` (ensute all the flags at the beginning of the script are set to True to generate all the required files)
+  * Each steps is details in corresponding Notebooks in the `Data_Analysis`repository
+* Run the script `create_nomenclature.py` to create the nomenclature part of the SNDS
 * Move all the generated files in a repository corresponding to a simulation
 * Run the `simulation35.py` script to run the simulator based on Open Data
 
@@ -44,3 +48,8 @@ python library
 - sqlite3
 - tableschema
 - tableschema-sql
+- wget
+- unzip
+- gzip
+- pandas
+- jupyterlab
