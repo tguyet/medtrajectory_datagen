@@ -16,13 +16,14 @@ class simulation:
         self.GPs = []
         self.specialists = []
         self.patients = []
-        self.etablissement = None #un unique etablissement
+        self.etablissements = []
 
     def run(self):
         pfactory=PharmacyFactory(self.context)
         self.pharms = pfactory.generate(10)
         
-        self.etablissement = EtablissementFactory(self.context).generate()
+        #un unique établissement
+        self.etablissements.append( EtablissementFactory(self.context).generate() )
         
         pfactory=PhysicianFactory(self.context)
         self.GPs = pfactory.generateGP(5)
@@ -43,7 +44,7 @@ class simulation:
         for p in self.patients:
             actfact.generate(p, 30)
             
-        shortstayfact=ShortStayFactory(self.context,[self.etablissement])
+        shortstayfact=ShortStayFactory(self.context,self.etablissements)
         for p in self.patients:
             shortstayfact.generate(p, 4)
             

@@ -10,6 +10,7 @@ This files contains data factory specialisations.
 
 from data_factory import FactoryContext, PharmacyFactory, EtablissementFactory, PhysicianFactory, PatientFactory, ShortStayFactory, DrugsDeliveryFactory, VisitFactory, ActFactory
 from database_model import Provider, Etablissement, GP, Specialist, Patient, ShortHospStay, DrugDelivery, MedicalVisit, MedicalAct
+from simulation import simulation
 import os
 import numpy as np
 import pandas as pd
@@ -331,6 +332,19 @@ class OpenPatientFactory(PatientFactory):
         
         
     def generate(self, n=0):
+        """
+        
+
+        Parameters
+        ----------
+        n : int, optional
+            Number of patients stratified by location, age and sex. The default is 0.
+
+        Returns
+        -------
+        patients : list of Patients
+            Generated collection of patients
+        """
         patients=[]
         
         for index, ps in self.pop.iterrows():
@@ -340,7 +354,7 @@ class OpenPatientFactory(PatientFactory):
                 if np.isnan(ps['pop']):
                     nb=0
                 else:
-                    nb=int(ps['pop']*n/self.tot_pop)
+                    nb=int(np.round( (ps['pop']*n)/self.tot_pop) )
             for i in range( nb ):
                 p=Patient()
                 p.Sex=ps['sex']
@@ -746,6 +760,7 @@ class OpenVisitFactory(VisitFactory):
             for i in range(nb):
                 visit = MedicalVisit(p, med)
                 visit.code_pres = self.p_nat.loc[RR,age,sex,spe].sample(1,weights='p')['prs_nat'].iloc[0]
+                print('CODE PRES: '+str(visit.code_pres))
                 visit.date_debut = self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
                 visit.date_fin = visit.date_debut
                 p.visits.append( visit )
@@ -842,53 +857,77 @@ class OpenActFactory(ActFactory):
                 mact.date_fin=mact.date_debut
                 p.medicalacts.append(mact)
 
-if __name__ == "__main__":
+
+class OpenSimulation(simulation):
     
-    context = OpenDataFactoryContext(datarep="/home/tguyet/Progs/medtrajectory_datagen/datarep")
-    #context = OpenDataFactoryContext(datarep="/home/medtrajectory_datagen/data")
-    ## Liberal physicians
-    factory = OpenPhysicianFactory(context, [22,35])
-    physicians= factory.generate(100)
-    for p in physicians:
-        print(p)
-    
-    #General practicioners
-    GPs =  [ p for p in physicians if p.speciality==1 ]
-    
-    factory = OpenPatientFactory(context, GPs, [22,35])
-    patients= factory.generate(1000)
-    for p in patients:
-        print(p)
+    def __init__(self, nomencl="snds_nomenclature.db", datarep="."):
+        super().__init__(nomencl=nomencl)
+        self.datarep=datarep
+        self.context = OpenDataFactoryContext(datarep=self.datarep)
+        self.context.year=2019
         
-    
-    factory=OpenActFactory(context,physicians)
-    for p in patients:
-        factory.generate(p)
-        print(p.medicalacts)
-    
-    factory=OpenVisitFactory(context,physicians)
-    for p in patients:
-        factory.generate(p)
-        print(p.visits)
-    
-    
-    factory = OpenEtablissementFactory(context, [22,35])
-    etab= factory.generate()
-    for p in etab:
-        print(p)
-    
-    factory=OpenShortStayFactory(context,etab)
-    for p in patients:
-        factory.generate(p)
-        print(p.hospitalStays)
-    
-    factory = OpenPharmacyFactory(context, [35])
-    ps= factory.generate(100)
-    for p in ps:
-        print(p)
-    
-    factory=OpenDrugsDeliveryFactory(context,ps)
-    for p in patients:
-        factory.generate(p)
-        print(p.drugdeliveries)
+        self.dpts=[22,35]
+        self.nb_patients=100
+
+    def run(self):
+        ## Liberal physicians
+        factory = OpenPhysicianFactory(self.context, self.dpts)
+        physicians= factory.generate(100)
+        
+        #General practicioners
+        self.GPs =  [ p for p in physicians if p.speciality==1 ]
+        self.specialists =  [ p for p in physicians if p.speciality!=1 ]
+        
+        factory = OpenPatientFactory(self.context, self.GPs, self.dpts)
+        self.patients= factory.generate(self.nb_patients)
+        
+        #medical acts facet
+        factory=OpenActFactory(self.context, physicians)
+        for p in self.patients:
+            factory.generate(p)
+        
+        #medical visits facet
+        factory=OpenVisitFactory(self.context, physicians)
+        for p in self.patients:
+            factory.generate(p)
+        
+        #hospital stay facet
+        factory = OpenEtablissementFactory(self.context, self.dpts)
+        self.etablissement= factory.generate()
+        
+        factory=OpenShortStayFactory(self.context, self.etablissement)
+        for p in self.patients:
+            factory.generate(p)
+        
+        #drugs facet
+        factory = OpenPharmacyFactory(self.context, self.dpts)
+        self.pharms= factory.generate(100)
+        
+        factory=OpenDrugsDeliveryFactory(self.context, self.pharms)
+        for p in self.patients:
+            factory.generate(p)
+        
+    def print(self):
+        for p in self.patients:
+            print("Patient ")
+            print("\tsex: "+str(p.Sex)+", birth year: "+str(p.BD.year)+", city: "+str(p.City))
+            print("Drug deliveries")
+            for dd in p.drugdeliveries:
+                print("\t"+str(dd))
+            print("Medical visits")
+            for dd in p.visits:
+                print("\t"+str(dd))
+            print("Medical acts")
+            for dd in p.medicalacts:
+                print("\t"+str(dd))
+            print("Hospital stays")
+            for dd in p.hospitalStays:
+                print("\t"+str(dd))
+            print("========")
+
+if __name__ == "__main__":
+    sim = OpenSimulation(nomencl="/home/tguyet/Progs/medtrajectory_datagen/datarep/snds_nomenclature.db",
+                     datarep="/home/tguyet/Progs/medtrajectory_datagen/datarep")
+    sim.run()
+    sim.print()
     

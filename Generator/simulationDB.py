@@ -11,7 +11,7 @@ the database compliant with SNDS schema.
 
 import os
 from simulation import simulation
-#from database_model import Patient, GP, Specialist, Provider, DrugDelivery
+from simu_open import OpenSimulation
 
 import sqlalchemy as sa
 from tableschema import Table
@@ -26,12 +26,10 @@ from shutil import copyfile
 import sqlite3
 
 from dateutil.relativedelta import relativedelta
-#from datetime import date
 
 class simDB:
     def __init__(self):
         pass
-
 
     def generate(self, sim, rootschemas="../schemas", dbbase=None):
         """
@@ -90,9 +88,10 @@ class simDB:
             
         for p in sim.pharms:
             s.add( self.createInsert_PS(Base, p)[0] )
-            
-        for e in self.createInsert_Etablissement(Base, sim.etablissement):
-            s.add( e )
+
+        for etab in sim.etablissements:
+            for e in self.createInsert_Etablissement(Base, etab):
+                s.add( e )
         s.commit()
         
         ########  Patients and their care trajectories #############
@@ -586,7 +585,7 @@ class simDB:
         
             ###### identification des acteurs de santé (EXE: executant, PRE: prescripteur, MTT: medecin traitant) ######
             ETB_PRE_FIN	=	ma.prescriber.finess,	 #	chaîne de caractères  n°FINESS de l'etablissement prescripteur   # FOREIGN KEY:      BE_IDE_R [ IDE_ETA_NU8 ]
-            PFS_EXE_NUM	=	ma.provider.id,	     #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
+            PFS_EXE_NUM	=	ma.provider.id,	         #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
             PFS_EXE_NUMC	=	"",	            #	
             PFS_PRE_NUM	=	ma.prescriber.id,	                    #	chaîne de caractères    # FOREIGN KEY:  DA_PRA_R [ PFS_PFS_NUM ]
             PFS_PRE_NUMC	=	"",	                    #	
@@ -665,7 +664,7 @@ class simDB:
         
             PRS_CRD_OPT	=	4,	#	nombre entier
             PRS_DPN_QLP	=	12,	#	nombre entier
-            PRS_NAT_REF	=	ma.code_pres,	#	nombre entier // Code de la Prestations de référence IR_NAT_V[PRS_NAT]
+            PRS_NAT_REF	=	str(ma.code_pres),	#	nombre entier // Code de la Prestations de référence IR_NAT_V[PRS_NAT]
             PRS_OPS_TRF	=	0,	#	nombre entier
             PRS_PDS_QCP	=	2,	#	nombre entier
             PRS_PDS_QTP	=	99,	#	nombre entier
@@ -809,8 +808,14 @@ class simDB:
 
 if __name__ == "__main__":
     np.random.seed(0)
-    sim = simulation(nomencl="/home/tguyet/Progs/medtrajectory_datagen/datarep/snds_nomenclature.db")
-    sim.run()
+    if 0: #basic simulation
+        sim = simulation(nomencl="/home/tguyet/Progs/medtrajectory_datagen/datarep/snds_nomenclature.db")
+    else: #Simulation based on open data
+        sim = OpenSimulation(nomencl="/home/tguyet/Progs/medtrajectory_datagen/datarep/snds_nomenclature.db",
+                     datarep="/home/tguyet/Progs/medtrajectory_datagen/datarep")
+        sim.nb_patients=100
+        sim.dpts=[35]    
     
+    sim.run()
     dbgen = simDB()
     dbgen.generate(sim)
