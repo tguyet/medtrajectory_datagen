@@ -9,6 +9,7 @@ the database compliant with SNDS schema.
 @date: 08/2020
 """
 
+import os
 from simulation import simulation
 #from database_model import Patient, GP, Specialist, Provider, DrugDelivery
 
@@ -27,17 +28,27 @@ import sqlite3
 from dateutil.relativedelta import relativedelta
 #from datetime import date
 
-class simDB(simulation):
+class simDB:
     def __init__(self):
-        super().__init__()
+        pass
 
 
-    def generate(self):
-        rootschemas="/home/tguyet/Progs/medtrajectory_datagen/schemas"
-        #rootsnomencl="/home/tguyet/Tools/synthetic-snds/nomenclatures"
+    def generate(self, sim, rootschemas="../schemas", dbbase=None):
+        """
+        Fullfill the database with records corresponding to the simulation
         
-        copyfile("/home/tguyet/Progs/medtrajectory_datagen/Generator/snds_nomenclature.db", "/home/tguyet/Progs/medtrajectory_datagen/Generator/snds_testgen.db")
-        db = sa.create_engine('sqlite:////home/tguyet/Progs/medtrajectory_datagen/Generator/snds_testgen.db')
+        The simulator must have been run upstream (the function does not run the simulation).
+
+        Parameters
+        ----------
+        sim : A simulation
+        """
+        
+        if dbbase is None:
+            dbbase=sim.nomencl_db
+        
+        copyfile(dbbase, os.path.join(os.getcwd(),"snds_testgen.db"))
+        db = sa.create_engine("sqlite:///"+os.path.join(os.getcwd(),"snds_testgen.db"))
         
         
         ########  Physicians and Pharmacists #############
@@ -71,16 +82,16 @@ class simDB(simulation):
         session = sessionmaker()
         session.configure(bind=db)
         s = session()
-        for p in self.GPs:
+        for p in sim.GPs:
             s.add( self.createInsert_PS(Base, p)[0] )
 
-        for p in self.specialists:
+        for p in sim.specialists:
             s.add( self.createInsert_PS(Base, p)[0] )
             
-        for p in self.pharms:
+        for p in sim.pharms:
             s.add( self.createInsert_PS(Base, p)[0] )
             
-        for e in self.createInsert_Etablissement(Base, self.etablissement):
+        for e in self.createInsert_Etablissement(Base, sim.etablissement):
             s.add( e )
         s.commit()
         
@@ -138,7 +149,7 @@ class simDB(simulation):
         
         try:
             s = session()
-            for p in self.patients:
+            for p in sim.patients:
                 for pi in self.createInsert_ben(Base, p):
                     s.add( pi )
             s.commit()
@@ -798,6 +809,8 @@ class simDB(simulation):
 
 if __name__ == "__main__":
     np.random.seed(0)
-    sim = simDB()
+    sim = simulation(nomencl="/home/tguyet/Progs/medtrajectory_datagen/datarep/snds_nomenclature.db")
     sim.run()
-    sim.generate()
+    
+    dbgen = simDB()
+    dbgen.generate(sim)

@@ -9,8 +9,8 @@ Simulation class, it organizes the simulation processes.
 from data_factory import FactoryContext, PatientFactory, PhysicianFactory, PharmacyFactory, DrugsDeliveryFactory, EtablissementFactory, VisitFactory, ActFactory, ShortStayFactory
 
 class simulation:
-    def __init__(self):
-        self.nomencl_db = "/home/tguyet/Progs/medtrajectory_datagen/Generator/snds_nomenclature.db"
+    def __init__(self, nomencl="snds_nomenclature.db"):
+        self.nomencl_db = nomencl
         self.context = FactoryContext(nomenclatures=self.nomencl_db)
         self.pharms = []
         self.GPs = []
@@ -48,7 +48,7 @@ class simulation:
             shortstayfact.generate(p, 4)
             
 if __name__ == "__main__":
-    sim = simulation()
+    sim = simulation(nomencl="/home/tguyet/Progs/medtrajectory_datagen/datarep/snds_nomenclature.db")
     sim.run()
     
     for p in sim.patients:
