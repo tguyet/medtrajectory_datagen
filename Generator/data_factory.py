@@ -9,15 +9,10 @@ This file contains a list of Factory classes that yield coherent instances of th
 """
 
 from database_model import Patient, GP, Specialist, Provider, DrugDelivery, Etablissement, MedicalVisit, MedicalAct, ShortHospStay
-import sqlalchemy as sa
-import pandas as pd
-import numpy as np
 import numpy.random as rd
-import string
-from datetime import date, datetime,timedelta
 import sqlite3 ##Here, I use sqlite to query the database (ie to access nomenclatures)
 
-
+from datetime import timedelta, date
 
 class FactoryContext:
     """
@@ -25,15 +20,23 @@ class FactoryContext:
     
     The class contains usefull tools to be used by different factories.
     -> a connexion to the database which enables to access the values that are used for some attributes of the database
+    
+    Attributes:
+    -----------
+    conn: a database connection
+    
     """    
     def __init__(self, nomenclatures="snds_nomenclature.db"):
         self.conn = sqlite3.connect( nomenclatures ) #connexion to the nomenclature database
         self.codes_geo=None
-
+        
+    def __del__(self):
+        if self.conn:
+            self.conn.close()
         
     def generate_date(self,begin = date(1900,1,1), end=date(2020,1,1)):
         """
-        generate a random date between two dates
+        Generate a random date between two dates
         
         TODO: define the notion of constraint for temporal constraintes
         """
@@ -50,7 +53,6 @@ class FactoryContext:
             self.codes_geo = cur.fetchall()
             cur.close()
         return self.codes_geo[ rd.randint(len(self.codes_geo)) ]
-
 
     def __genDpt2__(self):
         """

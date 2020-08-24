@@ -2,6 +2,8 @@
 """
 SNDS data simulator based on Open Data
 
+This files contains data factory specialisations.
+
 @author: Thomas Guyet
 @date: 08/2020
 """
@@ -15,13 +17,16 @@ import numpy.random as rd
 import json
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
+import warnings
 
 
 class OpenDataFactoryContext(FactoryContext):
     """
     Attributes
     ----------
+    conn (inherited): (readonly) database connection to a database containing SNDS nomenclatures (default connection to "snds_nomenclature.db")
     datarep: repository of the data files
+    year: simulation year (default: this year)
     
     """    
     def __init__(self, nomenclatures=None, datarep="./data/"):
@@ -30,19 +35,20 @@ class OpenDataFactoryContext(FactoryContext):
         else:
             super().__init__(os.path.join(datarep,"snds_nomenclature.db"))
         self.datarep=datarep
+        self.year=datetime.today().year
         
         #Load Dpt/Region map
         try:
             self.reg_dpt = pd.read_csv( os.path.join(self.datarep,"reg_dpt.csv"), sep=";" )
             self.reg_dpt.set_index("DPT_COD", inplace=True)
         except FileNotFoundError:
-            print("Error: missing data file")
+            warnings.warn("Error: missing data file")
             self.reg_dpt=None
 
 
-class FinessEtablissementFactory(EtablissementFactory):
+class OpenEtablissementFactory(EtablissementFactory):
     """
-    Class to generate the hospitalisation structure from the FINESS dataset
+    Class to generate the hospitalisation structure from the FINESS dataset (informations from real pharmacies repository)
     
     
     required file: finess-clean.csv
@@ -123,9 +129,9 @@ class FinessEtablissementFactory(EtablissementFactory):
         return Etabs
     
     
-class FinessPharmacyFactory(PharmacyFactory):
+class OpenPharmacyFactory(PharmacyFactory):
     """
-    Class to generate the pharmacies from the finess dataset
+    Class to generate pharmacy from the finess dataset (informations from real pharmacies repository)
     
     required file: finess-clean.csv
     
@@ -142,7 +148,9 @@ class FinessPharmacyFactory(PharmacyFactory):
         dpts : List of strings
             List of departement numbers in which the drugstores must be randomly choiced.
             The list must contains integers (dept numbers) or strings ("2A", "2B")
-            The drugstores are selected by the aggregated category number (which gathers "Pharmacie d'Officine", "Propharmacie", "Pharmacie Mutualiste", ...)
+            The pharmacies are selected by the aggregated category number 
+            (which gathers "Pharmacie d'Officine", "Propharmacie", 
+             "Pharmacie Mutualiste", ...)
         """
         super().__init__(con)
         self.dpts=dpts
@@ -203,17 +211,20 @@ class FinessPharmacyFactory(PharmacyFactory):
 
 class OpenPhysicianFactory(PhysicianFactory):
     """
-    Génération d'une base de médecins de "ville" (exercants en libéral), avec
-        -> des médecins généralistes
-        -> des médecins spécialistes
+    Generation of a collection of private practice doctors (doctors not working
+                                                            in hospitals)
+    
+    We distinguish two types of doctors
+        -> general practicioners (GP)
+        -> specialist practitioners
         
-        
-    required file: ps-infospratiques.csv
+    required file: medecins.csv
+    This file is generated from the public list of physicians (not simulated).
     
     Attributes
     ----------
     dpts : List of strings
-        List of departement numbers in which the drugstores must be randomly choiced.
+        List of departement numbers in which the physicians must be randomly choiced.
         The list must contains integers (dept numbers) or strings ("2A", "2B")
     """
     
@@ -284,8 +295,11 @@ class OpenPatientFactory(PatientFactory):
         - assigns a list of ALDs (according to statistics in real poputlation)
         
     required files
-        - count_ALD_dpt.xls
-        - pop.csv
+        - pop.csv: population statistiques
+        - ALD_p.csv: probability to have a chronic long-term illness (ALD in french)
+        
+    
+    This generator simulate a population at a given time.
         
     Attributes
     ----------
@@ -293,6 +307,7 @@ class OpenPatientFactory(PatientFactory):
     GPs: List of general practitioners
     pop: population statistics
     tot_pop: total number of patients
+    Pald: proba of having ALD
     """
 
     def __init__(self, con, GPs=None, dpts=[]):
@@ -311,8 +326,8 @@ class OpenPatientFactory(PatientFactory):
         
         ## Get statistics about ALD per sex/age/dpt
         dataset_file= os.path.join(self.context.datarep,"ALD_p.csv")
-        self.P=pd.read_csv(dataset_file)
-        #p gives the conditional probabilities of having ALD knowing the dpt, sex and age
+        self.Pald=pd.read_csv(dataset_file)
+        #Pald gives the conditional probabilities of having ALD knowing the dpt, sex and age
         
         
     def generate(self, n=0):
@@ -330,7 +345,8 @@ class OpenPatientFactory(PatientFactory):
                 p=Patient()
                 p.Sex=ps['sex']
                 age = rd.randint(ps['age'],ps['age']+5)
-                p.BD=self.context.generate_date(date(datetime.today().year-age,1,1), date(datetime.today().year-age,12,31))
+                #random generation of a birthdate corresponding to the patient age
+                p.BD=self.context.generate_date(date(self.context.year-age,1,1), date(self.context.year-age,12,31))
                 p.Dpt = ps['dpt']
                 p.City = ps['code']
                 self.__generateNIR__(p)
@@ -349,7 +365,7 @@ class OpenPatientFactory(PatientFactory):
                     p.MTT=mtt
                     
                 #generate a list of ALDs 
-                pALD=self.P[(self.P['dpt']==ps['dpt']) & (self.P['age']==ps['age'])& (self.P['sex']==ps['sex'])][["ALD",'p']]
+                pALD=self.Pald[(self.Pald['dpt']==ps['dpt']) & (self.Pald['age']==ps['age'])& (self.Pald['sex']==ps['sex'])][["ALD",'p']]
                 p.ALD=list(pALD[pALD['p']>=rd.rand(len(pALD))]['ALD'])
             
                 patients.append( p )
@@ -371,10 +387,10 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
     Attributes
     ----------
     drug_freq: Pandas Dataframe, probabilities to deliver each CIP13 code per
-        age, sex and region
+        age, sex and region (during a year)
         
     mean_deliveries: Pandas dataframe, mean numbers of deliveries 
-        per type of personnes
+        per type of personnes (during a year)
     '''
     def __init__(self, con, Pharmacies):
         """
@@ -397,10 +413,16 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
         
     def generate(self, p):
         """
-        Generate the drug deliveries for one patient p
+        Generate drug deliveries for one patient `p`
         The deliveries are added to the patient itself.
         
-        A patient always goes in the same pharmacy
+        A patient always goes to take drugs in the same pharmacy.
+        The pharmacy is one of its location if any (otherwise in its departement).
+        
+        The number of drugs deliveries is drawn by a (rounded) exponential law with a lambda given
+        by the mean deliveries expectation.
+        The drugs delivered are randomly choiced using a weighted probability for patients to have
+        this drug delivered (not conditionned to anything)
         
         Parameters
         ----------
@@ -409,7 +431,7 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
         """
         
         #compute the patient age
-        age= relativedelta(date.today(), p.BD).years
+        age= self.context.year - p.BD.year
         
         ## Déterminer la région à partir du dpt
         region=self.context.reg_dpt.loc[p.Dpt]['REG_COD']
@@ -418,47 +440,16 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
         if sex==9:
             sex=rd.choice([1,2])
 
-        """        
-        #we first determine the number of deliveries over the total life of the patient !!
-        nb=0
-        if age<20:
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += age * int(np.abs(rd.normal(loc=mean,scale=5)))
-        elif age<60:
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += 20 * int(np.abs(rd.normal(loc=mean,scale=5)))
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==20) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += (age-20) * int(np.abs(rd.normal(loc=mean,scale=10)))
-        elif age<95:
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += 20 * int(np.abs(rd.normal(loc=mean,scale=5)))
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==20) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += 40 * int(np.abs(rd.normal(loc=mean,scale=10)))
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==60) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += (age-60) * int(np.abs(rd.normal(loc=mean,scale=10)))
-        else:
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += 20 * int(np.abs(rd.normal(loc=mean,scale=5)))
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==20) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += 40 * int(np.abs(rd.normal(loc=mean,scale=10)))
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==60) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += 35 * int(np.abs(rd.normal(loc=mean,scale=10)))
-            mean=self.mean_deliveries[ (self.mean_deliveries['rr']==region) & (self.mean_deliveries['age']==95) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb += (age-95) * int(np.abs(rd.normal(loc=mean,scale=10)))
-        """
         #we first determine the number of deliveries within a year
         if age<20:
             mean=self.mean_deliveries[ (self.mean_deliveries['RR']==region) & (self.mean_deliveries['age']==0) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb = int(np.abs(rd.normal(loc=mean,scale=5)))
         elif age<60:
             mean=self.mean_deliveries[ (self.mean_deliveries['RR']==region) & (self.mean_deliveries['age']==20) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb = int(np.abs(rd.normal(loc=mean,scale=10)))
         elif age<95:
             mean=self.mean_deliveries[ (self.mean_deliveries['RR']==region) & (self.mean_deliveries['age']==60) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb = int(np.abs(rd.normal(loc=mean,scale=10)))
         else:
             mean=self.mean_deliveries[ (self.mean_deliveries['RR']==region) & (self.mean_deliveries['age']==95) & (self.mean_deliveries['sex']==sex)]['mean']
-            nb = int(np.abs(rd.normal(loc=mean,scale=10)))
+        nb = int(np.round(rd.exponential(mean)))
         
         # select the drugs from the OpenMedic dataset
         if age<20:
@@ -488,8 +479,8 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
         pharm=rd.choice( pharms )
         for drug in drugs:
             dd=DrugDelivery(drug, p, pharm)
-    
-            dd.date_debut=self.context.generate_date(begin = p.BD, end=date(2021,1,1))
+            #delivered within the context simulation year
+            dd.date_debut=self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
             dd.date_fin=dd.date_debut
             p.drugdeliveries.append(dd)
             
@@ -497,7 +488,7 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
 
 class OpenShortStayFactory(ShortStayFactory):
     """
-    Factory of short hospital stays (séjours MCO) based on PMSI statistics
+    Factory of short hospital stays (séjours MCO) based on PMSI statistics.
     
     Requires files:
         - p_host.csv
@@ -533,7 +524,7 @@ class OpenShortStayFactory(ShortStayFactory):
             self.p_hosp=pd.read_csv( os.path.join(self.context.datarep,"p_host.csv") )
             self.p_sej=pd.read_csv( os.path.join(self.context.datarep,"p_sej.csv") )
         except FileNotFoundError:
-            print("Error: missing data file")
+            warnings.warn("Error: missing data file")
             return
         self.p_sej.set_index("dpt",inplace=True)
         
@@ -541,7 +532,7 @@ class OpenShortStayFactory(ShortStayFactory):
             f=open( os.path.join(self.context.datarep,"cim_stats.json") )
             self.cims_stats=json.load(f)
         except FileNotFoundError:
-            print("Error: missing data file")
+            warnings.warn("Error: missing data file")
             self.p_hosp=None
             self.p_sej=None
         
@@ -575,7 +566,7 @@ class OpenShortStayFactory(ShortStayFactory):
         
         duration = rd.poisson( float(self.p_hosp[(self.p_hosp['dpt'].astype(str)==str(dpt)) & (self.p_hosp['age']==age) & (self.p_hosp['sex']==sex) & (self.p_hosp['type']==0) ]['DMS'].str.replace(",",".")) )
         
-        stay.start_date = self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+        stay.start_date = self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31)-timedelta(days=duration))
         stay.finish_date = stay.start_date+timedelta(days=duration)
         
         #generate 4 associated diagnosis 
@@ -609,7 +600,7 @@ class OpenShortStayFactory(ShortStayFactory):
         """
         dpt=str(p.Dpt)
         
-        age= relativedelta(date.today(), p.BD).years
+        age= self.context.year - p.BD.year
         age= age-age%5 #
         if age>95:
             age=95
@@ -631,6 +622,10 @@ class OpenShortStayFactory(ShortStayFactory):
 class OpenVisitFactoryDpt(VisitFactory):
     """
     A visit Factory that is based on the DAMIR R files, representative of dpt
+    
+    required files:
+        - nb_prs_dptspe.csv
+        - p_prsnat_dptspe.csv
     """
     
     def __init__(self, con, physicians):
@@ -649,7 +644,6 @@ class OpenVisitFactoryDpt(VisitFactory):
         Parameters
         ----------
         p : Patient
-            DESCRIPTION.
         """
         #compute the list of specialties that are actually in the set of physicians !!
         spes = list(set([ p.speciality for p in self.physicians]))
@@ -660,10 +654,10 @@ class OpenVisitFactoryDpt(VisitFactory):
             try:
                 nb=int(np.floor(rd.exponential(self.nb_prs_spedpt.loc[dpt,spe]['nb'])))
             except KeyError:
-                print("Unknown prs for spe/dpt:",spe,"/",dpt)
+                warnings.warn("Unknown prs for spe/dpt:",spe,"/",dpt)
                 continue
             except TypeError:
-                print("Unknown prs for spe/dpt:",spe,"/",dpt)
+                warnings.warn("Unknown prs for spe/dpt:",spe,"/",dpt)
                 continue
             
             if spe==1:
@@ -671,7 +665,7 @@ class OpenVisitFactoryDpt(VisitFactory):
                 for i in range(nb):
                     visit = MedicalVisit(p,p.MTT)
                     visit.code_pres = self.p_nat_spedpt.loc[dpt,spe].sample(1,weights='p')['prs_nat'].iloc[0]
-                    visit.date_debut = self.context.generate_date(begin = p.BD, end=date(2021,1,1))
+                    visit.date_debut = self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
                     visit.date_fin = visit.date_debut
                     p.visits.append( visit )
             else:
@@ -681,7 +675,7 @@ class OpenVisitFactoryDpt(VisitFactory):
                 for i in range(nb):
                     visit = MedicalVisit(p, med)
                     visit.code_pres = self.p_nat_spedpt.loc[dpt,spe].sample(1,weights='p')['prs_nat'].iloc[0]
-                    visit.date_debut = self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+                    visit.date_debut = self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
                     visit.date_fin = visit.date_debut
                     p.visits.append( visit )
                 
@@ -690,6 +684,10 @@ class OpenVisitFactoryDpt(VisitFactory):
 class OpenVisitFactory(VisitFactory):
     """
     A visit factory based on the A files of DAMIR, data based representative of age and sex, but at the regional level
+    
+    Required files:
+        - nb_prs_rragesex.csv : numbers of visit per age, sex and region
+        - p_prsnat_rragesex.csv : proba of each type of visit per age, sex and region
     """
     
     def __init__(self, con, physicians):
@@ -707,7 +705,6 @@ class OpenVisitFactory(VisitFactory):
         Parameters
         ----------
         p : Patient
-            DESCRIPTION.
         """
         #compute the list of specialties that are actually in the set of physicians !!
         spes = list(set([ p.speciality for p in self.physicians]))
@@ -715,7 +712,7 @@ class OpenVisitFactory(VisitFactory):
         #get the location region of the patient
         RR=self.context.reg_dpt.loc[p.Dpt]['REG_COD']
         
-        age= relativedelta(date.today(), p.BD).years
+        age= self.context.year - p.BD.year
         age= age-age%10 # arrondis à la dixaine
         #2 exceptions: pas de valeurs 10, pas de détails >80
         if age==10:
@@ -749,12 +746,18 @@ class OpenVisitFactory(VisitFactory):
             for i in range(nb):
                 visit = MedicalVisit(p, med)
                 visit.code_pres = self.p_nat.loc[RR,age,sex,spe].sample(1,weights='p')['prs_nat'].iloc[0]
-                visit.date_debut = self.context.generate_date(begin = p.BD, end=date(2021,1,1))
+                visit.date_debut = self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
                 visit.date_fin = visit.date_debut
                 p.visits.append( visit )
 
 
 class OpenActFactory(ActFactory):
+    """
+    Required files:
+        - nb_acts_rragesex.csv: number of acts per region, age and sex (during a year)
+        - p_act_prs.csv: proba of each acts (CCAM code)
+        - p_exespe_acts.csv: proba of the speciality of the physician for each act
+    """
     def __init__(self, con, physicians):
         super().__init__(con, physicians)
         
@@ -774,7 +777,7 @@ class OpenActFactory(ActFactory):
         ccam = rd.choice(self.ccams)
         spe = rd.choice(self.spes)
         mact= MedicalAct(ccam, p,spe)
-        mact.date_debut=self.context.generate_date(begin = p.BD, end=date(2020,1,1))
+        mact.date_debut=self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
         mact.date_fin=mact.date_debut
         
         p.medicalacts.append(mact)
@@ -784,13 +787,12 @@ class OpenActFactory(ActFactory):
         Parameters
         ----------
         p : Patient
-            DESCRIPTION.
         """
         
         #get the location region of the patient
         RR=self.context.reg_dpt.loc[p.Dpt]['REG_COD']
         
-        age= relativedelta(date.today(), p.BD).years
+        age= self.context.year - p.BD.year #relativedelta(date.today(), p.BD).years
         age= age-age%10 # arrondis à la dixaine
         #2 exceptions: pas de valeurs 10, pas de détails >80
         if age==10:
@@ -836,7 +838,7 @@ class OpenActFactory(ActFactory):
                 
                 #create the care delivery and add it to the patient history
                 mact= MedicalAct(ccam, p, rd.choice(spes_loc))
-                mact.date_debut=self.context.generate_date(begin = p.BD, end=date(2021,1,1))
+                mact.date_debut=self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
                 mact.date_fin=mact.date_debut
                 p.medicalacts.append(mact)
 
@@ -870,7 +872,7 @@ if __name__ == "__main__":
         print(p.visits)
     
     
-    factory = FinessEtablissementFactory(context, [22,35])
+    factory = OpenEtablissementFactory(context, [22,35])
     etab= factory.generate()
     for p in etab:
         print(p)
@@ -880,7 +882,7 @@ if __name__ == "__main__":
         factory.generate(p)
         print(p.hospitalStays)
     
-    factory = FinessPharmacyFactory(context, [35])
+    factory = OpenPharmacyFactory(context, [35])
     ps= factory.generate(100)
     for p in ps:
         print(p)

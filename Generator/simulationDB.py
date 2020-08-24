@@ -10,12 +10,12 @@ the database compliant with SNDS schema.
 """
 
 from simulation import simulation
-from database_model import Patient, GP, Specialist, Provider, DrugDelivery
+#from database_model import Patient, GP, Specialist, Provider, DrugDelivery
 
 import sqlalchemy as sa
 from tableschema import Table
 import numpy as np
-import pandas as pd
+#import pandas as pd
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import relationship
@@ -25,7 +25,7 @@ from shutil import copyfile
 import sqlite3
 
 from dateutil.relativedelta import relativedelta
-from datetime import date
+#from datetime import date
 
 class simDB(simulation):
     def __init__(self):
