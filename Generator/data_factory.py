@@ -76,7 +76,8 @@ class PharmacyFactory:
         for i in range(n):
             p=Provider()
             p.dpt = self.context.__genDpt2__()
-            p.cat_nat=50 #pharmacie de ville
+            #p.cat_nat=50 #pharmacie de ville
+            p.speciality=50 #pharmacie de ville
             p.id = str(p.dpt)+str(p.catpro)+"{:05}".format(rd.randint(99999))
             Pharmacies.append(p)
         return Pharmacies
@@ -154,7 +155,7 @@ class PatientFactory:
         generate the NIR of the patient
         """
         birth_location=self.context.generate_location()
-        p.NIR=str(p.Sex)+"{:02}".format(p.BD.month)+"{:02}".format(p.BD.year%100)+birth_location[0]+birth_location[1]+"{:03}".format(rd.randint(999))
+        p.NIR=str(p.Sex)+"{:02}".format(p.BD.month)+"{:02}".format(p.BD.year%100)+birth_location[0]+birth_location[1]+"{:06}".format(rd.randint(999999))
     
     def generate(self,n):
         """

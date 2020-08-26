@@ -104,7 +104,7 @@ class Patient:
 class Etablissement:
     def __init__(self):
         self.id="dfdsfds" #numeru finess
-        self.current_RSA_NUM=1
+        self.current_RSA_NUM=1000000000 #RSA_NUM >=1000000000 (MCOB constraint)
         self.rs="" #raison sociale / nom
         self.dpt=""
         self.code_commune=""
@@ -245,7 +245,7 @@ class ShortHospStay:
         #self.to = None             # to another stay after (PMSI care pathways)
         self.start_date = None      # beginning of the stay 
         self.finish_date = None     # endding of the stay
-        self.GHM = ""
+        self.GHM = "xxxxxx" #must have length >=6
         
         
     def __str__(self):

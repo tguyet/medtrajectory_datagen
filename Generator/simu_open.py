@@ -202,7 +202,8 @@ class OpenPharmacyFactory(PharmacyFactory):
             p=Provider()
             p.dpt = d['departement']
             p.code_commune = d['commune']
-            p.cat_nat=50 #pharmacie de ville
+            #p.cat_nat=50 #pharmacie de ville
+            p.speciality=50 #pharmacie de ville
             p.id = p.dpt+"2{:05}".format(rd.randint(99999)) #PFS_PFS_NUM: c'est le numéro du cabinet du praticien à 8 chiffres (2 chiffre dpt+3eme comme categorie professionnelle) ! (numéro PS officiel à 11 chiffres ... pas encore en place)
             p.finess = d['nofinesset']
             
@@ -760,7 +761,6 @@ class OpenVisitFactory(VisitFactory):
             for i in range(nb):
                 visit = MedicalVisit(p, med)
                 visit.code_pres = self.p_nat.loc[RR,age,sex,spe].sample(1,weights='p')['prs_nat'].iloc[0]
-                print('CODE PRES: '+str(visit.code_pres))
                 visit.date_debut = self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
                 visit.date_fin = visit.date_debut
                 p.visits.append( visit )
@@ -893,9 +893,9 @@ class OpenSimulation(simulation):
         
         #hospital stay facet
         factory = OpenEtablissementFactory(self.context, self.dpts)
-        self.etablissement= factory.generate()
-        
-        factory=OpenShortStayFactory(self.context, self.etablissement)
+        self.etablissements= factory.generate(30)
+                
+        factory=OpenShortStayFactory(self.context, self.etablissements)
         for p in self.patients:
             factory.generate(p)
         
