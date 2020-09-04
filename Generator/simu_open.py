@@ -95,6 +95,7 @@ class OpenEtablissementFactory(EtablissementFactory):
         data["commune"]=data["commune"].astype(int)
         data["categetab"].fillna(0, inplace=True)
         data["categetab"]=data["categetab"].astype(int)
+        data["nofinesset"]=data["nofinesset"].astype(str)
         
         ## selection of hopitaux
         etabldpt=data[ ((data['categagretab']==1101) | (data['categagretab']==1102) | (data['categagretab']==1106) | (data['categagretab']==1110) ) & (data["departement"].astype("str")==str(self.dpts[0])) ]
@@ -350,7 +351,10 @@ class OpenPatientFactory(PatientFactory):
         
         for index, ps in self.pop.iterrows():
             if n==0:
-                nb=ps['pop']
+                if np.isnan(ps['pop']):
+                    nb=0
+                else:
+                    nb=int(ps['pop'])
             else:
                 if np.isnan(ps['pop']):
                     nb=0
@@ -476,6 +480,10 @@ class OpenDrugsDeliveryFactory(DrugsDeliveryFactory):
         else:
             drugs = self.drug_freq[(self.drug_freq['age']==99) & (self.drug_freq['sex']==sex) & (self.drug_freq['RR']==region)]
 
+
+        if len(drugs)==0:
+            p.drugdeliveries=[]
+            return
         #generate a collection of nb drug deliveries
         drugs=rd.choice(np.array(drugs['CIP13']), nb, p=np.array(np.array(drugs['p'])), replace=True)
         if len(drugs)==0:
@@ -587,18 +595,20 @@ class OpenShortStayFactory(ShortStayFactory):
         #generate 4 associated diagnosis 
         counts=pd.DataFrame.from_dict( dict(self.cims_stats[DP]["cim"]), orient='index' )
         counts[0]=counts[0]/np.sum(counts[0])
-        stay.cim_das=list(counts.sample(n=4,weights=counts[0]).reset_index()['index'])
+        nb=min(4,len(counts))
+        stay.cim_das=counts.sample(n=nb,weights=counts[0]).reset_index()['index'].tolist()
         
         ##generate a GHM code
         counts=pd.DataFrame.from_dict( dict(self.cims_stats[DP]["ghm"]), orient='index' )
         counts[0]=counts[0]/np.sum(counts[0])
-        stay.GHM=str(counts.sample(n=1,weights=counts[0]).reset_index()['index'])
+        stay.GHM=str(counts.sample(n=1,weights=counts[0]).reset_index().iloc[0,0])
         
         #generates up to 4 medical acts (CCAM codes)
         nb_acts=rd.randint(5)
         counts=pd.DataFrame.from_dict( dict(self.cims_stats[DP]["ccam"]), orient='index' )
+        nb_acts=min(nb_acts,len(counts))
         counts[0]=counts[0]/np.sum(counts[0])
-        stay.ccam=list(counts.sample(n=nb_acts,weights=counts[0]).reset_index()['index'])
+        stay.ccam=counts.sample(n=nb_acts,weights=counts[0]).reset_index()['index'].tolist()
         
         p.hospitalStays.append(stay)
         
@@ -867,30 +877,44 @@ class OpenSimulation(simulation):
         self.context.year=2019
         
         self.dpts=[22,35]
-        self.nb_patients=100
+        self.nb_patients=100 #0 means all
+        self.nb_physicians=100 #0 means all
+        
+        self.verbose=False
 
     def run(self):
+        if self.verbose:
+            print("Generate physicians")
         ## Liberal physicians
         factory = OpenPhysicianFactory(self.context, self.dpts)
-        physicians= factory.generate(100)
+        physicians= factory.generate(self.nb_physicians)
         
         #General practicioners
         self.GPs =  [ p for p in physicians if p.speciality==1 ]
         self.specialists =  [ p for p in physicians if p.speciality!=1 ]
         
+        if self.verbose:
+            print("Generate patients")
         factory = OpenPatientFactory(self.context, self.GPs, self.dpts)
         self.patients= factory.generate(self.nb_patients)
         
+        
+        if self.verbose:
+            print("Generate acts")
         #medical acts facet
         factory=OpenActFactory(self.context, physicians)
         for p in self.patients:
             factory.generate(p)
         
+        if self.verbose:
+            print("Generate visits")
         #medical visits facet
         factory=OpenVisitFactory(self.context, physicians)
         for p in self.patients:
             factory.generate(p)
         
+        if self.verbose:
+            print("Generate hospital stays")
         #hospital stay facet
         factory = OpenEtablissementFactory(self.context, self.dpts)
         self.etablissements= factory.generate(30)
@@ -899,6 +923,8 @@ class OpenSimulation(simulation):
         for p in self.patients:
             factory.generate(p)
         
+        if self.verbose:
+            print("Generate drugs deliveries")
         #drugs facet
         factory = OpenPharmacyFactory(self.context, self.dpts)
         self.pharms= factory.generate(100)

@@ -30,7 +30,7 @@ from dateutil.relativedelta import relativedelta
 
 class simDB:
     def __init__(self):
-        pass
+        self.output_db_name="snds_testgen.db"
 
     def generate(self, sim, rootschemas="../schemas", dbbase=None):
         """
@@ -46,8 +46,8 @@ class simDB:
         if dbbase is None:
             dbbase=sim.nomencl_db
         
-        copyfile(dbbase, os.path.join(os.getcwd(),"snds_testgen.db"))
-        db = sa.create_engine("sqlite:///"+os.path.join(os.getcwd(),"snds_testgen.db"))
+        copyfile(dbbase, os.path.join(os.getcwd(),self.output_db_name))
+        db = sa.create_engine("sqlite:///"+os.path.join(os.getcwd(),self.output_db_name))
         
         
         ########  Physicians and Pharmacists #############
@@ -154,7 +154,7 @@ class simDB:
         try:
             s = session()
             for p in sim.patients:
-                for pi in self.createInsert_ben(Base, p):
+                for pi in self.createInsert_ben(Base, sim, p):
                     s.add( pi )
             s.commit()
         except IntegrityError as e: 
@@ -231,7 +231,7 @@ class simDB:
         return [professional]
 
 
-    def createInsert_ben(self, Base, p):
+    def createInsert_ben(self, Base, sim, p):
         beneficiaire = Base.classes.IR_BEN_R(
                 BEN_NIR_PSA = p.NIR, 	#	chaîne de caractères	Identifiant anonyme du patient dans le SNIIRAM
                 BEN_RNG_GEM = p.RNG_GEM,	#	nombre entier	rang de naissance du bénéficiaire
@@ -285,22 +285,22 @@ class simDB:
         
         ret = [beneficiaire, beneficiaire_dcir, beneficiaire_carto]
         for d in p.drugdeliveries:
-            ret += self.createInsert_DrugDelivery(Base, p, d)
+            ret += self.createInsert_DrugDelivery(Base, sim, p, d)
         
         for d in p.visits:
-            ret.append( self.createPRS(Base, p, d) )
+            ret.append( self.createPRS(Base, sim, p, d) )
         
         for d in p.medicalacts:
-            ret += self.createInsert_MedicalAct(Base, p, d)
+            ret += self.createInsert_MedicalAct(Base, sim, p, d)
             
             
         for d in p.hospitalStays:
-            ret += self.createInsert_SejourMCO(Base, p, d)
+            ret += self.createInsert_SejourMCO(Base, sim, p, d)
             
         return ret
 
 
-    def createInsert_SejourMCO(self, Base, patient, stay):
+    def createInsert_SejourMCO(self, Base, sim, patient, stay):
         """
         return list of database objects
         """
@@ -310,7 +310,32 @@ class simDB:
         
         age = max(1,relativedelta(date(sim.context.year,1,1), stay.patient.BD).years)
         doy_age = int(stay.patient.BD.strftime('%j'))
+        if doy_age>365:
+            doy_age=365
         
+        
+        if len(stay.cim_das)>100:
+            print("WARNING: stay has a too large number of CIM_DAS to be recorded")
+            return 
+        if stay.hospital.current_RSA_NUM> 9999999999:
+            print("WARNING: stay has a too large RSA_NUM to be recorded")
+            return
+        
+        if len(stay.GHM)<6:
+            print("WARNING: the length of the GHM text of a stay is not long enough to be recorded")
+            return
+        if int(age)<1:
+            print("WARNING: the patient age must be >=1 to record a stay")
+            return
+        if int(doy_age)<0 or int(doy_age)>365:
+            print("WARNING: the age (in number of days) must be >=0 and <=365 to record a stay")
+            return
+        
+        if str(patient.Sex) not in ['1', '2', '7', '8', '9']:
+            print("WARNING: the sex code is invalid to record a stay")
+            return
+            
+            
         
         sejour = Base.classes.T_MCOaaB(
                 ##### Clé #####
@@ -612,7 +637,7 @@ class simDB:
         return [etablissement, etablissementpmsi, etablissementssr]
 
 
-    def createPRS(self, Base, p, ma):
+    def createPRS(self, Base, sim, p, ma):
         
         
         #Création d'une entrée dans la table prestation
@@ -761,14 +786,14 @@ class simDB:
         )
         return prestation
     
-    def createInsert_MedicalAct(self, Base, p, ma):
+    def createInsert_MedicalAct(self, Base, sim, p, ma):
         """
         Insertion in Base of the drug delivery for patient p
         - Base ORM database model
         - d DrugDelivery
         - p Patient
         """
-        prestation = self.createPRS(Base,p,ma)
+        prestation = self.createPRS(Base, sim, p, ma)
         #Création d'une entrée d'un acte médical en ville
         delivrance_acte = Base.classes.ER_CAM_F(
             CAM_PRS_IDE	=	ma.code_ccam,	#	chaîne de caractères	Code CCAM de l'acte médical
@@ -813,7 +838,7 @@ class simDB:
         )
         return [prestation, delivrance_acte]
 
-    def createInsert_DrugDelivery(self, Base, p, d):
+    def createInsert_DrugDelivery(self, Base, sim, p, d):
         """
         Insertion in Base of the drug delivery for patient p
         - Base ORM database model
@@ -821,7 +846,7 @@ class simDB:
         - p Patient
         """
         
-        prestation = self.createPRS(Base,p,d)
+        prestation = self.createPRS(Base, sim, p, d)
         
         #Création d'une entrée dans la table ER_PHA pour une entrée en correspondante en pharmacie
         delivrance_medoc = Base.classes.ER_PHA_F(

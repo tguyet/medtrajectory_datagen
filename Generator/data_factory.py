@@ -84,9 +84,12 @@ class PharmacyFactory:
 
 
 class PhysicianFactory:
+    
+    current_id=0
+    
     def __init__(self, con):
         self.context=con
-
+        PhysicianFactory.current_id=0
 
     def __generatePSNUM__(self,p):
         """
@@ -95,7 +98,10 @@ class PhysicianFactory:
         - 1 character with category
         - 5 random numbers
         """
-        return str(p.dpt)+str(p.catpro)+"{:05}".format(rd.randint(99999))
+        
+        #return str(p.dpt)+str(p.catpro)+"{:05}".format(rd.randint(99999))
+        PhysicianFactory.current_id+=1
+        return str(p.dpt)+str(p.catpro)+"{:05}".format( PhysicianFactory.current_id )
 
     def generateGP(self, n):
         """
