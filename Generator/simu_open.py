@@ -786,7 +786,6 @@ class OpenActFactory(ActFactory):
     def __init__(self, con, physicians):
         super().__init__(con, physicians)
         
-        
         #Load the statistics computed from Open Data
         self.nb_acts =pd.read_csv( os.path.join(self.context.datarep, "nb_acts_rragesex.csv") )
         self.nb_acts.set_index(['RR','age','sex'],inplace=True)
@@ -795,18 +794,6 @@ class OpenActFactory(ActFactory):
         self.p_ccam =pd.read_csv( os.path.join(self.context.datarep, "p_act_prs.csv") )
         self.p_ccam.set_index(['prs_nat'],inplace=True)
     
-    def generate_one(self, p):
-        """
-        - p patient
-        """
-        ccam = rd.choice(self.ccams)
-        spe = rd.choice(self.spes)
-        mact= MedicalAct(ccam, p,spe)
-        mact.date_debut=self.context.generate_date(begin = date(self.context.year,1,1), end=date(self.context.year,12,31))
-        mact.date_fin=mact.date_debut
-        
-        p.medicalacts.append(mact)
-
     def generate(self, p):
         """
         Parameters
@@ -839,7 +826,7 @@ class OpenActFactory(ActFactory):
             nb = int(np.floor(rd.exponential(row['nb'])))
             for i in range(nb):
                 # generate a random CCAM code for this care
-                ccam = str(self.p_ccam.loc[prs_nat].sample(n=1,weights="p")["ccam"])
+                ccam = str(self.p_ccam.loc[prs_nat].sample(n=1,weights="p")["ccam"].iloc[0])
                 
                 #find a physician ...
                 
