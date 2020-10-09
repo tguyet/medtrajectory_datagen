@@ -790,7 +790,7 @@ class simDB:
         """
         Insertion in Base of the drug delivery for patient p
         - Base ORM database model
-        - d DrugDelivery
+        - ma medical act
         - p Patient
         """
         prestation = self.createPRS(Base, sim, p, ma)
