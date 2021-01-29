@@ -239,10 +239,9 @@ class simDB:
                 BEN_IDT_ANO = p.NIR,#,
                 BEN_IDT_TOP = False,#,
                 ASS_NIR_ANO = p.NIR,#,
-                BEN_IDT_MAJ = date(1900,1,1),
                 BEN_CDI_NIR = "00",# voir IR_NIR_V: 00 NIR Normal
                 BEN_NAI_ANN = p.BD.year,
-                BEN_NAI_MOI = p.BD,
+                BEN_NAI_MOI = p.BD.month,
                 BEN_SEX_COD = int(p.Sex),
                 BEN_DCD_DTE = datetime(2100,1,1,0,0,0),
                 BEN_DCD_AME = "",
@@ -252,6 +251,7 @@ class simDB:
                 BEN_TOP_CNS = 0,#0,
                 MAX_TRT_DTD = date(1900,1,1),
                 ORG_CLE_NEW = "01C682674",
+                BEN_IDT_MAJ = date(1900,1,1),
                 BEN_DTE_INS = datetime(1900,1,1,0,0,0),
                 BEN_DTE_MAJ = datetime(1900,1,1,0,0,0)
         )
