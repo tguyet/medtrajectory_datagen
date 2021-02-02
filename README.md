@@ -13,7 +13,7 @@ This repository contains a solution to generate a synthetic version of the datab
 
 
 This work is currently under review to the AIME conference. 
-The results of some more experiments can be found in the following notebook (accessible directly within the GitLab visualisation: [/Generator/PostGenerationAnalysis_Bretagne.ipynb] ).
+The results of some more experiments can be found in the following notebook (accessible directly within the online GitLab visualisation: [notebook](/Generator/PostGenerationAnalysis_Bretagne.ipynb) ).
 
 
 # How to generate your own database
